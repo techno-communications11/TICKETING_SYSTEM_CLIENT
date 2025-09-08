@@ -1,0 +1,371 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+    Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    Paper, Checkbox, Select, MenuItem, FormControl, InputLabel, TextField,
+    InputAdornment, IconButton, Menu, Dialog, DialogTitle, DialogContent,
+    DialogActions,
+    CircularProgress,
+    TablePagination
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import BasicBreadcrumbs from '../Components/BasicBreadcrumbs/BasicBreadcrumbs';
+import { deleteUserServices, getAllUser, getAllUsers } from '../Services/auth.services';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddUserCompo from './AddUserCompo';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+function SuperAdminManageUser() {
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedData, setSelectedData] = useState(null);
+    const [status, setStatus] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [userData, setUserData] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [openResetModal, setOpenResetModal] = useState(false);
+    const [openEmailModal, setOpenEmailModal] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [deleteLoader, setDeleteLoader] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const fetchAllUserData = useCallback(async () => {
+        setLoading(true)
+        try {
+            const response = await getAllUsers();
+            const response2 = await getAllUser();
+            setUserData(response2.data.data);
+            console.log(response2.data.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchAllUserData();
+    }, [fetchAllUserData]);
+
+    const handleRowSelect = (id) => {
+        let newSelectedRows = [];
+        if (selectedRows.includes(id)) {
+            newSelectedRows = selectedRows.filter(rowId => rowId !== id);
+        } else {
+            newSelectedRows = [...selectedRows, id];
+        }
+        setSelectedRows(newSelectedRows);
+
+        if (newSelectedRows.length === 1) {
+            const selected = userData.find(user => user._id === newSelectedRows[0]);
+            setSelectedData(selected);
+        } else {
+            setSelectedData(null);
+        }
+    };
+
+    const handleSelectAll = () => {
+        if (selectedRows.length === userData.length) {
+            setSelectedRows([]);
+            setSelectedData(null);
+        } else {
+            const allIds = userData.map(user => user._id);
+            setSelectedRows(allIds);
+            setSelectedData(null);
+        }
+    };
+
+    const handleEdit = (user) => {
+        console.log("Edit user:", user);
+    };
+
+    const handlePermissions = (user) => {
+        console.log("Manage permissions for:", user);
+    };
+
+    const handleDelete = async (id) => {
+
+        setDeleteId(id);
+        setConfirmed(true);
+    };
+
+    const confirmDelete = async () => {
+        setDeleteLoader(true)
+        try {
+            const response = await deleteUserServices(deleteId);
+            console.log("User deleted successfully:", response);
+            fetchAllUserData();
+        } catch (error) {
+            console.log("Error deleting user:", error);
+        } finally {
+            setSelectedRows([]);
+            setDeleteLoader(false);
+            setConfirmed(false);
+        }
+    }
+
+
+    const handleDeleteAll = () => {
+        console.log("Delete all selected users:", selectedRows);
+    };
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const paginatedUsers = userData
+        .filter(user =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+    return (
+        <div className="container">
+            <BasicBreadcrumbs name={"Manage Agents"} />
+            {selectedRows.length > 0 && (
+                <div className="d-flex align-items-center justify-content-between my-3 p-3 bg-light border rounded">
+                    {selectedRows.length === 1 ? '' : (
+                        <>
+                            <div>{selectedRows.length} users selected</div>
+                            <Button variant="contained" color="error" onClick={handleDeleteAll}>Delete All</Button>
+                        </>
+                    )}
+                </div>
+            )}
+            <div className="row my-4">
+                <div className="col-md-12 py-3 bg-white rounded-3 shadow-sm">
+                    <div className="d-flex align-items-center" style={{ gap: "10px" }}>
+                        <TextField
+                            size="small"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            sx={{ width: 300 }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <FormControl size="small" sx={{ minWidth: 200 }}>
+                            <InputLabel>Department</InputLabel>
+                            <Select label="Department">
+                                <MenuItem value="">All</MenuItem>
+                                <MenuItem value="IT">IT</MenuItem>
+                                <MenuItem value="Admin">Admin</MenuItem>
+                                <MenuItem value="Inventory">Inventory</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl size="small" sx={{ minWidth: 150 }}>
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                                value={status}
+                                label="Status"
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <MenuItem value="">All</MenuItem>
+                                <MenuItem value="Open">Open</MenuItem>
+                                <MenuItem value="Closed">Closed</MenuItem>
+                                <MenuItem value="Paused">Paused</MenuItem>
+                                <MenuItem value="Assigned">Assigned</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <AddUserCompo fetchAllUserData={fetchAllUserData} />
+                    </div>
+                </div>
+            </div>
+            <Box sx={{ mt: 3 }}>
+                {selectedRows.length > 0 && selectedRows.length === 1 && (
+                    <div className="d-flex align-items-center justify-content-between my-3 p-3 bg-light border rounded">
+                        <div>
+                            <IconButton onClick={() => handleEdit(selectedData)} sx={{
+                                '& .MuiSvgIcon-root': {
+                                    transition: 'color 0.3s ease',
+                                }
+                            }}>
+                                <EditIcon color='black' />
+                            </IconButton>
+                            <IconButton onClick={() => handleDelete(selectedData._id)} sx={{
+                                '& .MuiSvgIcon-root': {
+                                    transition: 'color 0.3s ease',
+                                }
+                            }}>
+                                <DeleteIcon color='black' />
+                            </IconButton>
+                            <IconButton
+                                onClick={(e) => setMenuAnchorEl(e.currentTarget)} sx={{
+                                    '& .MuiSvgIcon-root': {
+                                        transition: 'color 0.3s ease',
+                                    }
+                                }}
+                            >
+                                <MoreVertIcon color='black' />
+                            </IconButton>
+                        </div>
+                    </div>
+                )}
+
+                <Menu
+                    anchorEl={menuAnchorEl}
+                    open={Boolean(menuAnchorEl)}
+                    onClose={() => setMenuAnchorEl(null)}
+                >
+                    <MenuItem onClick={() => {
+                        setOpenResetModal(true);
+                        setMenuAnchorEl(null);
+                    }}>Reset Password</MenuItem>
+                    <MenuItem onClick={() => {
+                        setOpenEmailModal(true);
+                        setMenuAnchorEl(null);
+                    }}>Change Email</MenuItem>
+                    <MenuItem onClick={() => {
+                        handlePermissions(selectedData);
+                        setMenuAnchorEl(null);
+                    }}>Permissions</MenuItem>
+                    <MenuItem onClick={() => {
+                        console.log("Settings clicked");
+                        setMenuAnchorEl(null);
+                    }}>Settings</MenuItem>
+                </Menu>
+                <Dialog open={confirmed} onClose={() => setConfirmed(false)}>
+                    <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#d32f2f' }}>
+                        <WarningAmberIcon color="error" />
+                        Confirm Deletion
+                    </DialogTitle>
+                    <DialogContent dividers>
+                        <Box sx={{ py: 1, px: 0 }}>
+                            Are you sure you want to delete this item? This action cannot be undone.
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setConfirmed(false)} variant="outlined">
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={confirmDelete}
+                        >
+                            {deleteLoader ? <CircularProgress size={25} /> : "Delete"}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={openResetModal} onClose={() => setOpenResetModal(false)}>
+                    <DialogTitle>Reset Password</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="New Password"
+                            type="password"
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenResetModal(false)}>Cancel</Button>
+                        <Button variant="contained" onClick={() => {
+                            // TODO: Reset password logic
+                            setOpenResetModal(false);
+                        }}>Reset</Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={openEmailModal} onClose={() => setOpenEmailModal(false)}>
+                    <DialogTitle>Change Email</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="New Email"
+                            type="email"
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenEmailModal(false)}>Cancel</Button>
+                        <Button variant="contained" onClick={() => {
+                            setOpenEmailModal(false);
+                        }}>Update</Button>
+                    </DialogActions>
+                </Dialog>
+                <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow sx={{ backgroundColor: '#6f2da8' }}>
+                                <TableCell sx={{ color: 'white' }} padding="checkbox">
+                                    <Checkbox
+                                        sx={{
+                                            color: '#fff',
+                                            '&.Mui-checked': {
+                                                color: '#fff',
+                                            },
+                                        }}
+                                        checked={selectedRows.length === userData.length && userData.length > 0}
+                                        indeterminate={selectedRows.length > 0 && selectedRows.length < userData.length}
+                                        onChange={handleSelectAll}
+                                    />
+                                </TableCell>
+                                <TableCell sx={{ color: 'white' }}>Name</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Email</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Phone</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Department</TableCell>
+                                {/* {user.department === "SuperAdmin" ? "" : <TableCell sx={{ color: 'white' }}>Role</TableCell>} */}
+                                <TableCell sx={{ color: 'white' }}>Role</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Status</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                loading ? <TableRow>
+                                    <TableCell colSpan={7} height={200} align="center">
+                                        <CircularProgress />
+                                    </TableCell>
+                                </TableRow> : (
+                                    <>
+                                        {paginatedUsers.map((user, index) => (
+                                            <TableRow key={index} hover role="checkbox" tabIndex={-1}>
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        checked={selectedRows.includes(user._id)}
+                                                        onChange={() => handleRowSelect(user._id)}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>{user.name}</TableCell>
+                                                <TableCell>{user.email}</TableCell>
+                                                <TableCell>{user.phone}</TableCell>
+                                                <TableCell>{user.department}</TableCell>
+                                                <TableCell>{user.subDepartment || "-"}</TableCell>
+                                                <TableCell>{user.isActive ? "Active" : "Un-active"}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </>
+                                )
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={userData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Box>
+        </div>
+    );
+}
+
+export default SuperAdminManageUser;
