@@ -1,0 +1,65 @@
+.MuiAppBar-root{
+    background-color: #6f2da8 !important;
+    color: #ffffff !important;
+}
+.css-53g0n7-MuiButtonBase-root-MuiIconButton-root .MuiSvgIcon-root{
+    color: #ffffff !important;
+}
+
+.rounded-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;  
+    height: 40px;  
+    border-radius: 50%;  
+    background-color: transparent;  
+    transition: all 0.3s ease;  
+  }
+  .rounded-circle:hover {
+    background-color: #ff099b !important;  
+  }
+  .rounded-circle .MuiSvgIcon-root {
+    color: #ffffff !important; 
+    transition: all 0.3s ease !important;  
+  }
+  .rounded-circle:hover .MuiSvgIcon-root {
+    color: #ffffff !important; 
+  }
+
+
+  .custom-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ant-steps-item-finish .ant-steps-item-icon {
+    background-color: #6f2da8 !important;
+    border-color: #6f2da8 !important;
+  }
+
+  .ant-steps-item-finish .ant-steps-item-content {
+    color: #6f2da8 !important;
+  }
+
+  .blinking-step .ant-steps-item-icon {
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+
+  .ant-steps-item-tail{
+    color: #6f2da8 !important; 
+  }
+  
+  .ticket-progress .ant-steps-item-finish .ant-steps-item-icon {
+    background-color: #6f2da8 !important;
+    border-color: #6f2da8 !important;
+  }
+  
+  .ticket-progress .ant-steps-item-finish .ant-steps-item-content {
+    color: #6f2da8 !important;
+  }
