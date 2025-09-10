@@ -64,7 +64,7 @@ function SuperAdminManageTickets() {
     if (selectedRows.length === tickets.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(tickets.map((ticket) => ticket._id));
+      setSelectedRows(tickets.map((ticket) => ticket.id));
     }
   };
 
@@ -227,11 +227,11 @@ function SuperAdminManageTickets() {
             <TableBody>
               {currentRows.length > 0 ? (
                 currentRows.map((ticket) => (
-                  <TableRow key={ticket._id} hover sx={{ cursor: 'pointer' }} onClick={() => { navigate(`/superAdmin-review-tickets/${ticket._id}`) }} >
+                  <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedRows.includes(ticket._id)}
-                        onChange={() => handleRowSelect(ticket._id)}
+                        checked={selectedRows.includes(ticket.id)}
+                        onChange={() => handleRowSelect(ticket.id)}
                       />
                     </TableCell>
                     <TableCell>{ticket.ticketId}</TableCell>

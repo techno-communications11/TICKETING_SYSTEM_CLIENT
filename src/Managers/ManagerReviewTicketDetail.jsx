@@ -167,7 +167,7 @@ function ManagerReviewTicketDetail() {
         }
     }
     const showBrowserNotification = async (title, description) => {
-        console.log("before sent notification", title, description)
+        // console.log("before sent notification", title, description)
         if ('Notification' in window && Notification.permission === "granted") {
             console.log("after sent notification", title, description)
             new Notification(title, {
@@ -208,9 +208,9 @@ function ManagerReviewTicketDetail() {
             const filteredUserEmail = ticketData.data.data.filter((data) => data.id == assignieName.id)
             const allTickets = await getalltickets();
             const filtered = allTickets.data.data.filter((data) => data.id == id);
-            console.log(id, assignieName.id, assignieName.name, filtered, filtered[0], filteredUserEmail[0]?.email, filteredCurrentUser[0]?.name, assignieName.assign_email)
+            // console.log(id, assignieName.id, assignieName.name, filtered, filtered[0], filteredUserEmail[0]?.email, filteredCurrentUser[0]?.name, assignieName.assign_email)
             const response = await assignedTicketServices(id, assignieName.id, assignieName.name, filtered[0]?.ticketId, filtered[0], filteredUserEmail[0]?.email, filteredCurrentUser[0]?.name, assignieName.assign_email);
-            console.log(response)
+            // console.log(response)
             if (response.data.status === 200) {
                 const notificationObj = {
                     ticketId: filtered[0]?.id,

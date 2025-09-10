@@ -48,25 +48,25 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
         if (!validateForm()) return setLoader(false);
         try {
             const ticketId = await generatedTicketId();
-            const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
+            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
             console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
-                    ticketId: resposne.data.data._id,
+                    ticketId: resposne.data.data.id,
                     ticket_Id: ticketId,
                     recipientId: ticketData?.marketManager_id,
                     manager: ticketData?.managerID,
                     marketmanager: ticketData?.marketManager_id,
                     distrcitmanager: ticketData?.districtManager_id,
                     senderId: id,
-                    store: resposne.data.data?.store_detail[0]?._id,
+                    store: resposne.data.data?.store_detail[0]?.id,
                     notification_type: "new Ticket open",
                 };
                 socket.emit('notify', notificationObj)
-                const r = await ticketProgressServices(resposne.data.data._id, "Created");
+                const r = await ticketProgressServices(resposne.data.data.id, "Created");
             }
         } catch (error) {
             setLoader(false)

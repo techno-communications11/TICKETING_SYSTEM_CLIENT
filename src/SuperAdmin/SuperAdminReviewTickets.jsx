@@ -11,8 +11,9 @@ import { decodeToken } from '../Utils/decodedToken.utils';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { addNotificationsServices } from '../Services/notifications.services';
-import { getAllUsers } from '../Services/auth.services';
+import { getAllUser, getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
+import axios from 'axios';
 function SuperAdminReviewTickets() {
     const [comments, setComments] = useState([
         { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
@@ -37,8 +38,9 @@ function SuperAdminReviewTickets() {
         settLoading(true)
         try {
             const response = await getalltickets();
-            const filterartion = response.data.data.filter((data) => data._id === id);
+            const filterartion = response.data.data.filter((data) => data.id == id);
             setDetailTicket(filterartion);
+            // console.log(filterartion);
         } catch (error) {
             settLoading(false)
             console.log(error.message);
@@ -50,9 +52,10 @@ function SuperAdminReviewTickets() {
         if (!department) return;
         const fetchUsers = async () => {
             try {
-                const getUsers = await getAllUsers();
-                const filteredUser = getUsers.data.data.filter((data) => data.department === department);
+                const getUsers = await getAllUser();
+                const filteredUser = getUsers.data.data.filter((data) => data.subDepartment === "Manager");
                 setAssignUsers(filteredUser);
+                // console.log(getUsers.data.data);
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
@@ -66,10 +69,10 @@ function SuperAdminReviewTickets() {
     useEffect(() => {
         if (socket && detailTicket?.length > 0) {
             if (detailTicket[0].status === "pending") {
-                updateTicketStatus(detailTicket[0]._id)
+                updateTicketStatus(detailTicket[0].id)
                     .then(async (response) => {
                         try {
-                            const resposne = await ticketProgressServices(detailTicket[0]?._id, "Review Ticket");
+                            // const resposne = await ticketProgressServices(detailTicket[0]?.id, "Review Ticket");
                         } catch (error) {
                             console.log("ERROR FROM UPDATING TICKET PROGRESS", error.message)
                         }
@@ -78,7 +81,7 @@ function SuperAdminReviewTickets() {
                         console.error("Failed to update ticket status:", error);
                     });
                 const notificationObj = {
-                    ticketId: detailTicket[0]?._id,
+                    ticketId: detailTicket[0]?.id,
                     ticket_Id: detailTicket[0]?.ticketId,
                     recipientId: "",
                     manager: detailTicket[0]?.marketManager_id,
@@ -107,7 +110,7 @@ function SuperAdminReviewTickets() {
         if (selectedAssignee) {
             setAssigneeName({
                 name: selectedAssignee.name,
-                id: selectedAssignee._id,
+                id: selectedAssignee.id,
                 assign_email: selectedAssignee?.email
             });
         }
@@ -117,7 +120,7 @@ function SuperAdminReviewTickets() {
         setLoading(true)
         try {
             const notificationObj = {
-                ticketId: detailTicket[0]?._id,
+                ticketId: detailTicket[0]?.id,
                 ticket_Id: detailTicket[0]?.ticketId,
                 recipientId: "",
                 manager: detailTicket[0]?.managerID,
@@ -128,11 +131,11 @@ function SuperAdminReviewTickets() {
             };
             socket.emit('notify', notificationObj)
             await addNotificationsServices(notificationObj);
-            closeTicket(detailTicket[0]._id)
+            closeTicket(detailTicket[0].id)
                 .then(async (response) => {
                     if (response.data.status === 200) {
                         try {
-                            const resposne = await ticketProgressServices(detailTicket[0]?._id, "Closed");
+                            // const resposne = await ticketProgressServices(detailTicket[0]?.id, "Closed");
                             toast.success(`🎉 Ticket #${detailTicket[0].ticketId} has been closed!`);
                             fetchTickets()
                             setTimeout(() => {
@@ -157,7 +160,7 @@ function SuperAdminReviewTickets() {
         }
     }
     const showBrowserNotification = async (title, description) => {
-        console.log("before sent notification", title, description)
+        // console.log("before sent notification", title, description)
         if ('Notification' in window && Notification.permission === "granted") {
             console.log("after sent notification", title, description)
             new Notification(title, {
@@ -194,14 +197,14 @@ function SuperAdminReviewTickets() {
         }
         try {
             const ticketData = await getAllUsers();
-            const filteredCurrentUser = ticketData.data.data.filter((data) => data._id === userId)
-            const filteredUserEmail = ticketData.data.data.filter((data) => data._id === assignieName.id)
+            const filteredCurrentUser = ticketData.data.data.filter((data) => data.id === userId)
+            const filteredUserEmail = ticketData.data.data.filter((data) => data.id === assignieName.id)
             const allTickets = await getalltickets();
-            const filtered = allTickets.data.data.filter((data) => data._id === id);
+            const filtered = allTickets.data.data.filter((data) => data.id === id);
             const response = await assignedTicketServices(id, assignieName.id, assignieName.name, filtered[0]?.ticketId, filtered[0], filteredUserEmail[0]?.email, filteredCurrentUser[0]?.name, assignieName.assign_email);
             if (response.data.status === 200) {
                 const notificationObj = {
-                    ticketId: filtered[0]?._id,
+                    ticketId: filtered[0]?.id,
                     ticket_Id: filtered[0]?.ticketId,
                     recipientId: assignieName.id,
                     senderId: filtered[0]?.managerID,
@@ -219,7 +222,7 @@ function SuperAdminReviewTickets() {
                 }
                 filteredTickets()
                 try {
-                    const resposne = await ticketProgressServices(filtered[0]?._id, "Assigned to Agent");
+                    // const resposne = await ticketProgressServices(filtered[0]?.id, "Assigned to Agent");
                     filteredTickets()
                 } catch (error) {
                     setAssignLoader(false)
@@ -312,7 +315,7 @@ function SuperAdminReviewTickets() {
                                     <Select value={assignieName.name} onChange={handleAssignee}>
                                         {assignUsers.length > 0 ? (
                                             assignUsers.map((user) => (
-                                                <MenuItem key={user._id} value={user.name}>
+                                                <MenuItem key={user.id} value={user.name}>
                                                     {user.name}
                                                 </MenuItem>
                                             ))
@@ -326,7 +329,7 @@ function SuperAdminReviewTickets() {
                     </div>
                 </div>
             </div>
-            <TicketProgress status={latestStatus} />
+            {/* <TicketProgress status={latestStatus} /> */}
             <div className="row">
                 <Typography variant='h6' className='mb-3'>Detail</Typography>
                 <div className="col-md-8">
@@ -373,7 +376,15 @@ function SuperAdminReviewTickets() {
                     }
                 </div>
                 <div className="col-md-4">
-                    <UploadDocCompo images={detailTicket[0]?.files} />
+                    {detailTicket[0]?.files && JSON.parse(detailTicket[0].files).length > 0 ? (
+                        <UploadDocCompo images={JSON.parse(detailTicket[0].files)} />
+                    ) : (
+                        <div className="slide-content text-center d-flex align-items-center justify-content-center" style={{ height: "300px", backgroundColor: "#f8f9fa", borderRadius: "10px" }}>
+                            <p className="text-muted">No images available</p>
+                        </div>
+                    )}
+
+                    {/* <UploadDocCompo images={detailTicket[0]?.files} /> */}
                 </div>
             </div>
             <div className="row">

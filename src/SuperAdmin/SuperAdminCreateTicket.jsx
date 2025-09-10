@@ -8,7 +8,7 @@ import AddTicketProblemCategory from '../Components/AddTicketProblemCategory/Add
 import Cookies from 'js-cookie'
 import { getAllStores } from '../Services/stores.services';
 import { getAllProblemCategory } from '../Services/categoryofproblem.services';
-import { getAllUsers } from '../Services/auth.services';
+import { getAllUser, getAllUsers } from '../Services/auth.services';
 import SuperAdminCreateTicketbtn from './SuperAdminCreateTicketbtn';
 // import SeniorManagerCreateTicketBttn from './SeniorManagerCreateTicketBttn';
 const style = {
@@ -48,8 +48,8 @@ function SuperAdminCreateTicket({ fetchTickets }) {
     ]), []);
     const fetchCUrrentUser = useCallback(async () => {
         try {
-            const response = await getAllUsers();
-            const filteration = response.data.data.filter((data) => data._id === id)
+            const response = await getAllUser();
+            const filteration = response.data.data.filter((data) => data.id === id)
             setCurrentUserData(filteration)
             console.log("filteration", filteration)
             setTicketData((prevData) => ({
@@ -57,7 +57,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                 name: filteration[0]?.name,
                 email: filteration[0]?.email,
                 phone: filteration[0]?.phone,
-                userId: filteration[0]?._id,
+                userId: filteration[0]?.id,
                 creatordepartment: filteration[0]?.subDepartment || filteration[0]?.department,
                 senior_managers: filteration[0]?.subDepartment || filteration[0]?.department
             }));
@@ -129,7 +129,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
 
     const handleStore = async (e) => {
         try {
-            const selectedStore = stores.find(store => store._id === e.target.value);
+            const selectedStore = stores.find(store => store.id === e.target.value);
             setTicketData({
                 ...ticketData,
                 storeId: e.target.value,
@@ -147,11 +147,11 @@ function SuperAdminCreateTicket({ fetchTickets }) {
     const handleCategory = async (e) => {
         try {
             const resposne = await getAllProblemCategory();
-            const filterationType = resposne.data.data.filter((data) => data._id === e.target.value)
+            const filterationType = resposne.data.data.filter((data) => data.id === e.target.value)
             console.log(filterationType)
             setTicketData({
                 ...ticketData,
-                categoryId: filterationType[0]?._id,
+                categoryId: filterationType[0]?.id,
                 category: filterationType[0]?.name,
                 department: filterationType[0]?.department,
                 department_email: filterationType[0]?.department_email,
@@ -301,7 +301,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                                             <MenuItem value="">Select Store</MenuItem>
                                             {stores.length > 0 ?
                                                 stores.map((store, index) => (
-                                                    <MenuItem key={index} value={store._id}>{store.store_name}</MenuItem>
+                                                    <MenuItem key={index} value={store.id}>{store.store_name}</MenuItem>
                                                 )) : <MenuItem value=""><CircularProgress size={25} /></MenuItem>}
                                         </Select>
                                     </FormControl>
@@ -319,7 +319,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                                             <MenuItem value="">Select Category of Problem</MenuItem>
                                             {
                                                 typeofticket?.map((data) => (
-                                                    <MenuItem value={data._id}>{data.name}</MenuItem>
+                                                    <MenuItem value={data.id}>{data.name}</MenuItem>
                                                 ))
                                             }
                                         </Select>
