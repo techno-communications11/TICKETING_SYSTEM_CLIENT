@@ -52,7 +52,7 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
                 ticketId,
                 formData: ticketData,
             })
-            console.log(resposne, "ticketData")
+            // console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
                     ticketId: resposne.data.data.id,
