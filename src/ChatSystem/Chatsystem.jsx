@@ -13,6 +13,7 @@ import {
   Button,
   Paper,
   keyframes,
+  Skeleton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -46,6 +47,9 @@ export default function ChatSystem() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const [allUsersData, setAllUsersData] = useState();
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [messageLoading, setMessageLoading] = useState(false);
+
   const chatBoxRef = useRef(null);
   const currentUserId = 1;
   const MAX_FILE_SIZE = 16 * 1024 * 1024; // 16MB
@@ -72,11 +76,20 @@ export default function ChatSystem() {
   const [isTabActive, setIsTabActive] = useState(true);
   // console.log(id)
   const fetchGetAllUsersData = useCallback(async () => {
+    setUsersLoading(true)
     try {
       const responseUsers = await getAllUser();
       const filterationData = responseUsers.data.data.filter((data) => data.id != UserId)
+      // const filterationData = responseUsers.data.data.filter(
+      //   (data) =>
+      //     data.id !== UserId && // apna UserId remove karo
+      //     data.email !== "testing@gmail.com" && // testing user hide
+      //     data.email !== "superadmin@gmail.com" // superadmin user hide
+      // );
       setAllUsersData(filterationData)
+      setUsersLoading(false)
     } catch (error) {
+      setUsersLoading(false)
       console.log("ERROR", error.message);
     }
   }, [])
@@ -88,72 +101,22 @@ export default function ChatSystem() {
     if (id && allUsersData.length > 0) {
       const user = allUsersData.filter((item) => item.id == id);
       const fetchMessages = async () => {
-        // setloadingMessages(true);
+        setMessageLoading(true);
         try {
           const response = await getAllMessageServices(user[0].id, UserId);
-          // setloadingMessages(false);
+          setMessageLoading(false);
           setMessages(response.data.data);
-          
-          console.log(response.data.data);
+
+          // console.log(response.data.data);
         } catch (error) {
+          setMessageLoading(false);
           console.error("Error fetching messages:", error.message);
         }
       };
       fetchMessages();
     }
   }, [id, allUsersData, currentUserId]);
-  // useEffect(() => {
-  //   if (!socket) return;
-  //   socket.on("connect", () => {
-  //     console.log("Connected to server");
-  //     socket.emit("register", UserId);
-  //   });
 
-  //   socket.on("connect_error", (error) => {
-  //     console.error("Connection error:", error.message);
-  //   });
-  //   socket.on("chat message", (msg) => {
-  //     setMessages((prevMessages) => [...prevMessages, msg]);
-  //   });
-  //   socket.on("notification", ({ senderId,receiver, content }) => {
-  //     const sender = allUsersData.find((user) => user.id === senderId);
-  //     if (sender) {
-  //       const name = sender.name;
-  //       const department = sender.department;
-  //       const notificationMessage = `${content} (${department})`;
-  //       if (!isTabActive) {
-  //         showBrowserNotification(name, notificationMessage);
-  //       }
-  //     }
-  //   });
-  //   socket.emit("getOnlineUsers");
-  //   socket.on("updateOnlineUsers", (users) => {
-  //     setOnlineUsers(users);
-  //   });
-  //   return () => {
-  //     if (socket) {
-  //       socket.off("updateOnlineUsers");
-  //       socket.off("connect");
-  //       socket.off("connect_error");
-  //       socket.off("chat message");
-  //       socket.off("notification");
-  //     }
-  //   };
-  // }, [socket, UserId, allUsersData]);
-
-  // const showBrowserNotification = (name, message) => {
-  //   const notificationTitle = `New Message from ${name}`;
-  //   const notificationBody = message;
-  //   if (Notification.permission === "granted") {
-  //     new Notification(notificationTitle, { body: notificationBody });
-  //   } else if (Notification.permission !== "denied") {
-  //     Notification.requestPermission().then((permission) => {
-  //       if (permission === "granted") {
-  //         new Notification(notificationTitle, { body: notificationBody });
-  //       }
-  //     });
-  //   }
-  // };
 
   useEffect(() => {
     if (!socket) return;
@@ -175,7 +138,7 @@ export default function ChatSystem() {
 
     // Receive new chat messages
     socket.on("chat message", (msg) => {
-      console.log("📩 New message received:", msg);
+      // console.log("📩 New message received:", msg);
       setMessages((prev) => [...prev, msg]);
 
       // Show browser + portal notification if it's NOT my own message
@@ -265,8 +228,8 @@ export default function ChatSystem() {
         content: inputValue,
         image: null,
       };
-      console.log(messageData)
-      console.log("id", id)
+      // console.log(messageData)
+      // console.log("id", id)
       socket.emit("chat message", messageData);
       setMessages([
         ...messages,
@@ -391,128 +354,77 @@ export default function ChatSystem() {
             />
 
             {/* User Cards */}
-            {filteredUsers?.map((user) => {
-              const ids = user.id.toString();
-
-              return (
-                <Card
-                  key={user.id}
-                  sx={{ mb: 2, cursor: "pointer" }}
-                  onClick={() => {
-                    navigate(`/chat-system/${user.id}`);
-                    setSelectedUser(user);
-                  }}
-                >
-                  <CardContent sx={{ display: "flex", alignItems: "center" }}>
-                    <Badge
-                      overlap="circular"
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      badgeContent={
-                        onlineUsers.includes(ids) ? (
-                          <Box
-                            sx={{
-                              width: 12,
-                              height: 12,
-                              backgroundColor: "#2E7D32",
-                              borderRadius: "50%",
-                              animation: `${doubleBlink} 1.5s infinite`,
-                            }}
-                          />
-                        ) : (
-                          <Box
-                            sx={{
-                              width: 10,
-                              height: 10,
-                              backgroundColor: "#757575",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        )
-                      }
-                    >
-                      <Avatar
-                        src={user.name.toUpperCase().charAt(0)}
-                        alt={user.name.toUpperCase().charAt(0)}
-                        sx={{ width: 56, height: 56 }}
-                      />
-                    </Badge>
-                    <Box ml={2}>
-                      <Typography fontWeight="bold">{user.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Dept: {user.department}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Tech ID: {user.techId}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {usersLoading ? Array.from(new Array(5)).map((_, index) => (
+              <Card key={index} sx={{ mb: 2 }}>
+                <CardContent sx={{ display: "flex", alignItems: "center" }}>
+                  <Skeleton variant="circular" width={56} height={56} />
+                  <Box ml={2} sx={{ flex: 1 }}>
+                    <Skeleton width="40%" height={20} />
+                    <Skeleton width="60%" height={16} />
+                    <Skeleton width="50%" height={16} />
+                  </Box>
+                </CardContent>
+              </Card>
+            )) :
+              (filteredUsers?.map((user) => {
+                const ids = user.id.toString();
+                return (
+                  <Card
+                    key={user.id}
+                    sx={{ mb: 2, cursor: "pointer" }}
+                    onClick={() => {
+                      navigate(`/chat-system/${user.id}`);
+                      setSelectedUser(user);
+                    }}
+                  >
+                    <CardContent sx={{ display: "flex", alignItems: "center" }}>
+                      <Badge
+                        overlap="circular"
+                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                        badgeContent={
+                          onlineUsers.includes(ids) ? (
+                            <Box
+                              sx={{
+                                width: 12,
+                                height: 12,
+                                backgroundColor: "#2E7D32",
+                                borderRadius: "50%",
+                                animation: `${doubleBlink} 1.5s infinite`,
+                              }}
+                            />
+                          ) : (
+                            <Box
+                              sx={{
+                                width: 10,
+                                height: 10,
+                                backgroundColor: "#757575",
+                                borderRadius: "10px",
+                              }}
+                            />
+                          )
+                        }
+                      >
+                        <Avatar
+                          src={user.name.toUpperCase().charAt(0)}
+                          alt={user.name.toUpperCase().charAt(0)}
+                          sx={{ width: 56, height: 56 }}
+                        />
+                      </Badge>
+                      <Box ml={2}>
+                        <Typography fontWeight="bold">{user.name}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Dept: {user.department}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Tech ID: {user.techId}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                );
+              }))}
           </Box>
-          {/* <Box p={2}>
-            {allUsersData?.map((user) => {
-              const ids = user.id.toString()
-              // console.log(onlineUsers.includes(ids));
-
-              // console.log("onlineUsers", onlineUsers)
-              // console.log(user.id)
-
-              return (
-                <Card key={user.id} sx={{ mb: 2, cursor: "pointer" }} onClick={() => { navigate(`/chat-system/${user.id}`); setSelectedUser(user) }}>
-                  <CardContent sx={{ display: "flex", alignItems: "center" }}>
-                    <Badge
-                      overlap="circular"
-                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                      badgeContent={
-                        onlineUsers.includes(ids) ? (
-                          <Box
-                            sx={{
-                              width: 12,
-                              height: 12,
-                              backgroundColor: '#2E7D32',
-                              borderRadius: '50%',
-                              animation: `${doubleBlink} 1.5s infinite`,
-                            }}
-                          />
-                        ) : (
-                          <Box
-                            sx={{
-                              width: 10,
-                              height: 10,
-                              backgroundColor: '#757575',
-                              borderRadius: '10px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              color: '#fff',
-                              fontSize: '10px',
-                              fontWeight: 'bold',
-                              padding: '2px 4px',
-                            }}
-                          />
-                        )
-                      }
-                    >
-                      <Avatar
-                        src={user.name.toUpperCase().charAt(0)}
-                        alt={user.name.toUpperCase().charAt(0)}
-                        sx={{ width: 56, height: 56 }}
-                      />
-                    </Badge>
-                    <Box ml={2}>
-                      <Typography fontWeight="bold">{user.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Dept: {user.department}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </Box> */}
         </div>
-
         {/* Chat Window */}
         <div className={`col-md-9 d-md-block ${selectedUser ? "d-block" : "d-none d-md-block"}`}>
           {selectedUser ? (
@@ -605,49 +517,30 @@ export default function ChatSystem() {
                 bgcolor="#fafafa"
                 style={{ height: "calc(100vh - 150px)" }}
               >
-                {/* {messages
-                  .filter((m) => [currentUserId, selectedUser.id].includes(m.sender))
-                  .map((msg) => {
-                    const isCurrentUser = msg.sender === currentUserId;
 
-                    return (
-                      <Box
-                        key={msg.id}
-                        display="flex"
-                        justifyContent={isCurrentUser ? "flex-end" : "flex-start"}
-                        mb={2}
-                      >
-                        <Box
-                          px={2}
-                          py={1}
-                          borderRadius={2}
-                          maxWidth="60%"
-                          bgcolor={isCurrentUser ? "primary.main" : "grey.300"}
-                          color={isCurrentUser ? "white" : "black"}
-                        >
-                          {msg.type === "text" && <Typography>{msg.content}</Typography>}
-                          {msg.type === "image" && (
-                            <img src={msg.content} alt="" style={{ maxWidth: "100%", borderRadius: 8 }} />
-                          )}
-                          {msg.type === "video" && (
-                            <video src={msg.content} controls style={{ maxWidth: "100%", borderRadius: 8 }} />
-                          )}
-                          {msg.type === "voice" && <audio src={msg.content} controls />}
-                          {msg.type === "file" && (
-                            <a href={msg.content} download={msg.fileName}>
-                              {msg.fileName}
-                            </a>
-                          )}
-                        </Box>
-                      </Box>
-                    );
-                  })} */}
-                {
-                  messages.map((msg, index) => {
-                    // console.log(msg)
+                {messageLoading ? Array.from(new Array(6)).map((_, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    justifyContent={index % 2 === 0 ? "flex-start" : "flex-end"}
+                    mb={2}
+                  >
+                    <Paper
+                      elevation={1}
+                      sx={{
+                        px: 2,
+                        py: 1,
+                        maxWidth: "60%",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Skeleton variant="text" width={120} height={20} />
+                      <Skeleton variant="text" width={80} height={16} sx={{ mt: 0.5 }} />
+                    </Paper>
+                  </Box>
+                )) :
+                  (messages.map((msg, index) => {
                     const isCurrentUser = msg.sender === UserId || msg.sender === UserId;
-                    // console.log(msg.sender == UserId)
-                    // console.log(UserId)
                     const timestamp = msg.timestamp
                       ? new Date(msg.timestamp).toLocaleTimeString([], {
                         hour: "2-digit",
@@ -711,103 +604,8 @@ export default function ChatSystem() {
                         </Paper>
                       </Box>
                     );
-                  })
+                  }))
                 }
-                {/* {
-                  messages.map((msg, index) => {
-                    const isCurrentUser = msg.sender== UserId;
-                    console.log(isCurrentUser )
-                    const messageClass = isCurrentUser ? 'message-sent' : 'message-received';
-                    const justifyClass = isCurrentUser ? 'justify-end' : 'justify-start';
-                    const timestamp = msg.timestamp
-                      ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                      : '12:05 PM';
-
-                    return (
-                      <div key={index} className={`message-container mb-3 d-flex ${justifyClass}`}>
-                        <div className={`message-bubble px-2 ${messageClass}`}>
-                          <p className="message-text mb-0 px-2">
-                            {msg.image ? (
-                              <img src={msg.image} alt={msg.fileName} style={{ maxWidth: "200px", maxHeight: "200px", borderRadius: "10px" }} />
-                            ) : msg.audio ? (
-                              <audio controls style={{ width: "300px" }} >
-                                <source src={msg.audio} type="audio/wav" />
-                                Your browser does not support the audio element.
-                              </audio>
-                            ) : (
-                              <span>{msg.content}</span>
-                            )}
-                          </p>
-                          <div className="d-flex justify-content-end">
-                            <span className="text-muted mt-1" style={{ fontSize: "10px" }}>
-                              {timestamp}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                } */}
-
-                {/* {messages
-                  .filter((m) => [currentUserId, selectedUser.id].includes(m.sender))
-                  .map((msg) => {
-                    const isCurrentUser = msg.sender == currentUserId;
-                    const reciver = msg.receiver == currentUserId;
-                    console.log("isCurrentUser", isCurrentUser)
-                    console.log("reciver", reciver)
-                    console.log("UserId", selectedUser.id)
-                    return (
-                      <Box
-                        key={msg.id}
-                        display="flex"
-                        justifyContent={isCurrentUser ? "flex-end" : "flex-start"}
-                        mb={2}
-                      >
-                        <Box
-                          px={2}
-                          py={1}
-                          borderRadius={2}
-                          maxWidth="60%"
-                          bgcolor={isCurrentUser ? "primary.main" : "grey.300"}
-                          color={isCurrentUser ? "white" : "black"}
-                        >
-                          {msg.content && !msg.image && !msg.audio && (
-                            <Typography>{msg.content}</Typography>
-                          )}
-
-                          {msg.image && (
-                            <img
-                              src={msg.image}
-                              alt="sent"
-                              style={{ maxWidth: "100%", borderRadius: 8 }}
-                            />
-                          )}
-
-                          {msg.audio && <audio src={msg.audio} controls />}
-
-                          {msg.video && (
-                            <video
-                              src={msg.video}
-                              controls
-                              style={{ maxWidth: "100%", borderRadius: 8 }}
-                            />
-                          )}
-                          {msg.file && (
-                            <a href={msg.file} download>
-                              {msg.fileName || "Download File"}
-                            </a>
-                          )}
-                        </Box>
-                      </Box>
-                    );
-                  })} */}
-
-                {/* 📝 Text Message */}
-                {/* 🖼️ Image Message */}
-                {/* 🎤 Audio/Voice Message */}
-                {/* (Optional) Agar future me video/file ka support add karna ho */}
-                {/* Per-chat recordings */}
                 {
                   recordings[selectedUser.id]?.map((rec, index) => (
                     <Box key={`rec-${index}`} display="flex" justifyContent="flex-end" mb={2}>
@@ -821,8 +619,6 @@ export default function ChatSystem() {
                   ))
                 }
               </Box>
-
-              {/* Input */}
               <Box p={2} display="flex" alignItems="center" bgcolor="white" borderTop="1px solid #ddd">
                 <input
                   type="file"
