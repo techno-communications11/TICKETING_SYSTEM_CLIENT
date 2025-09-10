@@ -1,4 +1,6 @@
+# ======================
 # Logs
+# ======================
 logs
 *.log
 npm-debug.log*
@@ -7,19 +9,85 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-.env
+# ======================
+# Dependency directories
+# ======================
+node_modules/
 
-# Editor directories and files
+# ======================
+# Build outputs
+# ======================
+dist/
+dist-ssr/
+build/
+out/
+
+# ======================
+# Environment / Config
+# ======================
+.env
+.env.*          # .env.development, .env.production, etc.
+*.local
+*.secret
+
+# ======================
+# OS generated files
+# ======================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.swp
+*.swo
+*.bak
+
+# ======================
+# IDE / Editor files
+# ======================
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.code-workspace
+
+# ======================
+# npm / package manager
+# ======================
+package-lock.json
+yarn.lock
+.pnpm-store/
+.pnpm-debug.log*
+
+# ======================
+# Coverage / Testing
+# ======================
+coverage/
+*.lcov
+
+# ======================
+# Temporary files
+# ======================
+tmp/
+temp/
+*.tmp
+*.cache
+*.pid
+
+# ======================
+# Logs for pm2 / runtime
+# ======================
+pids/
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# ======================
+# Misc
+# ======================
+.vagrant/
+*.iml

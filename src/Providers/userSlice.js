@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-import { getAllUsers } from '../Services/auth.services';
+// import { getAllUsers } from '../Services/auth.services';
 const initialState = {
     user: null,
     loading: false,

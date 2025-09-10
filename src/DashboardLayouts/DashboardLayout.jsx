@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from 'react';
+import React, {  useCallback, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -283,7 +283,7 @@ export default function DashboardLayouts({ children }) {
   const { user } = useSelector((state) => state.currentUser);
   const [currentUserData, setCurrentUserData] = useState(null);
   const [session, setSession] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
 
   const fetchUser = useCallback(async () => {
     const currentDatauser = await user;
@@ -336,13 +336,13 @@ export default function DashboardLayouts({ children }) {
   const allowedNavigation =
     NAVIGATION.filter((item) => item.roles.includes(userRole));
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
   if (!session) {
     return (
       <div
