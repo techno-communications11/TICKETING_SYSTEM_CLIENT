@@ -59,7 +59,8 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets }) {
                 }
             )
             // const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
-            const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
+            // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
+            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
