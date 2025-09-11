@@ -37,7 +37,7 @@ function SuperAdminManageUser() {
             const response = await getAllUsers();
             const response2 = await getAllUser();
             setUserData(response2.data.data);
-            console.log(response2.data.data);
+            // console.log(response2.data.data);
         } catch (error) {
             console.log(error);
         } finally {

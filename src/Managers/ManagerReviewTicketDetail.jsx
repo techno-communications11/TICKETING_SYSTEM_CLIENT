@@ -196,7 +196,7 @@ function ManagerReviewTicketDetail() {
     // }, [requestNotificationPermission])
 
     const handleAssign = async () => {
-        // setAssignLoader(true);
+        setAssignLoader(true);
         // showBrowserNotification("Hello Developer!", "Testing mode");
         if (!assignieName.id) {
             toast.error("Please select an assignee!", { position: "top-right" });

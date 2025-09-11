@@ -81,6 +81,7 @@ import ManagerAgentsDetail from '../Managers/ManagerAgentsDetail';
 // import cookies from "js-cookie";
 import ProtectedRoute from '../Components/ProtectedRoute/ProtectedRoute';
 import PublicRoute from '../Components/PublicRoute/PublicRoute';
+import TestingWhatsappAPi from '../PublicPages/TestingWhatsappAPi';
 // const ProtectedRoute = ({ children, allowedDepartments }) => {
 //     const id = cookies.get("id");
 //     const token = cookies.get("token");
@@ -204,6 +205,7 @@ function Routing() {
                 } />
                 <Route path="/chat-system" element={<Chatsystem />} />
                 <Route path="/chat-system/:id" element={<Chatsystem />} />
+                <Route path="/testing" element={<TestingWhatsappAPi />} />
             </Routes>
         </Router>
     );

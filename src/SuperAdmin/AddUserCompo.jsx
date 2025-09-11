@@ -11,11 +11,12 @@ import { addUsersServices } from '../Services/auth.services';
 
 function AddUserCompo({ fetchAllUserData }) {
     const [open, setOpen] = useState(false);
+
     // "Finance",
     const [departments] = useState([
         "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)",
         "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance",
-        "Sales", "Commission", "Compliance", "AR", "Employee", "Store"
+        "Sales", "Commission", "Compliance", "AR", "Employee", "Store","Managment"
     ]);
 
     const [formData, setFormData] = useState({
