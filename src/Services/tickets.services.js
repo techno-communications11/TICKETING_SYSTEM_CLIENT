@@ -125,3 +125,13 @@ export const reopenTicketServices = async (id, reopenreason) => {
         throw new Error(error.response?.data?.message || "Failed to approve ticket");
     }
 };
+
+
+export const deleteTicketServices = async (ids) => {
+    try {
+        const response = await axios.post(`${API_URL}/tickets/delete-tickets`,{ids});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -39,7 +39,7 @@ function ManagerReviewTicketDetail() {
         settLoading(true)
         try {
             const response = await getalltickets();
-            const fil = response.data.data.filter((data) => data.id === Number(id));
+            const fil = response.data.data.filter((data) => data.id === id);
 
             // const fil = response.data.data.filter((data) => data.id == id);
 

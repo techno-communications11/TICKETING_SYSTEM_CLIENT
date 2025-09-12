@@ -16,6 +16,7 @@ import {
   IconButton,
   CircularProgress,
   Tooltip,
+  Button,
 } from '@mui/material';
 
 import {
@@ -29,9 +30,10 @@ import {
 } from '@mui/icons-material';
 
 import BasicBreadcrumbs from '../Components/BasicBreadcrumbs/BasicBreadcrumbs';
-import { getalltickets } from '../Services/tickets.services';
+import { deleteTicketServices, getalltickets } from '../Services/tickets.services';
 import { useNavigate } from 'react-router-dom';
 import SuperAdminCreateTicket from './SuperAdminCreateTicket';
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 function SuperAdminManageTickets() {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -39,6 +41,7 @@ function SuperAdminManageTickets() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
+  const [deleteLoader, setDeleteLoader] = useState(false)
   const navigate = useNavigate()
 
   const fetchAllTickets = useCallback(async () => {
@@ -90,6 +93,20 @@ function SuperAdminManageTickets() {
     )
   );
 
+  const deletesTicketsBttn = async () => {
+    setDeleteLoader(true);
+    try {
+      const response = await deleteTicketServices(selectedRows);
+      setDeleteLoader(false);
+      fetchAllTickets()
+      setSelectedRows([]);
+      console.log("Response", response)
+    } catch (error) {
+      setDeleteLoader(false);
+      console.log("ERROR", error.message);
+    }
+  }
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredTickets.slice(indexOfFirstRow, indexOfLastRow);
@@ -101,7 +118,19 @@ function SuperAdminManageTickets() {
         <Typography variant="h6" className="mb-3">
           Manage Tickets
         </Typography>
-        <SuperAdminCreateTicket fetchTickets={fetchAllTickets} />
+        <div className="d-flex align-items-center">
+          <IconButton
+            onClick={() => fetchAllTickets()}
+            sx={{
+              '& .MuiSvgIcon-root': {
+                transition: 'color 0.3s ease',
+              }
+            }}
+          >
+            <RefreshIcon />
+          </IconButton>
+          <SuperAdminCreateTicket fetchTickets={fetchAllTickets} />
+        </div>
       </div>
 
       <TextField
@@ -146,12 +175,12 @@ function SuperAdminManageTickets() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => console.log('Delete', selectedRows)} sx={{
+            <IconButton onClick={() => deletesTicketsBttn()} sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
               }
-            }}>
-              <DeleteIcon color="primary" />
+            }} disabled={deleteLoader} >
+              {deleteLoader ? <CircularProgress size={25} /> : <DeleteIcon color="primary" />}
             </IconButton>
           </Tooltip>
 
@@ -197,8 +226,8 @@ function SuperAdminManageTickets() {
         </Box>
       )}
 
-      <Box sx={{ mt: 2, maxHeight: '500px', overflowY: 'auto' }}>
-        <TableContainer component={Paper}>
+      <Box sx={{ mt: 2 }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#6f2da8' }}>
@@ -222,12 +251,13 @@ function SuperAdminManageTickets() {
                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
                 <TableCell sx={{ color: 'white' }}>Solved By</TableCell>
+                <TableCell sx={{ color: 'white' }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {currentRows.length > 0 ? (
                 currentRows.map((ticket) => (
-                  <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >
+                  <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} >
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedRows.includes(ticket.id)}
@@ -241,11 +271,14 @@ function SuperAdminManageTickets() {
                     <TableCell>{ticket.category}</TableCell>
                     <TableCell>{ticket.ticketDescription}</TableCell>
                     <TableCell>{ticket.assignerName || 'N/A'}</TableCell>
+                    <TableCell>
+                      <Button onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >View</Button>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} height={500} align="center">
+                  <TableCell colSpan={9} height={500} align="center">
                     <CircularProgress size={30} />
                   </TableCell>
                 </TableRow>

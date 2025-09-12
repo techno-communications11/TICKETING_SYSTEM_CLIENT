@@ -1,16 +1,20 @@
-import { Button, CircularProgress } from '@mui/material'
+import { Alert, Button, CircularProgress, Snackbar } from '@mui/material'
 import React, { useState } from 'react'
 import { useGlobalState } from '../../Context/context'
 import { getalltickets, ticketProgressServices } from '../../Services/tickets.services';
 import axios from 'axios';
 import cookies from 'js-cookie';
 import { useSocket } from '../../Context/socket.context';
-function ManagerCreateTicketBttn({ handleClose, fetchTickets }) {
+function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) {
     const { ticketData, reset, setTicketErrors } = useGlobalState();
     const id = cookies.get('id');
     // console.log("user Id",id)
     const { socket } = useSocket();
     const [loader, setLoader] = useState(false)
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' ya 'error'
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
     const generatedTicketId = async () => {
         try {
             const response = await getalltickets();
@@ -58,13 +62,14 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets }) {
                     formData: ticketData,
                 }
             )
+
             // const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
             // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
             const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
-            console.log(resposne, "ticketData")
+            // console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
                     ticketId: resposne.data.data._id,
@@ -78,19 +83,34 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets }) {
                     notification_type: "new Ticket open",
                 };
                 socket.emit('notify', notificationObj)
+                setLoader(false);
+                generatedTicketId();
+                reset();
+                handleClose();
+                fetchTickets();
+                generatedTicketId();
+                getCurrentUser()
+                setSnackbarMessage('Student data added successfully!');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
                 // const r = await ticketProgressServices(resposne.data.data._id, "Created");
             }
         } catch (error) {
             setLoader(false)
             console.log("error", error.message)
+            setSnackbarMessage('Error occurred: ' + error.message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
-        finally {
-            setLoader(false);
-            generatedTicketId();
-            reset();
-            handleClose();
-            fetchTickets()
-        }
+        // finally {
+        // setLoader(false);
+        // generatedTicketId();
+        // reset();
+        // handleClose();
+        // fetchTickets();
+        // generatedTicketId();
+        // fetchCUrrentUser()
+        // }
     };
     return (
         <div>
@@ -107,6 +127,20 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets }) {
             >
                 {loader ? <CircularProgress size={25} /> : "Submit Ticket"}
             </Button>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert
+                    severity={snackbarSeverity}
+                    onClose={() => setSnackbarOpen(false)}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }

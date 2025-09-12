@@ -514,7 +514,7 @@ const marketsList = [
 function ManagerTicket() {
     const { department, subDepartment } = decodeToken();
     const id = cookie.get('id');
-    console.log(id)
+    // console.log(id)
     const navigate = useNavigate();
 
     const [allTickets, setAllTickets] = useState([]);

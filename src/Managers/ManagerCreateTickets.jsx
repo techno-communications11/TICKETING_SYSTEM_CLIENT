@@ -40,6 +40,7 @@ function ManagerCreateTickets({ fetchTickets }) {
     const [typeofticket, setTypeofticket] = useState([]);
     const [stores, setStores] = useState([]);
     const [managerData, setManagerData] = useState([]);
+    const [currentDatauser, setCurrentDatauser] = useState([])
     const id = Cookies.get('id')
     // console.log(id)
     // const a = parseInt(Cookies.get('id'))
@@ -51,14 +52,22 @@ function ManagerCreateTickets({ fetchTickets }) {
         "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DEIGO",
         "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
     ]), []);
+    const getCurrentUser = useCallback(async () => {
+        const curremntUsre = await user;
+        setCurrentDatauser(curremntUsre)
+        // console.log("Render User data", curremntUsre)
+    }, [])
+    useEffect(() => {
+        getCurrentUser()
+    }, [getCurrentUser])
     const fetchCUrrentUser = useCallback(async () => {
         try {
-            const currentDatauser = await user;
+            // const currentDatauser = await user;
             const response = await getAllUser();
             // console.log(currentDatauser)
             const filteration = response.data.data.filter((data) => data.id === id)
             setCurrentUserData(filteration)
-            console.log("response", currentDatauser?.id)
+            // console.log("response", currentDatauser?.id)
             setTicketData((prevData) => ({
                 ...prevData,
                 name: currentDatauser?.name || filteration[0]?.name,
@@ -109,10 +118,13 @@ function ManagerCreateTickets({ fetchTickets }) {
                     managerID: filterationData[0].id,
                     managerName: filterationData[0].name,
                     managerName_email: filterationData[0].email,
-                    name: currentUserData[0]?.name || currentUserData[0]?.name,
-                    email: currentUserData[0]?.email || currentUserData[0]?.email,
-                    phone: currentUserData[0]?.phone || currentUserData[0]?.phone,
+                    // name: currentUserData[0]?.name || currentUserData[0]?.name,
+                    // email: currentUserData[0]?.email || currentUserData[0]?.email,
+                    // phone: currentUserData[0]?.phone || currentUserData[0]?.phone,
                     userId: id,
+                    name: currentDatauser?.name,
+                    email: currentDatauser?.email,
+                    phone: currentDatauser?.phone,
                 });
             } else {
                 setTicketData({
@@ -201,6 +213,9 @@ function ManagerCreateTickets({ fetchTickets }) {
                 store_Tech_id: selectedStore.bdi_id || '',
                 store_detail: selectedStore,
                 userId: id,
+                name: currentDatauser?.name,
+                email: currentDatauser?.email,
+                phone: currentDatauser?.phone,
             }));
         } else {
             console.warn('Selected store not found!');
@@ -219,6 +234,9 @@ function ManagerCreateTickets({ fetchTickets }) {
                 category: filterationType[0]?.name,
                 department: filterationType[0]?.department,
                 department_email: filterationType[0]?.department_email,
+                name: currentDatauser?.name,
+                email: currentDatauser?.email,
+                phone: currentDatauser?.phone,
             });
         } catch (error) {
             console.log('error', error.message)
@@ -502,7 +520,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                             borderTop: '1px solid #ccc',
                         }}
                     >
-                        <ManagerCreateTicketBttn handleClose={handleClose} fetchTickets={fetchTickets} />
+                        <ManagerCreateTicketBttn handleClose={handleClose} fetchTickets={fetchTickets} getCurrentUser={getCurrentUser} />
                     </Box>
                 </Box>
             </Modal>
