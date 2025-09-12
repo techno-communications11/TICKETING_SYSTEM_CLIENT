@@ -531,14 +531,14 @@ function ManagerTicket() {
         setLoading(true);
         try {
             const response = await getalltickets();
-            console.log(department)
-            console.log(subDepartment)
+            // console.log(department)
+            // console.log(subDepartment)
             const filtered = response?.data?.data?.filter(ticket =>
                 (ticket.department == department && ticket.subDepartment == subDepartment) ||
                 ticket.managerID == id || ticket.userId == id || (ticket.assignerId == id && ticket.approved == true)
             );
             setAllTickets(filtered || []);
-            console.log(filtered || []);
+            // console.log(filtered || []);
         } catch (error) {
             console.error("Error fetching tickets:", error.message);
         } finally {
@@ -704,7 +704,7 @@ function ManagerTicket() {
                                 </TableRow>
                             ) : (
                                 filteredTickets.map(ticket =>{ 
-                                    console.log(ticket.id)
+                                    // console.log(ticket.id)
                                    return (
                                     <TableRow
                                         key={ticket._id}

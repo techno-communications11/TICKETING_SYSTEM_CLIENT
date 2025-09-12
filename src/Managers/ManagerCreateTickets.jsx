@@ -41,6 +41,7 @@ function ManagerCreateTickets({ fetchTickets }) {
     const [stores, setStores] = useState([]);
     const [managerData, setManagerData] = useState([]);
     const id = Cookies.get('id')
+    // console.log(id)
     // const a = parseInt(Cookies.get('id'))
     // console.log("user", user)
     // console.log("id", id)
@@ -57,7 +58,7 @@ function ManagerCreateTickets({ fetchTickets }) {
             // console.log(currentDatauser)
             const filteration = response.data.data.filter((data) => data.id === id)
             setCurrentUserData(filteration)
-            // console.log("response", filteration[0]?.id)
+            console.log("response", currentDatauser?.id)
             setTicketData((prevData) => ({
                 ...prevData,
                 name: currentDatauser?.name || filteration[0]?.name,
@@ -66,7 +67,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                 // name: filteration[0]?.name,
                 // email: filteration[0]?.email,
                 // phone: filteration[0]?.phone,
-                userId: id,
+                userId: id || currentDatauser?.id,
                 creatordepartment: filteration[0]?.subDepartment,
             }));
         } catch (error) {
