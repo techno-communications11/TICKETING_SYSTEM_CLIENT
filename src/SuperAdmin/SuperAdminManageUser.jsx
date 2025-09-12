@@ -15,6 +15,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddUserCompo from './AddUserCompo';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import EditUserCompo from '../SuperAdminComponent/EditUserCompo';
+import ExportUsers from '../SuperAdminComponent/ExportUsers';
 function SuperAdminManageUser() {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedData, setSelectedData] = useState(null);
@@ -22,6 +24,7 @@ function SuperAdminManageUser() {
     const [searchTerm, setSearchTerm] = useState("");
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [departmentFilter, setDepartmentFilter] = useState("");
 
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [openResetModal, setOpenResetModal] = useState(false);
@@ -31,6 +34,14 @@ function SuperAdminManageUser() {
     const [deleteLoader, setDeleteLoader] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [departments] = useState([
+        "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager",
+        "District Manager", "Finance (GL)", "Finance (GL) EXECUTIVE", "Finance EXECUTIVE", "Finance AR", "SUPERVISOR",
+        "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance",
+        "Sales", "Commission", "Compliance", "AR", "Employee", "Store", "Management",
+        "SCM", "QA", "Vigilance", "MIS", "CMG", "Data Analytics"
+    ]);
+
     const fetchAllUserData = useCallback(async () => {
         setLoading(true)
         try {
@@ -77,10 +88,6 @@ function SuperAdminManageUser() {
         }
     };
 
-    const handleEdit = (user) => {
-        console.log("Edit user:", user);
-    };
-
     const handlePermissions = (user) => {
         console.log("Manage permissions for:", user);
     };
@@ -95,7 +102,6 @@ function SuperAdminManageUser() {
         setDeleteLoader(true)
         try {
             const response = await deleteUserServices(deleteId);
-            console.log("User deleted successfully:", response);
             fetchAllUserData();
         } catch (error) {
             console.log("Error deleting user:", error);
@@ -119,12 +125,21 @@ function SuperAdminManageUser() {
         setPage(0);
     };
 
-    const paginatedUsers = userData
-        .filter(user =>
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    // const paginatedUsers = userData
+    //     .filter(user =>
+    //         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         user.email.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    //         (departmentFilter === "" || user.department === departmentFilter)
+    //     )
+    //     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const filteredUsers = userData.filter(user =>
+        (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (departmentFilter === "" || user.department === departmentFilter)
+    );
+
+    const paginatedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
 
     return (
         <div className="container">
@@ -160,11 +175,13 @@ function SuperAdminManageUser() {
                         />
                         <FormControl size="small" sx={{ minWidth: 200 }}>
                             <InputLabel>Department</InputLabel>
-                            <Select label="Department">
+                            <Select value={departmentFilter}
+                                onChange={(e) => setDepartmentFilter(e.target.value)}
+                                label="Department">
                                 <MenuItem value="">All</MenuItem>
-                                <MenuItem value="IT">IT</MenuItem>
-                                <MenuItem value="Admin">Admin</MenuItem>
-                                <MenuItem value="Inventory">Inventory</MenuItem>
+                                {departments.map((dept, index) => (
+                                    <MenuItem key={index} value={dept}>{dept}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                         <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -182,21 +199,23 @@ function SuperAdminManageUser() {
                             </Select>
                         </FormControl>
                         <AddUserCompo fetchAllUserData={fetchAllUserData} />
+                        <ExportUsers userData={userData}/>
                     </div>
                 </div>
             </div>
             <Box sx={{ mt: 3 }}>
                 {selectedRows.length > 0 && selectedRows.length === 1 && (
                     <div className="d-flex align-items-center justify-content-between my-3 p-3 bg-light border rounded">
-                        <div>
-                            <IconButton onClick={() => handleEdit(selectedData)} sx={{
+                        <div className='d-flex'>
+                            {/* <IconButton onClick={() => handleEdit(selectedData)} sx={{
                                 '& .MuiSvgIcon-root': {
                                     transition: 'color 0.3s ease',
                                 }
                             }}>
                                 <EditIcon color='black' />
-                            </IconButton>
-                            <IconButton onClick={() => handleDelete(selectedData._id)} sx={{
+                            </IconButton> */}
+                            <EditUserCompo selectedRows={selectedRows} fetchAllUserData={fetchAllUserData} />
+                            <IconButton onClick={() => handleDelete(selectedData.id)} sx={{
                                 '& .MuiSvgIcon-root': {
                                     transition: 'color 0.3s ease',
                                 }
@@ -336,8 +355,8 @@ function SuperAdminManageUser() {
                                             <TableRow key={index} hover role="checkbox" tabIndex={-1}>
                                                 <TableCell padding="checkbox">
                                                     <Checkbox
-                                                        checked={selectedRows.includes(user._id)}
-                                                        onChange={() => handleRowSelect(user._id)}
+                                                        checked={selectedRows.includes(user.id)}
+                                                        onChange={() => handleRowSelect(user.id)}
                                                     />
                                                 </TableCell>
                                                 <TableCell>{user.name}</TableCell>

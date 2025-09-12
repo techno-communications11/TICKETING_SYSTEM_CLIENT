@@ -79,4 +79,13 @@ export const userUsedInDesktopServices = async (id) => {
 
     }
 }
+export const userUpdatedServices = async (id, data) => {
+    try {
+        // const response = await axios.post(`http://localhost:5000/auth/user-update`, { id, data });
+        const response = await axios.post(`${API_URL}/auth/user-update`, { id, data });
+        return response
+    } catch (error) {
+
+    }
+}
 

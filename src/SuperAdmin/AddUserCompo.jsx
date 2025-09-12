@@ -14,9 +14,10 @@ function AddUserCompo({ fetchAllUserData }) {
 
     // "Finance",
     const [departments] = useState([
-        "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)",
-        "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance",
-        "Sales", "Commission", "Compliance", "AR", "Employee", "Store","Managment"
+        "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager",
+        "District Manager", "Finance (GL)", "Finance (GL) EXECUTIVE", "Finance EXECUTIVE", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics"
     ]);
 
     const [formData, setFormData] = useState({
@@ -186,7 +187,7 @@ function AddUserCompo({ fetchAllUserData }) {
             setLoading(false);
         }
     };
-    console.log(selectedStores, 'selectedStores');
+    // console.log(selectedStores, 'selectedStores');
     return (
         <div>
             <Button variant='contained' onClick={handleOpen}>Add User</Button>
@@ -213,7 +214,8 @@ function AddUserCompo({ fetchAllUserData }) {
                             <FormHelperText>{errors.department}</FormHelperText>
                         </FormControl>
 
-                        {["Admin", "Finance (GL)", "HR", "Finance", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance"].includes(formData.department) && (
+                        {/* {["Admin", "Finance (GL)", "HR", "Finance", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance"].includes(formData.department) && ( */}
+                        {departments.includes(formData.department) && (
                             <FormControl fullWidth error={!!errors.role}>
                                 <InputLabel>Role</InputLabel>
                                 <Select name="role" value={formData.role} onChange={handleChange}>

@@ -10,7 +10,6 @@ import {
   MenuItem,
   Card,
   CardContent,
-  Button,
   Paper,
   keyframes,
   Skeleton,
@@ -69,23 +68,15 @@ export default function ChatSystem() {
     );
   });
 
-  // const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [notifications, setNotifications] = useState([]); // in-portal notifications
-
   const [isTabActive, setIsTabActive] = useState(true);
-  // console.log(id)
   const fetchGetAllUsersData = useCallback(async () => {
     setUsersLoading(true)
     try {
       const responseUsers = await getAllUser();
       const filterationData = responseUsers.data.data.filter((data) => data.id != UserId)
-      // const filterationData = responseUsers.data.data.filter(
-      //   (data) =>
-      //     data.id !== UserId && // apna UserId remove karo
-      //     data.email !== "testing@gmail.com" && // testing user hide
-      //     data.email !== "superadmin@gmail.com" // superadmin user hide
-      // );
+
       setAllUsersData(filterationData)
       setUsersLoading(false)
     } catch (error) {
@@ -93,7 +84,6 @@ export default function ChatSystem() {
       console.log("ERROR", error.message);
     }
   }, [])
-  // console.log(onlineUsers)
   useEffect(() => {
     fetchGetAllUsersData();
   }, [fetchGetAllUsersData])
@@ -131,7 +121,6 @@ export default function ChatSystem() {
       console.log("✅ Connected to server");
       socket.emit("register", UserId);
     });
-
     socket.on("connect_error", (error) => {
       console.error("❌ Connection error:", error.message);
     });
