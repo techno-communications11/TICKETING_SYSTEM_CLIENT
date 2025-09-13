@@ -46,7 +46,6 @@ function SuperAdminTicket() {
                         <FormControl size="small" sx={{ minWidth: 120 }}>
                             <InputLabel>Priority</InputLabel>
                             <Select
-                                // value={priority}
                                 label="Priority"
                             // onChange={(e) => setPriority(e.target.value)}
                             >

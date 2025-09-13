@@ -42,13 +42,17 @@ function SuperAdminManageTickets() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [deleteLoader, setDeleteLoader] = useState(false)
+  const [loader, setLoader] = useState(true);
   const navigate = useNavigate()
 
   const fetchAllTickets = useCallback(async () => {
+    setLoader(true);
     try {
       const response = await getalltickets();
       setTickets(response.data.data);
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       console.error('Error fetching tickets:', error);
     }
   }, []);
@@ -96,11 +100,11 @@ function SuperAdminManageTickets() {
   const deletesTicketsBttn = async () => {
     setDeleteLoader(true);
     try {
-      const response = await deleteTicketServices(selectedRows);
+      await deleteTicketServices(selectedRows);
       setDeleteLoader(false);
       fetchAllTickets()
       setSelectedRows([]);
-      console.log("Response", response)
+      // console.log("Response", response)
     } catch (error) {
       setDeleteLoader(false);
       console.log("ERROR", error.message);
@@ -255,33 +259,41 @@ function SuperAdminManageTickets() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {currentRows.length > 0 ? (
-                currentRows.map((ticket) => (
-                  <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedRows.includes(ticket.id)}
-                        onChange={() => handleRowSelect(ticket.id)}
-                      />
-                    </TableCell>
-                    <TableCell>{ticket.ticketId}</TableCell>
-                    <TableCell>{ticket.priority}</TableCell>
-                    <TableCell>{ticket.name}</TableCell>
-                    <TableCell>{ticket.status}</TableCell>
-                    <TableCell>{ticket.category}</TableCell>
-                    <TableCell>{ticket.ticketDescription}</TableCell>
-                    <TableCell>{ticket.assignerName || 'N/A'}</TableCell>
-                    <TableCell>
-                      <Button onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >View</Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
+              {loader ? (
                 <TableRow>
                   <TableCell colSpan={9} height={500} align="center">
                     <CircularProgress size={30} />
                   </TableCell>
                 </TableRow>
+              ):
+                currentRows.length > 0 ? (
+                currentRows.map((ticket) => (
+              <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} >
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={selectedRows.includes(ticket.id)}
+                    onChange={() => handleRowSelect(ticket.id)}
+                  />
+                </TableCell>
+                <TableCell>{ticket.ticketId}</TableCell>
+                <TableCell>{ticket.priority}</TableCell>
+                <TableCell>{ticket.name}</TableCell>
+                <TableCell>{ticket.status}</TableCell>
+                <TableCell>{ticket.category}</TableCell>
+                <TableCell>{ticket.ticketDescription}</TableCell>
+                <TableCell>{ticket.assignerName || 'N/A'}</TableCell>
+                <TableCell>
+                  <Button onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >View</Button>
+                </TableCell>
+              </TableRow>
+              ))
+              ) : (
+              <TableRow>
+                <TableCell colSpan={9} height={500} align="center">
+                  Data Not Found
+                </TableCell>
+              </TableRow>
+                
               )}
             </TableBody>
           </Table>

@@ -91,6 +91,9 @@ export default function ChatSystem() {
     if (id && allUsersData.length > 0) {
       const user = allUsersData.filter((item) => item.id == id);
       const fetchMessages = async () => {
+        // console.log(user[0].id,)
+        // console.log(user)
+        // console.log(UserId)
         setMessageLoading(true);
         try {
           const response = await getAllMessageServices(user[0].id, UserId);
@@ -106,39 +109,41 @@ export default function ChatSystem() {
       fetchMessages();
     }
   }, [id, allUsersData, currentUserId]);
-
-
+  // Refs to hold latest values (so socket handlers read fresh values)
+  const allUsersRef = useRef(allUsersData);
+  const isTabActiveRef = useRef(isTabActive);
+  useEffect(() => { allUsersRef.current = allUsersData; }, [allUsersData]);
+  useEffect(() => { isTabActiveRef.current = isTabActive; }, [isTabActive]);
+  // 3) Robust socket listeners (only when socket changes)
   useEffect(() => {
     if (!socket) return;
 
-    // Track tab focus/blur
-    const handleFocus = () => setIsTabActive(true);
-    const handleBlur = () => setIsTabActive(false);
-    window.addEventListener("focus", handleFocus);
-    window.addEventListener("blur", handleBlur);
+    // helper to convert ids to string
+    const toStr = (v) => String(v);
 
-    socket.on("connect", () => {
-      console.log("✅ Connected to server");
+    // connection handlers
+    const onConnect = () => {
+      console.log("✅ Connected to server (client side)");
       socket.emit("register", UserId);
-    });
-    socket.on("connect_error", (error) => {
-      console.error("❌ Connection error:", error.message);
-    });
+    };
+    const onConnectError = (err) => {
+      console.error("❌ Connection error:", err?.message || err);
+    };
 
-    // Receive new chat messages
-    socket.on("chat message", (msg) => {
-      // console.log("📩 New message received:", msg);
+    const onChatMessage = (msg) => {
+      // console.log("📩 chat message received:", msg);
+
+      // Always append using functional update to avoid stale state
       setMessages((prev) => [...prev, msg]);
 
-      // Show browser + portal notification if it's NOT my own message
-      if (msg.receiver == UserId) {
-        const senderUser = allUsersData.find((u) => u.id == msg.sender);
+      // Only show notif if it's for me (normalize types)
+      if (toStr(msg.receiver) === toStr(UserId)) {
+        const senderUser = (allUsersRef.current || []).find((u) => String(u.id) === String(msg.sender));
         const senderName = senderUser ? senderUser.name : "Unknown";
         const dept = senderUser ? senderUser.department : "";
-
         const notifyText = msg.content || "📷 Media message received";
 
-        if (!isTabActive) {
+        if (!isTabActiveRef.current) {
           showBrowserNotification(senderName, `${notifyText} (${dept})`);
         }
 
@@ -147,16 +152,15 @@ export default function ChatSystem() {
           { id: Date.now(), senderName, dept, text: notifyText },
         ]);
       }
-    });
+    };
 
-    // Receive system notifications (from backend emit)
-    socket.on("notification", ({ sender, receiver, content }) => {
-      if (receiver == UserId) {
-        const senderUser = allUsersData.find((u) => u.id == sender);
+    const onNotification = ({ sender, receiver, content }) => {
+      if (String(receiver) === String(UserId)) {
+        const senderUser = (allUsersRef.current || []).find((u) => String(u.id) === String(sender));
         const senderName = senderUser ? senderUser.name : "Unknown";
         const dept = senderUser ? senderUser.department : "";
 
-        if (!isTabActive) {
+        if (!isTabActiveRef.current) {
           showBrowserNotification(senderName, content);
         }
 
@@ -165,25 +169,115 @@ export default function ChatSystem() {
           { id: Date.now(), senderName, dept, text: content },
         ]);
       }
-    });
-
-    socket.emit("getOnlineUsers");
-    socket.on("updateOnlineUsers", (users) => {
-      setOnlineUsers(users);
-    });
-
-    return () => {
-      if (socket) {
-        socket.off("connect");
-        socket.off("connect_error");
-        socket.off("chat message");
-        socket.off("notification");
-        socket.off("updateOnlineUsers");
-      }
-      window.removeEventListener("focus", handleFocus);
-      window.removeEventListener("blur", handleBlur);
     };
-  }, [socket, UserId, allUsersData, isTabActive]);
+
+    const onUpdateOnlineUsers = (users) => {
+      // normalize array to strings
+      setOnlineUsers((users || []).map((u) => String(u)));
+    };
+
+    // attach
+    socket.on("connect", onConnect);
+    socket.on("connect_error", onConnectError);
+    socket.on("chat message", onChatMessage);
+    socket.on("notification", onNotification);
+    socket.on("updateOnlineUsers", onUpdateOnlineUsers);
+
+    // explicitly ask server for online users (if your server supports)
+    socket.emit("getOnlineUsers");
+
+    // debug: log disconnect reasons
+    socket.on("disconnect", (reason) => {
+      console.warn("Socket disconnected:", reason);
+    });
+
+    // cleanup
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("connect_error", onConnectError);
+      socket.off("chat message", onChatMessage);
+      socket.off("notification", onNotification);
+      socket.off("updateOnlineUsers", onUpdateOnlineUsers);
+      socket.off("disconnect");
+    };
+  }, [socket, UserId]); // only re-run if socket or UserId changes
+
+  // useEffect(() => {
+  //   if (!socket) return;
+
+  //   // Track tab focus/blur
+  //   const handleFocus = () => setIsTabActive(true);
+  //   const handleBlur = () => setIsTabActive(false);
+  //   window.addEventListener("focus", handleFocus);
+  //   window.addEventListener("blur", handleBlur);
+
+  //   socket.on("connect", () => {
+  //     console.log("✅ Connected to server");
+  //     socket.emit("register", UserId);
+  //   });
+  //   socket.on("connect_error", (error) => {
+  //     console.error("❌ Connection error:", error.message);
+  //   });
+
+  //   // Receive new chat messages
+  //   socket.on("chat message", (msg) => {
+  //     // console.log("📩 New message received:", msg);
+  //     setMessages((prev) => [...prev, msg]);
+
+  //     // Show browser + portal notification if it's NOT my own message
+  //     if (msg.receiver == UserId) {
+  //       const senderUser = allUsersData.find((u) => u.id == msg.sender);
+  //       const senderName = senderUser ? senderUser.name : "Unknown";
+  //       const dept = senderUser ? senderUser.department : "";
+
+  //       const notifyText = msg.content || "📷 Media message received";
+
+  //       if (!isTabActive) {
+  //         showBrowserNotification(senderName, `${notifyText} (${dept})`);
+  //       }
+
+  //       setNotifications((prev) => [
+  //         ...prev,
+  //         { id: Date.now(), senderName, dept, text: notifyText },
+  //       ]);
+  //     }
+  //   });
+
+  //   // Receive system notifications (from backend emit)
+  //   socket.on("notification", ({ sender, receiver, content }) => {
+  //     if (receiver == UserId) {
+  //       const senderUser = allUsersData.find((u) => u.id == sender);
+  //       const senderName = senderUser ? senderUser.name : "Unknown";
+  //       const dept = senderUser ? senderUser.department : "";
+
+  //       if (!isTabActive) {
+  //         showBrowserNotification(senderName, content);
+  //       }
+
+  //       setNotifications((prev) => [
+  //         ...prev,
+  //         { id: Date.now(), senderName, dept, text: content },
+  //       ]);
+  //     }
+  //   });
+
+  //   socket.emit("getOnlineUsers");
+  //   socket.on("updateOnlineUsers", (users) => {
+  //     setOnlineUsers(users);
+  //   });
+
+  //   return () => {
+  //     if (socket) {
+  //       socket.off("connect");
+  //       socket.off("connect_error");
+  //       socket.off("chat message");
+  //       socket.off("notification");
+  //       socket.off("updateOnlineUsers");
+  //     }
+  //     window.removeEventListener("focus", handleFocus);
+  //     window.removeEventListener("blur", handleBlur);
+  //   };
+  // }, [socket, UserId, allUsersData, isTabActive]);
 
   // Browser notification
   const showBrowserNotification = (name, message) => {
@@ -208,20 +302,26 @@ export default function ChatSystem() {
     }
   }, [messages, selectedUser, recordings]);
 
+  // 4) When sending a message, use functional update to messages
   const handleSend = () => {
     if (inputValue.trim() !== "") {
-      // console.log(inputValue)
       const messageData = {
         sender: UserId,
         receiver: id,
         content: inputValue,
         image: null,
       };
-      // console.log(messageData)
-      // console.log("id", id)
-      socket.emit("chat message", messageData);
-      setMessages([
-        ...messages,
+
+      // emit to server
+      if (socket && socket.connected) {
+        socket.emit("chat message", messageData);
+      } else {
+        console.warn("Socket not connected — message will be added locally only");
+      }
+
+      // add to UI safely
+      setMessages((prev) => [
+        ...prev,
         {
           id: Date.now(),
           sender: UserId,
@@ -233,6 +333,32 @@ export default function ChatSystem() {
       setInputValue("");
     }
   };
+
+  // const handleSend = () => {
+  //   if (inputValue.trim() !== "") {
+  //     // console.log(inputValue)
+  //     const messageData = {
+  //       sender: UserId,
+  //       receiver: id,
+  //       content: inputValue,
+  //       image: null,
+  //     };
+  //     // console.log(messageData)
+  //     // console.log("id", id)
+  //     socket.emit("chat message", messageData);
+  //     setMessages([
+  //       ...messages,
+  //       {
+  //         id: Date.now(),
+  //         sender: UserId,
+  //         content: inputValue,
+  //         type: "text",
+  //         timestamp: Date.now(),
+  //       },
+  //     ]);
+  //     setInputValue("");
+  //   }
+  // };
 
   // Menu
   const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
