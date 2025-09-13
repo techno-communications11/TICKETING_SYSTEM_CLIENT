@@ -60,7 +60,22 @@ function ManagerReviewTicketDetail() {
         const fetchUsers = async () => {
             try {
                 const getUsers = await getAllUser();
-                const filteredUser = getUsers.data.data.filter((data) => data.department === department);
+                // const filteredUser = getUsers.data.data.filter((data) => data.department === department);
+                const filteredUser = getUsers.data.data.filter((data) => {
+                    // Department check
+                    const isSameDept = data.department === department;
+
+                    // Email check (exclude @gmail.com)
+                    const isNotGmail = !data.email?.toLowerCase().includes("@gmail.com");
+
+                    // Name check (exclude test/test tes/testing types)
+                    const name = data.name?.toLowerCase() || "";
+                    const isNotTestName =
+                        !name.includes("test") && !name.includes("testing") && !name.includes("test tes");
+
+                    return isSameDept && isNotGmail && isNotTestName;
+                });
+
                 setAssignUsers(filteredUser);
             } catch (error) {
                 console.error("Error fetching users:", error);

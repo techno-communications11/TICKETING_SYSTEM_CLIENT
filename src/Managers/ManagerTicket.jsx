@@ -538,12 +538,15 @@ function ManagerTicket() {
                 ticket.managerID == id || ticket.userId == id || (ticket.assignerId == id && ticket.approved == true)
             );
             setAllTickets(filtered || []);
+            setLoading(false);
             // console.log(filtered || []);
         } catch (error) {
-            console.error("Error fetching tickets:", error.message);
-        } finally {
             setLoading(false);
+            console.error("Error fetching tickets:", error.message);
         }
+        //  finally {
+        //     setLoading(false);
+        // }
     }, [department, subDepartment, id]);
 
     useEffect(() => {
@@ -703,24 +706,25 @@ function ManagerTicket() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                filteredTickets.map(ticket =>{ 
+                                filteredTickets.map(ticket => {
                                     // console.log(ticket.id)
-                                   return (
-                                    <TableRow
-                                        key={ticket._id}
-                                        hover
-                                        onClick={() => handleReviewTicket(ticket.id)}
-                                        sx={{ cursor: 'pointer' }}
-                                    >
-                                        <TableCell>{ticket.ticketId}</TableCell>
-                                        <TableCell>{ticket.priority}</TableCell>
-                                        <TableCell>{ticket.name}</TableCell>
-                                        <TableCell>{ticket.status}</TableCell>
-                                        <TableCell>{ticket.category}</TableCell>
-                                        <TableCell>{ticket.ticketDescription}</TableCell>
-                                        <TableCell>{ticket.assignerName || "N/A"}</TableCell>
-                                    </TableRow>
-                                )})
+                                    return (
+                                        <TableRow
+                                            key={ticket._id}
+                                            hover
+                                            onClick={() => handleReviewTicket(ticket.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <TableCell>{ticket.ticketId}</TableCell>
+                                            <TableCell>{ticket.priority}</TableCell>
+                                            <TableCell>{ticket.name}</TableCell>
+                                            <TableCell>{ticket.status}</TableCell>
+                                            <TableCell>{ticket.category}</TableCell>
+                                            <TableCell>{ticket.ticketDescription}</TableCell>
+                                            <TableCell>{ticket.assignerName || "N/A"}</TableCell>
+                                        </TableRow>
+                                    )
+                                })
                             )}
                         </TableBody>
                     </Table>
