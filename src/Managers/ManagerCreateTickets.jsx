@@ -97,7 +97,8 @@ function ManagerCreateTickets({ fetchTickets }) {
     const fetchCategory = useCallback(async () => {
         try {
             const resposne = await getAllProblemCategory();
-            const filteration = resposne.data.data.filter((data) => data.department === currentUserData[0]?.department)
+            const filteration = resposne.data.data;
+            // const filteration = resposne.data.data.filter((data) => data.department === currentUserData[0]?.department)
             setTypeofticket(filteration)
             // console.log("currentUserData", currentUserData[0]?.department)
             // console.log(resposne.data.data)
@@ -506,7 +507,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
-                                    <UploadFiles />
+                                    <UploadFiles setTicketData={setTicketData}/>
                                 </div>
 
                             </div>

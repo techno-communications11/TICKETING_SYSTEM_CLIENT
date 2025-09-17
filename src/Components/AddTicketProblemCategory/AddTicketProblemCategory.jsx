@@ -21,21 +21,46 @@ function AddTicketProblemCategory({ fetchCategory }) {
   const [loader, setLoader] = useState(false);
 
   const departments = [
-    { name: 'HR', email: 'hr@example.com' },
-    { name: 'Finance (GL)', email: 'finance@example.com' },
-    { name: 'IT', email: 'it@example.com' },
     { name: 'Admin', email: 'admin@example.com' },
-    { name: 'SuperAdmin', email: 'superadmin@example.com' },
-    { name: 'Market Manager', email: 'marketmanager@example.com' },
-    { name: 'District Manager', email: 'districtmanager@example.com' },
-    { name: 'Employee', email: 'employee@example.com' },
-    { name: 'Software India', email: 'softwareindia@example.com' },
-    { name: 'Internal', email: 'internal@example.com' },
-    { name: 'Reporting', email: 'reporting@example.com' },
-    { name: 'Inventory', email: 'inventory@example.com' },
-    { name: 'Maintenance', email: 'maintenance@example.com' },
-    { name: 'Commission', email: 'commission@example.com' }
+    { name: 'Management', email: 'superadmin@example.com' },
+
+    { name: 'Compliance', email: 'compliance@techno-communications.com' },
+    { name: 'Supervisor', email: 'commission@example.com' },
+    { name: 'Vigilance', email: 'commission@example.com' },
+
+    { name: 'Finance - GL', email: 'finance@example.com' },
+    { name: 'Finance - AR', email: 'finance@example.com' },
+
+    { name: 'HR', email: 'HR@techno-communications.com' },
+    { name: 'IT', email: 'it@techno-communications.com' },
+
+    { name: 'Inventory', email: 'reporting@techno-communications.com' },
+    { name: 'QA', email: 'reporting@techno-communications.com' },
+    { name: 'Reporting', email: 'reporting@example.com' }
   ];
+
+  // const departments = [
+  //   { name: 'Admin', email: 'admin@example.com' },
+  //   { name: 'Compliance', email: 'commission@example.com' },
+  //   { name: 'Finance - GL', email: 'finance@example.com' },
+  //   { name: 'Finance - AR', email: 'finance@example.com' },
+  //   { name: 'HR', email: 'hr@example.com' },
+  //   { name: 'Inventory', email: 'inventory@example.com' },
+  //   { name: 'Management', email: 'superadmin@example.com' },
+  //   { name: 'QA', email: 'qa@example.com' },
+  //   { name: 'Reporting', email: 'reporting@example.com' },
+  //   { name: 'Supervisor', email: 'commission@example.com' },
+  //   { name: 'Vigilance', email: 'commission@example.com' },
+  //   { name: 'IT', email: 'hr@example.com' },
+  // ];
+  // // { name: 'Market Manager', email: 'marketmanager@example.com' },
+  // // { name: 'District Manager', email: 'districtmanager@example.com' },
+  // // { name: 'Employee', email: 'employee@example.com' },
+  // { name: 'Software India', email: 'softwareindia@example.com' },
+  // { name: 'Finance (AR)', email: 'finance@example.com' },
+  // // { name: 'Internal', email: 'internal@example.com' },
+  // { name: 'Maintenance', email: 'maintenance@example.com' },
+  // // { name: 'Commission', email: 'commission@example.com' }
 
 
   const handleCategoryProblems = (event) => {

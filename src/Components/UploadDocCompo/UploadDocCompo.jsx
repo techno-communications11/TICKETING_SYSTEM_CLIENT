@@ -6,6 +6,7 @@ import { Autoplay, A11y } from 'swiper/modules';
 import { Skeleton } from '@mui/material';
 
 import 'swiper/css';
+import { Image } from 'antd';
 
 function UploadDocCompo({ images }) {
     const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ function UploadDocCompo({ images }) {
                                 images.map((img, index) => (
                                     <SwiperSlide key={index}>
                                         <div className="slide-content text-center">
-                                            <img
+                                            <Image
                                                 src={img}
                                                 className="img-fluid rounded-3 slider-img h-100"
                                                 alt={`Slide ${index + 1}`}

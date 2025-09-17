@@ -17,6 +17,7 @@ import { getAllStores } from '../Services/stores.services';
 import { useSocket } from '../Context/socket.context';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../Context/context';
+import ManagerCreateTickets from './ManagerCreateTickets';
 
 function ManagerHome() {
   const { filterationsData, setFilterationsData } = useGlobalState();
@@ -170,6 +171,7 @@ function ManagerHome() {
           </FormControl>
 
           <Button variant='contained' onClick={fetchTickets}>Refresh</Button>
+          <ManagerCreateTickets fetchTickets={fetchTickets} />
         </div>
       </div>
 

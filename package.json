@@ -23,6 +23,7 @@
     "apexcharts": "^4.7.0",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.5",
+    "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.9",
     "dayjs": "^1.11.13",
     "exceljs": "^4.4.0",
