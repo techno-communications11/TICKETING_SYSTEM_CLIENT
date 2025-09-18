@@ -14,6 +14,7 @@ import { addNotificationsServices } from '../Services/notifications.services';
 import { getAllUser, getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import axios from 'axios';
+import SuperAdminComments from './SuperAdminComments';
 function SuperAdminReviewTickets() {
     const [comments, setComments] = useState([
         { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
@@ -68,31 +69,31 @@ function SuperAdminReviewTickets() {
 
     useEffect(() => {
         if (socket && detailTicket?.length > 0) {
-            if (detailTicket[0].status === "pending") {
-                updateTicketStatus(detailTicket[0].id)
-                    .then(async (response) => {
-                        try {
-                            // const resposne = await ticketProgressServices(detailTicket[0]?.id, "Review Ticket");
-                        } catch (error) {
-                            console.log("ERROR FROM UPDATING TICKET PROGRESS", error.message)
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Failed to update ticket status:", error);
-                    });
-                const notificationObj = {
-                    ticketId: detailTicket[0]?.id,
-                    ticket_Id: detailTicket[0]?.ticketId,
-                    recipientId: "",
-                    manager: detailTicket[0]?.marketManager_id,
-                    marketmanager: detailTicket[0]?.marketManager_id,
-                    distrcitmanager: detailTicket[0]?.districtManager_id,
-                    senderId: userId,
-                    notification_type: "ticket review",
-                };
-                socket.emit('notify', notificationObj)
-                filteredTickets();
-            }
+            // if (detailTicket[0].status === "pending") {
+            //     updateTicketStatus(detailTicket[0].id)
+            //         .then(async (response) => {
+            //             try {
+            //                 // const resposne = await ticketProgressServices(detailTicket[0]?.id, "Review Ticket");
+            //             } catch (error) {
+            //                 console.log("ERROR FROM UPDATING TICKET PROGRESS", error.message)
+            //             }
+            //         })
+            //         .catch(error => {
+            //             console.error("Failed to update ticket status:", error);
+            //         });
+            //     const notificationObj = {
+            //         ticketId: detailTicket[0]?.id,
+            //         ticket_Id: detailTicket[0]?.ticketId,
+            //         recipientId: "",
+            //         manager: detailTicket[0]?.marketManager_id,
+            //         marketmanager: detailTicket[0]?.marketManager_id,
+            //         distrcitmanager: detailTicket[0]?.districtManager_id,
+            //         senderId: userId,
+            //         notification_type: "ticket review",
+            //     };
+            //     socket.emit('notify', notificationObj)
+            //     filteredTickets();
+            // }
             const handleCloseTicket = (ticket) => {
                 if (ticket.managerId && ticket.managerId === id) {
                     toast.success(`🎉 Ticket #${ticket.ticketId} has been closed!`);
@@ -389,24 +390,10 @@ function SuperAdminReviewTickets() {
             </div>
             <div className="row">
                 <div className="col-md-6">
-                    <div className="mt-4">
+                    <SuperAdminComments ticketId={detailTicket[0]?.id} handleChangeStatus={handleChangeStatus} detailTicket={detailTicket} />
+                    {/* <div className="mt-4">
                         <Typography variant="h5" gutterBottom>Comments</Typography>
                         <List className="mb-3 py-3 px-3 border border-dark rounded-3 bg-white" style={{ height: "400px", overflow: "auto" }}>
-                            {/* {comments.map((comment, index) => (
-                                <ListItem key={index} alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
-                                    <Avatar>{comment.user.charAt(0)}</Avatar>
-                                    <ListItemText
-                                        className="ms-3"
-                                        primary={<Typography variant="subtitle2" fontWeight="bold">{comment.user}</Typography>}
-                                        secondary={
-                                            <>
-                                                <Typography variant="body2" style={{ background: "#f4f6f8", padding: "8px", borderRadius: "10px" }}>{comment.text}</Typography>
-                                                <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginTop: "5px" }}>{comment.time}</Typography>
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                            ))} */}
                             <ListItem alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
                                 <ListItemText
                                     className="ms-3"
@@ -429,7 +416,22 @@ function SuperAdminReviewTickets() {
                                 setNote("");
                             }}>Submit Comment</Button>
                         </div>
-                    </div>
+                    </div> */}
+                    {/* {comments.map((comment, index) => (
+                                    <ListItem key={index} alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
+                                        <Avatar>{comment.user.charAt(0)}</Avatar>
+                                        <ListItemText
+                                            className="ms-3"
+                                            primary={<Typography variant="subtitle2" fontWeight="bold">{comment.user}</Typography>}
+                                            secondary={
+                                                <>
+                                                    <Typography variant="body2" style={{ background: "#f4f6f8", padding: "8px", borderRadius: "10px" }}>{comment.text}</Typography>
+                                                    <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginTop: "5px" }}>{comment.time}</Typography>
+                                                </>
+                                            }
+                                        />
+                                    </ListItem>
+                                ))} */}
                 </div>
             </div>
         </div>

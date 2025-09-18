@@ -41,7 +41,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
     const [managerData, setManagerData] = useState([]);
     const id = Cookies.get('id')
     const MARKETS = useMemo(() => ([
-        "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
+        "ALL MARKETS", "HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
         "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE",
         "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO",
         "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
@@ -65,7 +65,16 @@ function SuperAdminCreateTicket({ fetchTickets }) {
             console.log("error", error.message)
         }
     }, [id]);
-
+    const handleDepartmentChange = (event) => {
+        const selectedManager = managerData.find(user => user.name === event.target.value);
+        // console.log("selectedManager", selectedManager)
+        setTicketData({
+            ...ticketData,
+            managerID: selectedManager.id,
+            managerName: selectedManager.name,
+            managerName_email: selectedManager.email,
+        });
+    };
     const fetchStore = useCallback(async () => {
         try {
             const response = await getAllStores();
@@ -129,6 +138,55 @@ function SuperAdminCreateTicket({ fetchTickets }) {
 
     const handleStore = async (e) => {
         try {
+            const value = e.target.value;
+            if (value === 'All Stores') {
+                setTicketData(prev => ({
+                    ...prev,
+                    storeId: 'All Stores',
+                    store: 'All Stores',
+                    store_email: 'All Stores',
+                    store_phone: 'All Stores',
+                    store_Tech_id: 'All Stores',
+                    store_detail: 'All Stores',
+                }));
+                return;
+            }
+            if (value === 'HO') {
+                setTicketData(prev => ({
+                    ...prev,
+                    storeId: 'HO',
+                    store: 'HO',
+                    store_email: 'HO',
+                    store_phone: 'HO',
+                    store_Tech_id: 'HO',
+                    store_detail: 'HO',
+                }));
+                return;
+            }
+            if (value === 'BOPK') {
+                setTicketData(prev => ({
+                    ...prev,
+                    storeId: 'BOPK',
+                    store: 'BOPK',
+                    store_email: 'BOPK',
+                    store_phone: 'BOPK',
+                    store_Tech_id: 'BOPK',
+                    store_detail: 'BOPK',
+                }));
+                return;
+            }
+            if (value === 'BOIN') {
+                setTicketData(prev => ({
+                    ...prev,
+                    storeId: 'BOIN',
+                    store: 'BOIN',
+                    store_email: 'BOIN',
+                    store_phone: 'BOIN',
+                    store_Tech_id: 'BOIN',
+                    store_detail: 'BOIN',
+                }));
+                return;
+            }
             const selectedStore = stores.find(store => store.id === e.target.value);
             setTicketData({
                 ...ticketData,
@@ -219,7 +277,6 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                         >
                             Create New Ticket
                         </Typography>
-
                         {/* Close Button */}
                         <IconButton
                             aria-label="close"
@@ -299,6 +356,9 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                                             helperText={ticketErrors.store}
                                         >
                                             <MenuItem value="">Select Store</MenuItem>
+                                            <MenuItem value="All Stores">All Stores</MenuItem>
+                                            <MenuItem value="BOPK">BOPK</MenuItem>
+                                            <MenuItem value="BOIN">BOIN</MenuItem>
                                             {stores.length > 0 ?
                                                 stores.map((store, index) => (
                                                     <MenuItem key={index} value={store.id}>{store.store_name}</MenuItem>
@@ -337,7 +397,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                                         variant="outlined"
                                     />
                                 </div>
-                                {/* <div className="col-md-6">
+                                <div className="col-md-6">
                                     {
                                         managerData && managerData.length === 1 ? (
                                             <TextField
@@ -378,7 +438,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                                                 // ""
                                             )
                                     }
-                                </div> */}
+                                </div>
                                 <div className="col-md-6">
                                     <FormControl size="medium" fullWidth>
                                         <InputLabel>Priority</InputLabel>

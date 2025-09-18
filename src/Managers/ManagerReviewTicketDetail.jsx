@@ -311,47 +311,50 @@ function ManagerReviewTicketDetail() {
                             {detailTicket[0]?.ticketId} - Progress
                         </Typography>
                     </div>
-                    <div className="d-flex gap-2">
-                        <TextField
-                            size='small'
-                            value={detailTicket[0]?.status}
-                            InputProps={{ readOnly: true }}
-                            disabled
-                            variant="outlined"
-                        />
-                        <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Closed"}</Button>
-                        {
-                            detailTicket[0]?.status === 'close' ?
-                                <Button variant='outlined' disabled>Re-open</Button> : ""
-                        }
-                    </div>
-                    <div className="d-flex gap-2">
-                        {
-                            detailTicket[0]?.assignerId ?
-                                <TextField
-                                    label="status"
-                                    variant="outlined"
-                                    disabled
-                                    value={detailTicket[0]?.assignerName}
-                                    InputProps={{ readOnly: true }}
-                                    sx={{ width: "150px" }}
-                                /> :
-                                <FormControl size='small' sx={{ width: "150px" }}>
-                                    <InputLabel>Assign To</InputLabel>
-                                    <Select value={assignieName.name} onChange={handleAssignee}>
-                                        {assignUsers.length > 0 ? (
-                                            assignUsers.map((user) => (
-                                                <MenuItem key={user._id} value={user.name}>
-                                                    {user.name}
-                                                </MenuItem>
-                                            ))
-                                        ) : (
-                                            <MenuItem disabled>No users available</MenuItem>
-                                        )}
-                                    </Select>
-                                </FormControl>
-                        }
-                        {/* <FormControl size='small' sx={{ width: "150px" }}>
+                    <div className="d-flex align-items-center" style={{ gap: "0px 10px" }}>
+                        <div className="d-flex gap-2">
+                            <TextField
+                                size='small'
+                                sx={{ width: "150px" }}
+                                value={detailTicket[0]?.status}
+                                InputProps={{ readOnly: true }}
+                                disabled
+                                variant="outlined"
+                            />
+                            <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Closed"}</Button>
+                            {
+                                detailTicket[0]?.status === 'close' ?
+                                    <Button variant='outlined' disabled>Re-open</Button> : ""
+                            }
+                        </div>
+                        <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Transfer"}</Button>
+                        <div className="d-flex gap-2">
+                            {
+                                detailTicket[0]?.assignerId ?
+                                    <TextField
+                                        label="status"
+                                        variant="outlined"
+                                        disabled
+                                        value={detailTicket[0]?.assignerName}
+                                        InputProps={{ readOnly: true }}
+                                        sx={{ width: "150px" }}
+                                    /> :
+                                    <FormControl size='small' sx={{ width: "150px" }}>
+                                        <InputLabel>Assign To</InputLabel>
+                                        <Select value={assignieName.name} onChange={handleAssignee}>
+                                            {assignUsers.length > 0 ? (
+                                                assignUsers.map((user) => (
+                                                    <MenuItem key={user._id} value={user.name}>
+                                                        {user.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem disabled>No users available</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                            }
+                            {/* <FormControl size='small' sx={{ width: "150px" }}>
                             <InputLabel>Assign To</InputLabel>
                             <Select value={assignieName.name} onChange={handleAssignee}>
                                 {assignUsers.length > 0 ? (
@@ -365,8 +368,9 @@ function ManagerReviewTicketDetail() {
                                 )}
                             </Select>
                         </FormControl> */}
-                        {/*disabled={assignLoader || detailTicket[0]?.assignerId}   */}
-                        <Button variant='contained' disabled={assignLoader || detailTicket[0]?.assignerId} onClick={handleAssign} >{assignLoader ? <CircularProgress size={25} /> : "Assign"}</Button>
+                            {/*disabled={assignLoader || detailTicket[0]?.assignerId}   */}
+                            <Button variant='contained' disabled={assignLoader || detailTicket[0]?.assignerId} onClick={handleAssign} >{assignLoader ? <CircularProgress size={25} /> : "Assign"}</Button>
+                        </div>
                     </div>
                 </div>
             </div>

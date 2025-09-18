@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext,  useMemo} from "react";
 const GlobalContext = createContext();
 
 const useGlobalCurrentUserState = () => useContext(GlobalContext);

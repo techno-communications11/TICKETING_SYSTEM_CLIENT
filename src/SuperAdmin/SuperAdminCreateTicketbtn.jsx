@@ -66,7 +66,7 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
                     notification_type: "new Ticket open",
                 };
                 socket.emit('notify', notificationObj)
-                const r = await ticketProgressServices(resposne.data.data.id, "Created");
+                // const r = await ticketProgressServices(resposne.data.data.id, "Created");
             }
         } catch (error) {
             setLoader(false)

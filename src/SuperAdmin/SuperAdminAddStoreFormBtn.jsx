@@ -23,6 +23,7 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
         if (validate()) {
             try {
                 const response = await addNewStoreServices(formData);
+                console.log(response)
                 if (response.status === 200) {
                     toast.success("New Store Active Successfully");
                 }

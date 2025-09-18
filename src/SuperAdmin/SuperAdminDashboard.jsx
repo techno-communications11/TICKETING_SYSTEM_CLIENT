@@ -188,6 +188,7 @@ import SuperAdminPiechart from './SuperAdminPiechart';
 import ExporttoExcel from '../Components/ExporttoExcel/ExporttoExcel';
 import { getAllStores } from '../Services/stores.services';
 import { useNavigate } from 'react-router-dom';
+import SuperAdminCreateTicket from './SuperAdminCreateTicket';
 
 function SuperAdminDashboard() {
   const id = cookie.get('id');
@@ -282,7 +283,7 @@ function SuperAdminDashboard() {
             </Select>
           </FormControl>
 
-          <FormControl size="small" sx={{ minWidth: 180 }}>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
             <InputLabel>Market</InputLabel>
             <Select value={market} label='Market' onChange={(e) => setMarket(e.target.value)}>
               {[
@@ -295,7 +296,7 @@ function SuperAdminDashboard() {
             </Select>
           </FormControl>
 
-          <FormControl size="small" sx={{ minWidth: 200 }}>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
             <InputLabel>Stores</InputLabel>
             <Select value={store} label='Store' onChange={(e) => setStore(e.target.value)}>
               <MenuItem value=''>All</MenuItem>
@@ -311,6 +312,8 @@ function SuperAdminDashboard() {
 
           <Button variant='contained' onClick={() => fetchTickets()}>Refresh</Button>
           <ExporttoExcel filterationData={filteredTickets} />
+          <SuperAdminCreateTicket fetchTickets={fetchTickets} />
+
         </div>
       </div>
 
@@ -318,7 +321,7 @@ function SuperAdminDashboard() {
         <Typography variant='h6' className='mb-3'>Total Tickets: <span style={{ color: '#6f2da8' }}>{tickets.total}</span> </Typography>
         <div className="col-md-8">
           <div className="row mb-3 d-flex" style={{ gap: "0px 10px" }}>
-            
+
             <div className="bg-white p-3 rounded-3 text-center"
               style={{
                 width: "140px",

@@ -17,6 +17,10 @@ import {
   CircularProgress,
   Tooltip,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 
 import {
@@ -34,8 +38,9 @@ import { deleteTicketServices, getalltickets } from '../Services/tickets.service
 import { useNavigate } from 'react-router-dom';
 import SuperAdminCreateTicket from './SuperAdminCreateTicket';
 import RefreshIcon from "@mui/icons-material/Refresh";
-
+import cookies from "js-cookie";
 function SuperAdminManageTickets() {
+  const role = cookies.get("it")
   const [selectedRows, setSelectedRows] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,7 +49,18 @@ function SuperAdminManageTickets() {
   const [deleteLoader, setDeleteLoader] = useState(false)
   const [loader, setLoader] = useState(true);
   const navigate = useNavigate()
-
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("Total");
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
+  const [market, setMarket] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const marketsList = [
+    "ALL MARKETS", "HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
+    "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE",
+    "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO",
+    "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
+  ];
   const fetchAllTickets = useCallback(async () => {
     setLoader(true);
     try {
@@ -88,15 +104,6 @@ function SuperAdminManageTickets() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
   };
-
-  const filteredTickets = tickets.filter((ticket) =>
-    Object.values(ticket).some(
-      (val) =>
-        typeof val === 'string' &&
-        val.toLowerCase().includes(searchQuery)
-    )
-  );
-
   const deletesTicketsBttn = async () => {
     setDeleteLoader(true);
     try {
@@ -104,16 +111,62 @@ function SuperAdminManageTickets() {
       setDeleteLoader(false);
       fetchAllTickets()
       setSelectedRows([]);
-      // console.log("Response", response)
     } catch (error) {
       setDeleteLoader(false);
       console.log("ERROR", error.message);
     }
   }
 
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = filteredTickets.slice(indexOfFirstRow, indexOfLastRow);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      let filtered = [...tickets];
+      switch (activeFilter) {
+        case "Closed":
+          filtered = filtered.filter(t => t.status === "closed");
+          break;
+        case "Complete":
+          filtered = filtered.filter(t => t.status === "completed");
+          break;
+        case "Pending":
+          filtered = filtered.filter(t => t.status === "pending");
+          break;
+        default:
+          break;
+      }
+
+      if (priority) filtered = filtered.filter(t => t.priority === priority);
+      if (status) filtered = filtered.filter(t => t.status === status.toLowerCase());
+      if (market) filtered = filtered.filter(t => t.market === market);
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase();
+        filtered = filtered.filter(t =>
+          t.ticketId?.toLowerCase().includes(term) ||
+          t.name?.toLowerCase().includes(term) ||
+          t.ticketDescription?.toLowerCase().includes(term)
+        );
+      }
+      // 👇 Add this to sort descending by createdAt (latest first)
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setFilteredTickets(filtered);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [tickets, activeFilter, priority, status, market, searchTerm]);
+
+  function getTicketAge(createdAt) {
+    const now = new Date();
+    const created = new Date(createdAt);
+    const diffMs = now - created; // difference in milliseconds
+
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+    const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+    if (diffDays > 0) return `${diffDays}d ${diffHours}h ago`;
+    if (diffHours > 0) return `${diffHours}h ${diffMinutes}m ago`;
+    return `${diffMinutes}m ago`;
+  }
+
 
   return (
     <div className="container my-4 py-3">
@@ -136,23 +189,54 @@ function SuperAdminManageTickets() {
           <SuperAdminCreateTicket fetchTickets={fetchAllTickets} />
         </div>
       </div>
+      <div className="">
+        <TextField
+          size="small"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ width: 300 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <InputLabel>Priority</InputLabel>
+          <Select value={priority} label="Priority" onChange={(e) => setPriority(e.target.value)}>
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="Low">Low</MenuItem>
+            <MenuItem value="Medium">Medium</MenuItem>
+            <MenuItem value="High">High</MenuItem>
+          </Select>
+        </FormControl>
 
-      <TextField
-        size="small"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={handleSearchChange}
-        sx={{ width: 300 }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton>
-                <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+        <FormControl size="small" sx={{ minWidth: 150 }}>
+          <InputLabel>Status</InputLabel>
+          <Select value={status} label="Status" onChange={(e) => setStatus(e.target.value)}>
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="open">Open</MenuItem>
+            <MenuItem value="closed">Closed</MenuItem>
+            <MenuItem value="pending">Paused</MenuItem>
+            <MenuItem value="assigned">Assigned</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 180 }}>
+          <InputLabel>Markets</InputLabel>
+          <Select value={market} label="Markets" onChange={(e) => setMarket(e.target.value)}>
+            <MenuItem value="">All</MenuItem>
+            {marketsList.map((m, idx) => (
+              <MenuItem key={idx} value={m}>{m}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
 
       {selectedRows.length > 0 && (
         <Box
@@ -243,6 +327,51 @@ function SuperAdminManageTickets() {
                         color: '#fff',
                       },
                     }}
+                    disabled
+                    checked={selectedRows.length === tickets.length && tickets.length > 0}
+                    indeterminate={selectedRows.length > 0 && selectedRows.length < tickets.length}
+                    onChange={handleSelectAll}
+                  />
+                </TableCell>
+                {[
+                  // "", // checkbox
+                  "Ticket ID",
+                  "Priority",
+                  "Creator Name",
+                  "Status",
+                  "Type",
+                  "Description",
+                  "Solved By",
+                  "Age",
+                  "Action"
+                ].map((head, i) => (
+                  <TableCell
+                    key={i}
+                    sx={{
+                      color: "white",
+                      fontSize: "0.85rem",   // smaller font
+                      fontWeight: 600,
+                      whiteSpace: "nowrap", // prevent wrapping
+                      padding: "10px 12px"   // tighter spacing
+                    }}
+                  >
+                    {head}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+
+            {/* <TableHead>
+              <TableRow sx={{ backgroundColor: '#6f2da8' }}>
+                <TableCell sx={{ color: 'white' }} padding="checkbox">
+                  <Checkbox
+                    sx={{
+                      color: '#fff',
+                      '&.Mui-checked': {
+                        color: '#fff',
+                      },
+                    }}
+                    disabled
                     checked={selectedRows.length === tickets.length && tickets.length > 0}
                     indeterminate={selectedRows.length > 0 && selectedRows.length < tickets.length}
                     onChange={handleSelectAll}
@@ -255,47 +384,147 @@ function SuperAdminManageTickets() {
                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
                 <TableCell sx={{ color: 'white' }}>Solved By</TableCell>
+                <TableCell sx={{ color: 'white' }}>Age</TableCell>
                 <TableCell sx={{ color: 'white' }}>Action</TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
+            </TableHead> */}
+            {/* <TableBody>
               {loader ? (
                 <TableRow>
                   <TableCell colSpan={9} height={500} align="center">
                     <CircularProgress size={30} />
                   </TableCell>
                 </TableRow>
-              ):
-                currentRows.length > 0 ? (
-                currentRows.map((ticket) => (
-              <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} >
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedRows.includes(ticket.id)}
-                    onChange={() => handleRowSelect(ticket.id)}
-                  />
-                </TableCell>
-                <TableCell>{ticket.ticketId}</TableCell>
-                <TableCell>{ticket.priority}</TableCell>
-                <TableCell>{ticket.name}</TableCell>
-                <TableCell>{ticket.status}</TableCell>
-                <TableCell>{ticket.category}</TableCell>
-                <TableCell>{ticket.ticketDescription}</TableCell>
-                <TableCell>{ticket.assignerName || 'N/A'}</TableCell>
-                <TableCell>
-                  <Button onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >View</Button>
-                </TableCell>
-              </TableRow>
-              ))
+              ) :
+                tickets.length > 0 ? (
+                  tickets.map((ticket) => (
+                    <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selectedRows.includes(ticket.id)}
+                          onChange={() => handleRowSelect(ticket.id)}
+                        />
+                      </TableCell>
+                      <TableCell>{ticket.ticketId}</TableCell>
+                      <TableCell>{ticket.priority}</TableCell>
+                      <TableCell>{ticket.name}</TableCell>
+                      <TableCell>{ticket.status}</TableCell>
+                      <TableCell>{ticket.category}</TableCell>
+                      <TableCell>{ticket.ticketDescription}</TableCell>
+                      <TableCell>{ticket.assignerName || 'N/A'}</TableCell>
+                      <TableCell>
+                        <Button onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >View</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={9} height={500} align="center">
+                      Data Not Found
+                    </TableCell>
+                  </TableRow>
+
+                )}
+            </TableBody> */}
+            <TableBody>
+              {loader ? (
+                <TableRow>
+                  <TableCell colSpan={9} height={500} align="center">
+                    <CircularProgress size={30} /> Loading...
+                  </TableCell>
+                </TableRow>
+              ) : filteredTickets.length > 0 ? (
+                filteredTickets
+                  .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage) // 👈 pagination
+                  .map((ticket) => (
+                    <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }}>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          disabled
+                          checked={selectedRows.includes(ticket.id)}
+                          onChange={() => handleRowSelect(ticket.id)}
+                        />
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.ticketId}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.priority}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.name}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.status}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.category}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.ticketDescription}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{ticket.assignerName || 'N/A'}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",   // smaller font
+                          // fontWeight: 600,
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{getTicketAge(ticket.createdAt)}</TableCell>
+                      <TableCell>
+                        <Button onClick={() => navigate(`/superAdmin-review-tickets/${ticket.id}`)}>
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
               ) : (
-              <TableRow>
-                <TableCell colSpan={9} height={500} align="center">
-                  Data Not Found
-                </TableCell>
-              </TableRow>
-                
+                <TableRow>
+                  <TableCell colSpan={9} height={500} align="center">
+                    Data Not Found
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
+
           </Table>
         </TableContainer>
       </Box>

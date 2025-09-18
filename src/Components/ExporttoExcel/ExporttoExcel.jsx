@@ -567,6 +567,7 @@ import {
 } from '@mui/material';
 import * as XLSX from 'xlsx';
 import { getAllStores } from '../../Services/stores.services';
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 function ExportToExcel({ filterationData }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -729,7 +730,7 @@ function ExportToExcel({ filterationData }) {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClick}>Export to Excel</Button>
+      <Button variant="contained" onClick={handleClick}><FileDownloadIcon /> Excel</Button>
 
       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
         <MenuItem onClick={() => handleCloseMenu('Market Wise')}>Market Wise</MenuItem>

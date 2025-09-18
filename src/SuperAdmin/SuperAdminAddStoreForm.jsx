@@ -3,7 +3,7 @@ import React from 'react'
 import { useGlobalState } from '../Context/context';
 
 function SuperAdminAddStoreForm() {
-    const { formData, setFormData,errors, setErrors } = useGlobalState();
+    const { formData, setFormData, errors, setErrors } = useGlobalState();
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setErrors({ ...errors, [e.target.name]: '' });
@@ -26,7 +26,7 @@ function SuperAdminAddStoreForm() {
                     error={!!errors.market} helperText={errors.market}
                 >
                     {
-                        ["ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"]
+                        ["HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"]
                             .map((data) => <MenuItem key={data} value={data}>{data}</MenuItem>)
                     }
                 </TextField>
