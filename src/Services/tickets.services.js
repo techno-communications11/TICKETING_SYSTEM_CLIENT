@@ -129,7 +129,16 @@ export const reopenTicketServices = async (id, reopenreason) => {
 
 export const deleteTicketServices = async (ids) => {
     try {
-        const response = await axios.post(`${API_URL}/tickets/delete-tickets`,{ids});
+        const response = await axios.post(`${API_URL}/tickets/delete-tickets`, { ids });
+        // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+export const transferedTicketServices = async (ticketId, newOwnerId, transferReason, departmentName) => {
+    try {
+        const response = await axios.post(`${API_URL}/tickets/transfered-ticket`, { ticketId, newOwnerId, transferReason, departmentName });
         // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
         return response;
     } catch (error) {

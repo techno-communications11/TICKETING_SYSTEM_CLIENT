@@ -14,6 +14,7 @@ import { addNotificationsServices } from '../Services/notifications.services';
 import { getAllUser, getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import ManagerComments from './ManagerComments';
+import ManagerTransferedTickets from './ManagerTransferedTickets';
 
 function ManagerReviewTicketDetail() {
     const [comments, setComments] = useState([
@@ -35,6 +36,7 @@ function ManagerReviewTicketDetail() {
     const { department, subDepartment } = decodedTickets;
     const [assignLoader, setAssignLoader] = useState(false);
     const [tloading, settLoading] = useState(false);
+    const [transferedData, setTranferedData] = useState([])
     const filteredTickets = useCallback(async () => {
         settLoading(true)
         try {
@@ -268,6 +270,18 @@ function ManagerReviewTicketDetail() {
             setAssignLoader(false);
         }
     };
+    const filteredData = useCallback(async () => {
+        try {
+            const response = await getAllUser();
+            const filet = response.data.data.filter((data) => data.id === detailTicket[0]?.currentOwnerId)
+            setTranferedData(filet[0])
+        } catch (error) {
+
+        }
+    }, [detailTicket[0]?.currentOwnerId])
+    useEffect(() => {
+        filteredData();
+    }, [filteredData, detailTicket[0]?.currentOwnerId])
 
 
     if (tloading || detailTicket.length < 0) {
@@ -279,6 +293,7 @@ function ManagerReviewTicketDetail() {
             Data NOt FOund Yet
         </div>
     }
+
     // console.log( JSON.parse(detailTicket[0]?.progress))
     const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
 
@@ -327,7 +342,8 @@ function ManagerReviewTicketDetail() {
                                     <Button variant='outlined' disabled>Re-open</Button> : ""
                             }
                         </div>
-                        <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Transfer"}</Button>
+                        <ManagerTransferedTickets loading={loading} ticketData={detailTicket[0]} filteredTickets={filteredTickets} />
+                        {/* <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Transfer"}</Button> */}
                         <div className="d-flex gap-2">
                             {
                                 detailTicket[0]?.assignerId ?
@@ -388,12 +404,17 @@ function ManagerReviewTicketDetail() {
                                     <Typography variant='body1'><span className='fw-semibold'>Department:</span> {'N/A'}</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Created At:</span> {detailTicket[0]?.createdAt && moment(detailTicket[0]?.createdAt).format("DD-MM-YYYY hh:mm A")}</Typography>
                                 </div>
+                                {/* departmentName
+ */}
                                 <div className="col-md-6">
                                     <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Department:</Typography>
-                                    <Typography variant='body1'><span className='fw-semibold'>Department Name:</span> {detailTicket[0]?.department}</Typography>
+                                    <Typography variant='body1'><span className='fw-semibold'>Department Name:</span> {detailTicket[0]?.istransfereticket
+                                        ? detailTicket[0]?.departmentName : detailTicket[0]?.department}</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Department Email:</span> {"N/A"}</Typography>
-                                    <Typography variant='body1'><span className='fw-semibold'>Department Manager Name:</span> {detailTicket[0]?.managerName}</Typography>
-                                    <Typography variant='body1'><span className='fw-semibold'>Department Manager Email:</span> {detailTicket[0]?.managerName_email}</Typography>
+                                    <Typography variant='body1'><span className='fw-semibold'>Department Manager Name:</span> {detailTicket[0]?.istransfereticket
+                                        ? transferedData?.name : detailTicket[0]?.managerName}</Typography>
+                                    <Typography variant='body1'><span className='fw-semibold'>Department Manager Email:</span> {detailTicket[0]?.istransfereticket
+                                        ? transferedData?.email : detailTicket[0]?.managerName_email}</Typography>
                                 </div>
                                 <div className="col-md-6">
                                     <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Ticket Detail:</Typography>

@@ -77,6 +77,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                 // email: filteration[0]?.email,
                 // phone: filteration[0]?.phone,
                 userId: id || currentDatauser?.id,
+                currentOwnerId: id || currentDatauser?.id,
                 creatordepartment: filteration[0]?.subDepartment,
             }));
         } catch (error) {
@@ -123,6 +124,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                     // email: currentUserData[0]?.email || currentUserData[0]?.email,
                     // phone: currentUserData[0]?.phone || currentUserData[0]?.phone,
                     userId: id,
+                    currentOwnerId: id,
                     name: currentDatauser?.name,
                     email: currentDatauser?.email,
                     phone: currentDatauser?.phone,
@@ -214,6 +216,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                 store_Tech_id: selectedStore.bdi_id || '',
                 store_detail: selectedStore,
                 userId: id,
+                currentOwnerId: id,
                 name: currentDatauser?.name,
                 email: currentDatauser?.email,
                 phone: currentDatauser?.phone,
@@ -507,7 +510,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
-                                    <UploadFiles setTicketData={setTicketData}/>
+                                    <UploadFiles setTicketData={setTicketData} />
                                 </div>
 
                             </div>

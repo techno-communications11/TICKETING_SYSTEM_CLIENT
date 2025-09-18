@@ -535,10 +535,11 @@ function ManagerTicket() {
             // console.log(subDepartment)
             const filtered = response?.data?.data?.filter(ticket =>
                 (ticket.department == department && ticket.subDepartment == subDepartment) ||
-                ticket.managerID == id || ticket.userId == id || (ticket.assignerId == id && ticket.approved == true)
+                ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
             );
-            setAllTickets(filtered || []);
             setLoading(false);
+            setAllTickets(filtered || []);
+            console.log(filtered || []);
             // console.log(filtered || []);
         } catch (error) {
             setLoading(false);

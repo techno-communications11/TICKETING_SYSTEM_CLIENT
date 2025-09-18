@@ -37,6 +37,7 @@ const defaultTicketData = {
     districtManager_id: "",
     marketManager_id: "",
     categoryId: "",
+    currentOwnerId:""
 };
 
 
