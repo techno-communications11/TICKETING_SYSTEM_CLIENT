@@ -28,17 +28,20 @@ function AddTicketProblemCategory({ fetchCategory }) {
     { name: 'Supervisor', email: 'commission@example.com' },
     { name: 'Vigilance', email: 'commission@example.com' },
 
-    { name: 'Finance - GL', email: 'finance@example.com' },
-    { name: 'Finance - AR', email: 'finance@example.com' },
+    { name: 'Finance (GL)', email: 'finance@example.com' },
+    { name: 'Finance AR', email: 'finance@example.com' },
 
     { name: 'HR', email: 'HR@techno-communications.com' },
     { name: 'IT', email: 'it@techno-communications.com' },
+    { name: 'Local IT', email: 'it@techno-communications.com' },
 
     { name: 'Inventory', email: 'reporting@techno-communications.com' },
     { name: 'QA', email: 'reporting@techno-communications.com' },
     { name: 'Reporting', email: 'reporting@example.com' }
   ];
-
+//  "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+//         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+//         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
   // const departments = [
   //   { name: 'Admin', email: 'admin@example.com' },
   //   { name: 'Compliance', email: 'commission@example.com' },

@@ -82,6 +82,9 @@ import ManagerAgentsDetail from '../Managers/ManagerAgentsDetail';
 import ProtectedRoute from '../Components/ProtectedRoute/ProtectedRoute';
 import PublicRoute from '../Components/PublicRoute/PublicRoute';
 import TestingWhatsappAPi from '../PublicPages/TestingWhatsappAPi';
+import SuperAdminProblemsofCategory from '../SuperAdmin/SuperAdminProblemsofCategory';
+import SuperAdminAllNotifications from '../SuperAdmin/SuperAdminAllNotifications';
+import ForgetPassword from '../PublicPages/ForgetPassword';
 // const ProtectedRoute = ({ children, allowedDepartments }) => {
 //     const id = cookies.get("id");
 //     const token = cookies.get("token");
@@ -117,6 +120,11 @@ function Routing() {
                 <Route path="/reset-password" element={
                     <PublicRoute>
                         <ResetPassword />
+                    </PublicRoute>
+                } />
+                <Route path="/fogot-password" element={
+                    <PublicRoute>
+                        <ForgetPassword />
                     </PublicRoute>
                 } />
                 <Route path="*" element={
@@ -170,6 +178,7 @@ function Routing() {
                             <Route path="/superAdmin-manage-insights" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminInsights /></ProtectedRoute>} />
                             <Route path="/superAdmin-manage-setting" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminSetting /></ProtectedRoute>} />
                             <Route path="/superAdmin-logs-setting" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminSettingLogs /></ProtectedRoute>} />
+                            <Route path="/superAdmin-category-problems" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminProblemsofCategory /></ProtectedRoute>} />
                             <Route path="/superAdmin-open-tickets" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminOpenTickts /></ProtectedRoute>} />
                             <Route path="/superAdmin-close-tickets" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminClosedTickts /></ProtectedRoute>} />
                             <Route path="/superAdmin-complete-tickets" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminCompleteTickts /></ProtectedRoute>} />
@@ -179,6 +188,7 @@ function Routing() {
                             <Route path="/superAdmin-manage-cam-credentials" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminCamCredentails /></ProtectedRoute>} />
                             <Route path="/superAdmin-manage-employee-contact" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminEmployeeContact /></ProtectedRoute>} />
                             <Route path="/superAdmin-manage-memphis-structure" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminMemphisStructure /></ProtectedRoute>} />
+                            <Route path="/superAdmin-manage-all-notifications" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminAllNotifications /></ProtectedRoute>} />
                             <Route path="/market-manager-dashboard" element={<ProtectedRoute allowedDepartments={'Market Manager'}><MarketManagerDashboard /></ProtectedRoute>} />
                             <Route path="/market-manager-manage-ticket" element={<ProtectedRoute allowedDepartments={'Market Manager'}><MarketManagersManageTickets /></ProtectedRoute>} />
                             <Route path="/market-manager-review-ticket/:id" element={<ProtectedRoute allowedDepartments={'Market Manager'}><MarketManagerReviewTickets /></ProtectedRoute>} />

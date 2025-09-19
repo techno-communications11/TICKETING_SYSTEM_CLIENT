@@ -12,6 +12,10 @@ import PeopleIcon from '@mui/icons-material/People'; // For users
 import BarChartIcon from '@mui/icons-material/BarChart'; // For insights
 import SettingsIcon from '@mui/icons-material/Settings';
 import GroupIcon from '@mui/icons-material/Group';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import HistoryIcon from "@mui/icons-material/History";
+import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
+
 export const NAVIGATION = [
   {
     title: 'Dashboard',
@@ -93,6 +97,18 @@ export const NAVIGATION = [
     roles: ['superadmin'],
   },
   {
+    title: 'Category of Problems',
+    segment: 'superAdmin-category-problems',
+    icon: <AccountTreeIcon />,
+    roles: ['superadmin'],
+  },
+  {
+    title: 'Notification History',
+    segment: 'superAdmin-manage-all-notifications',
+    icon: <NotificationsNoneRoundedIcon />,
+    roles: ['superadmin'],
+  },
+  {
     title: 'Settings',
     segment: 'superAdmin-manage-setting',
     icon: <SettingsIcon />,
@@ -102,7 +118,7 @@ export const NAVIGATION = [
   {
     title: 'Logs',
     segment: 'superAdmin-logs-setting',
-    icon: <SettingsIcon />,
+    icon: <HistoryIcon />,
     roles: ['superadmin'],
   },
   {
@@ -240,7 +256,7 @@ export const NAVIGATION = [
     title: 'Market Structure',
     segment: '',
     icon: <InfoOutlineIcon />,
-    roles: ['manager', 'agent', 'Sales','senior manager'],
+    roles: ['manager', 'agent', 'Sales', 'senior manager'],
     type: 'dropdown',
     children: [
       {
@@ -346,7 +362,7 @@ export const NAVIGATION = [
         title: 'Utility Account',
         segment: '',
         icon: <InfoOutlineIcon />,
-      } 
+      }
     ],
   },
 ];

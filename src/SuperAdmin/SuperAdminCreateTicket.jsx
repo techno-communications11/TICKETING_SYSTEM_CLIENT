@@ -41,15 +41,14 @@ function SuperAdminCreateTicket({ fetchTickets }) {
     const [managerData, setManagerData] = useState([]);
     const id = Cookies.get('id')
     const MARKETS = useMemo(() => ([
-        "ALL MARKETS", "HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
-        "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE",
+        "ALL MARKETS", "HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE",
         "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO",
         "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
     ]), []);
     const fetchCUrrentUser = useCallback(async () => {
         try {
             const response = await getAllUser();
-            const filteration = response.data.data.filter((data) => data.id === id)
+            const filteration = response.data.data.filter((data) => data.id == id)
             setCurrentUserData(filteration)
             console.log("filteration", filteration)
             setTicketData((prevData) => ({

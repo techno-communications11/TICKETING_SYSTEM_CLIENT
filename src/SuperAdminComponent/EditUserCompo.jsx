@@ -25,11 +25,9 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
 
     // Departments (same as AddUserCompo)
     const [departments] = useState([
-        "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager",
-        "District Manager", "Finance (GL)", "Finance (GL) EXECUTIVE", "Finance EXECUTIVE", "Finance AR", "SUPERVISOR",
-        "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance",
-        "Sales", "Commission", "Compliance", "AR", "Employee", "Store", "Management",
-        "SCM", "QA", "Vigilance", "MIS", "CMG", "Data Analytics"
+         "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics","Supervisor","Local IT"
     ]);
 
     // Load data when modal opens
@@ -98,7 +96,11 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
 
     return (
         <div>
-            <IconButton onClick={handleOpen}>
+            <IconButton onClick={handleOpen} sx={{
+                '& .MuiSvgIcon-root': {
+                    transition: 'color 0.3s ease',
+                }
+            }}>
                 <EditIcon />
             </IconButton>
 

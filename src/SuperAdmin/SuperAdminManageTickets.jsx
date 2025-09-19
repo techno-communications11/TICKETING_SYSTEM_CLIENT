@@ -104,6 +104,7 @@ function SuperAdminManageTickets() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
   };
+
   const deletesTicketsBttn = async () => {
     setDeleteLoader(true);
     try {
@@ -327,7 +328,7 @@ function SuperAdminManageTickets() {
                         color: '#fff',
                       },
                     }}
-                    disabled
+                    // disabled
                     checked={selectedRows.length === tickets.length && tickets.length > 0}
                     indeterminate={selectedRows.length > 0 && selectedRows.length < tickets.length}
                     onChange={handleSelectAll}
@@ -429,7 +430,7 @@ function SuperAdminManageTickets() {
             <TableBody>
               {loader ? (
                 <TableRow>
-                  <TableCell colSpan={9} height={500} align="center">
+                  <TableCell colSpan={10} height={500} align="center">
                     <CircularProgress size={30} /> Loading...
                   </TableCell>
                 </TableRow>
@@ -440,7 +441,7 @@ function SuperAdminManageTickets() {
                     <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }}>
                       <TableCell padding="checkbox">
                         <Checkbox
-                          disabled
+                          // disabled
                           checked={selectedRows.includes(ticket.id)}
                           onChange={() => handleRowSelect(ticket.id)}
                         />
@@ -518,7 +519,7 @@ function SuperAdminManageTickets() {
                   ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={9} height={500} align="center">
+                  <TableCell colSpan={10} height={500} align="center">
                     Data Not Found
                   </TableCell>
                 </TableRow>

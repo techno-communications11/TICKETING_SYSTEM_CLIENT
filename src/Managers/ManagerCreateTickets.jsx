@@ -249,6 +249,7 @@ function ManagerCreateTickets({ fetchTickets }) {
 
     const handleDepartmentChange = (event) => {
         const selectedManager = managerData.find(user => user.name === event.target.value);
+        // const selectedManager = managerData.find(user => user.name === event.target.value);
         // console.log("selectedManager", selectedManager)
         setTicketData({
             ...ticketData,

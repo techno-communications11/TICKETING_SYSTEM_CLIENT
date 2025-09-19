@@ -35,11 +35,9 @@ function SuperAdminManageUser() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [departments] = useState([
-        "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager",
-        "District Manager", "Finance (GL)", "Finance (GL) EXECUTIVE", "Finance EXECUTIVE", "Finance AR", "SUPERVISOR",
-        "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance",
-        "Sales", "Commission", "Compliance", "AR", "Employee", "Store", "Management",
-        "SCM", "QA", "Vigilance", "MIS", "CMG", "Data Analytics"
+        "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
 
     const fetchAllUserData = useCallback(async () => {
@@ -70,7 +68,7 @@ function SuperAdminManageUser() {
         setSelectedRows(newSelectedRows);
 
         if (newSelectedRows.length === 1) {
-            const selected = userData.find(user => user._id === newSelectedRows[0]);
+            const selected = userData.find(user => user.id === newSelectedRows[0]);
             setSelectedData(selected);
         } else {
             setSelectedData(null);
@@ -93,7 +91,7 @@ function SuperAdminManageUser() {
     };
 
     const handleDelete = async (id) => {
-
+        console.log(id)
         setDeleteId(id);
         setConfirmed(true);
     };
@@ -101,6 +99,7 @@ function SuperAdminManageUser() {
     const confirmDelete = async () => {
         setDeleteLoader(true)
         try {
+            console.log(deleteId)
             const response = await deleteUserServices(deleteId);
             fetchAllUserData();
         } catch (error) {
@@ -199,7 +198,7 @@ function SuperAdminManageUser() {
                             </Select>
                         </FormControl>
                         <AddUserCompo fetchAllUserData={fetchAllUserData} />
-                        <ExportUsers userData={userData}/>
+                        <ExportUsers userData={userData} />
                     </div>
                 </div>
             </div>

@@ -169,6 +169,7 @@ function ExportUsers({ userData }) {
         const exportData = filteredData.map(user => ({
             Name: user.name,
             Email: user.email,
+            Passowrd: 123456,
             Phone: user.phone,
             Department: user.department,
             SubDepartment: user.subDepartment || "-"
