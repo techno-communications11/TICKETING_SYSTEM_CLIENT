@@ -15,7 +15,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 import cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { resetPasswordService } from "../Services/auth.services";
+import { changePassword, resetPasswordService } from "../Services/auth.services";
 
 function ForgetPassword() {
     const [identifier, setIdentifier] = useState(""); // email or username
@@ -43,7 +43,7 @@ function ForgetPassword() {
         setIsLoading(true);
 
         try {
-            const response = await resetPasswordService(id, password, identifier);
+            const response = await changePassword(identifier, password);
             console.log("Response", response);
 
             if (response.status === 200) {

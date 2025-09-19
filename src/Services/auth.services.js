@@ -89,3 +89,11 @@ export const userUpdatedServices = async (id, data) => {
     }
 }
 
+export const changePassword=async( email, password)=>{
+    try {
+        const resposne = await axios.post(`${API_URL}/auth/change-user-password`,{ email, password});
+        return resposne;
+    } catch (error) {
+        throw error;
+    }
+}
