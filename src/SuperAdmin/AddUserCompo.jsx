@@ -15,7 +15,7 @@ function AddUserCompo({ fetchAllUserData }) {
     // "Finance",
     const [departments] = useState([
         "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
-        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics","Supervisor","Local IT"
     ]);
 

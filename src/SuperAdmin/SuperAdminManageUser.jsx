@@ -36,7 +36,7 @@ function SuperAdminManageUser() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [departments] = useState([
         "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
-        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
 
@@ -134,7 +134,8 @@ function SuperAdminManageUser() {
     const filteredUsers = userData.filter(user =>
         (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (departmentFilter === "" || user.department === departmentFilter)
+        (departmentFilter === "" || user.department === departmentFilter) &&
+        (status === "" || user.status === departmentFilter)
     );
 
     const paginatedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -183,7 +184,7 @@ function SuperAdminManageUser() {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl size="small" sx={{ minWidth: 150 }}>
+                        {/* <FormControl size="small" sx={{ minWidth: 150 }}>
                             <InputLabel>Status</InputLabel>
                             <Select
                                 value={status}
@@ -191,12 +192,11 @@ function SuperAdminManageUser() {
                                 onChange={(e) => setStatus(e.target.value)}
                             >
                                 <MenuItem value="">All</MenuItem>
-                                <MenuItem value="Open">Open</MenuItem>
-                                <MenuItem value="Closed">Closed</MenuItem>
-                                <MenuItem value="Paused">Paused</MenuItem>
-                                <MenuItem value="Assigned">Assigned</MenuItem>
+                                <MenuItem value="Active">Active</MenuItem>
+                                <MenuItem value="In-active">In-active</MenuItem>
+                                <MenuItem value="Blocked">Blocked</MenuItem>
                             </Select>
-                        </FormControl>
+                        </FormControl> */}
                         <AddUserCompo fetchAllUserData={fetchAllUserData} />
                         <ExportUsers userData={userData} />
                     </div>
