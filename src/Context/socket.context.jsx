@@ -5,8 +5,8 @@ import Cookie from "js-cookie";
 const SocketContext = createContext();
 // 
 // const SOCKET_URL = 'https://ticketing-system-sever.onrender.com';
-const SOCKET_URL = 'http://localhost:5000';
-// const SOCKET_URL = 'https://ticketingapi.techno-communications.com'; 
+// const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = 'https://ticketingapi.techno-communications.com'; 
 export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const [connected, setConnected] = useState(false)

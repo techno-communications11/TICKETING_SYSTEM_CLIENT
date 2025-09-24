@@ -118,9 +118,9 @@ function Routing() {
                     </PublicRoute>
                 } />
                 <Route path="/reset-password" element={
-                    <PublicRoute>
                         <ResetPassword />
-                    </PublicRoute>
+                    // <PublicRoute>
+                    // </PublicRoute>
                 } />
                 <Route path="/fogot-password" element={
                     <PublicRoute>
