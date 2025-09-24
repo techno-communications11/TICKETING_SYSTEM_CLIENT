@@ -7,7 +7,7 @@ function App() {
 
   return (
     <div>
-      <GlobalInstallBar/>
+      {/* <GlobalInstallBar/> */}
       <ToastContainer position="top-right" autoClose={3000} />
       <Routing/>
     </div>
