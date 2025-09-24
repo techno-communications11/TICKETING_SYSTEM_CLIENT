@@ -66,7 +66,7 @@ function ManagerReviewTicketDetail() {
                 // const filteredUser = getUsers.data.data.filter((data) => data.department === department);
                 const filteredUser = getUsers.data.data.filter((data) => {
                     // Department check
-                    const isSameDept = data.department === department;
+                    const isSameDept = data.department == department;
 
                     // Email check (exclude @gmail.com)
                     const isNotGmail = !data.email?.toLowerCase().includes("@gmail.com");

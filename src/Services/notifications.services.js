@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const addNotificationsServices = async (notificationsData) => {
     try {
-        console.log("sending notification", notificationsData)
+        // console.log("sending notification", notificationsData)
         const response = await axios.post(`${API_URL}/notifications/addNotifications`, { notificationsData: notificationsData });
         return response;
     } catch (error) {

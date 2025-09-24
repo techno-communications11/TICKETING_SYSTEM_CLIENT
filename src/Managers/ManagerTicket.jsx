@@ -539,7 +539,7 @@ function ManagerTicket() {
             );
             setLoading(false);
             setAllTickets(filtered || []);
-            console.log(filtered || []);
+            // console.log(filtered || []);
             // console.log(filtered || []);
         } catch (error) {
             setLoading(false);

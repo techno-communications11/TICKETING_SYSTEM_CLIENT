@@ -56,16 +56,16 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) 
         try {
             // const ticketId = 'Ticket#1001';
             const ticketId = await generatedTicketId();
-            console.log(
-                {
-                    ticketId,
-                    formData: ticketData,
-                }
-            )
+            // console.log(
+            //     {
+            //         ticketId,
+            //         formData: ticketData,
+            //     }
+            // )
 
             // const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
             // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
-            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
+                const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
