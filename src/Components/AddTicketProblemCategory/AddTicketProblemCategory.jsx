@@ -39,9 +39,9 @@ function AddTicketProblemCategory({ fetchCategory }) {
     { name: 'QA', email: 'reporting@techno-communications.com' },
     { name: 'Reporting', email: 'reporting@example.com' }
   ];
-//  "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
-//         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
-//         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
+  //  "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+  //         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
+  //         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
   // const departments = [
   //   { name: 'Admin', email: 'admin@example.com' },
   //   { name: 'Compliance', email: 'commission@example.com' },
@@ -82,7 +82,7 @@ function AddTicketProblemCategory({ fetchCategory }) {
   const handleAddCategory = async () => {
     setLoader(true);
     try {
-      console.log({ name: newCategory, department: newDepartment.name, departmentEmail })
+      // console.log({ name: newCategory, department: newDepartment.name, departmentEmail })
 
       // const response = await addNewCategory({ name: newCategory, department:  newDepartment.name, departmentEmail });
       // const response = await axios.post('https://ticketing-system-sever.vercel.app/pcategory/addproblemcateroy', {
@@ -91,7 +91,7 @@ function AddTicketProblemCategory({ fetchCategory }) {
         department: newDepartment.name,
         department_email: departmentEmail
       });
-      console.log('Category added successfully:', response.data);
+      // console.log('Category added successfully:', response.data);
       fetchCategory()
       handleCategoryClose(); // Close the modal after successful addition
       setNewCategory('');
@@ -167,7 +167,7 @@ function AddTicketProblemCategory({ fetchCategory }) {
 
           <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
             <Button onClick={handleCategoryClose}>Cancel</Button>
-            <Button variant="contained" onClick={handleAddCategory}>
+            <Button disabled={loader} variant="contained" onClick={handleAddCategory}>
               {loader ? <CircularProgress size={25} /> : "Add"}
             </Button>
           </Box>

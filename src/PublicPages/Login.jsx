@@ -34,12 +34,14 @@ function Login() {
             const response = await loginServices(formData);
             const { department, subDepartment } = jwtDecode(response.data.token);
             dispatch(login(response.data.data))
-            cookie.set('id', response.data.id);
-            cookie.set('token', response.data.token);
+            // cookie.set('id', response.data.id, { expires: 0.0007, path: "/" });
+            // cookie.set('token', response.data.token, { expires: 0.0007, path: "/" });
+            cookie.set('id', response.data.id, { expires: 0.375, path: "/" });
+            cookie.set('token', response.data.token, { expires: 0.375, path: "/" });
             // console.log(response.data.data.id);
             // console.log(response.data.token);
             if (response.data.data.first === false) {
-                cookie.set("id", response.data.id);
+                cookie.set("id", response.data.id, { expires: 0.375, path: "/" });
                 // toast.success("Login successful!");
                 return navigate('/reset-password')
             }
