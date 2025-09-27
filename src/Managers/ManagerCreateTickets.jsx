@@ -423,7 +423,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                                             }
                                         </Select>
                                     </FormControl>
-                                    <AddTicketProblemCategory fetchCategory={fetchCategory} />
+                                    {/* <AddTicketProblemCategory fetchCategory={fetchCategory} /> */}
                                 </div>
                                 <div className="col-md-6">
                                     <TextField
