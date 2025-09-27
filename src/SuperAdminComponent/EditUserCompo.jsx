@@ -25,9 +25,9 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
 
     // Departments (same as AddUserCompo)
     const [departments] = useState([
-         "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
-        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics","Supervisor","Local IT"
+        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
 
     // Load data when modal opens
@@ -81,13 +81,17 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
         try {
             const payload = {
                 ...formData,
-                _id: selectedRows[0]._id
+                _id: selectedRows[0]._id,
+                subDepartment: formData.role
             };
             const updatedResponse = await userUpdatedServices(userId, payload); // 👈 backend update call
             // console.log(updatedResponse)
-            setLoader(false);
-            fetchAllUserData(); // refresh table
-            handleClose();
+            if (updatedResponse.status === 200) {
+                // console.log(payload)
+                setLoader(false);
+                fetchAllUserData(); // refresh table
+                handleClose();
+            } 
         } catch (error) {
             setLoader(false);
             console.error("Update failed:", error);
