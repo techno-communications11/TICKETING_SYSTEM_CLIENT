@@ -610,6 +610,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteProblemCategory, getAllProblemCategory } from '../Services/categoryofproblem.services';
 import { toast } from 'react-toastify';
 import BasicBreadcrumbs from '../Components/BasicBreadcrumbs/BasicBreadcrumbs';
+import AddProblemCategoryTicket from '../Components/AddProblemCategoryTicket/AddProblemCategoryTicket';
 
 function SuperAdminProblemsofCategory() {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -727,7 +728,10 @@ function SuperAdminProblemsofCategory() {
   return (
     <div className="container">
       <BasicBreadcrumbs name="Category Of Problems" />
-      <h4>Category of Problems</h4>
+      <div className="">
+        <h4>Category of Problems</h4>
+        <AddProblemCategoryTicket fetchCategory={fetchAllUserData} />
+      </div>
 
       {/* Search + Bulk Delete */}
       <div className="d-flex align-items-center my-3" style={{ gap: "10px" }}>

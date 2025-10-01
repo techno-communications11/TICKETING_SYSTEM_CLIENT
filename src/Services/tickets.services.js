@@ -136,9 +136,18 @@ export const deleteTicketServices = async (ids) => {
         throw error;
     }
 }
-export const transferedTicketServices = async (ticketId, newOwnerId, transferReason, departmentName) => {
+export const transferedTicketServices = async (ticketId, newOwnerId, transferReason, departmentName, managerName, managerName_email) => {
     try {
-        const response = await axios.post(`${API_URL}/tickets/transfered-ticket`, { ticketId, newOwnerId, transferReason, departmentName });
+        const response = await axios.post(`${API_URL}/tickets/transfered-ticket`, { ticketId, newOwnerId, transferReason, departmentName, managerName, managerName_email });
+        // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+export const editicketServices = async (id, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/tickets/edit-ticket`, { id, data });
         // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
         return response;
     } catch (error) {

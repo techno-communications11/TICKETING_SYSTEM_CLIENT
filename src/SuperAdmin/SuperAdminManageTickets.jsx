@@ -39,6 +39,7 @@ import { useNavigate } from 'react-router-dom';
 import SuperAdminCreateTicket from './SuperAdminCreateTicket';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import cookies from "js-cookie";
+import EditTickets from '../SuperAdminComponent/EditTickets';
 function SuperAdminManageTickets() {
   const role = cookies.get("it")
   const [selectedRows, setSelectedRows] = useState([]);
@@ -253,15 +254,17 @@ function SuperAdminManageTickets() {
         >
           <Typography variant="subtitle1">{selectedRows.length} selected</Typography>
 
-          <Tooltip title="Edit">
-            <IconButton onClick={() => console.log('Edit', selectedRows)} sx={{
+          {/* <Tooltip title="Edit">
+            <IconButton onClick={() => console.log('Edit', selectedRows[0])} sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
               }
             }}>
               <EditIcon color="primary" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
+
+          {/* <EditTickets selectedRows={selectedRows} /> */}
 
           <Tooltip title="Delete">
             <IconButton onClick={() => deletesTicketsBttn()} sx={{

@@ -130,7 +130,7 @@
 
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { getAllUser } from '../Services/auth.services';
+import { getAllUser, getAllUsers } from '../Services/auth.services';
 // import { transferTicketAPI } from '../Services/ticket.services'; // aapka transfer API
 import {
     Button,
@@ -199,8 +199,14 @@ function ManagerTransferedTickets({ loading, ticketData, filteredTickets }) {
                 newOwnerId: selectedManager.id,
                 transferReason: transferReason || null, // optional, default null
             };
-            const response = await transferedTicketServices(ticketData?.id, selectedManager?.id, transferReason || null, selectedManager?.department);
+            const responses = await getAllUsers();
+            const filteredData = responses.data.data.filter((data) => data.id === selectedManager?.id)
+
+            // console.log(filteredData[0]?.name)
+            // console.log(filteredData[0]?.email)
+            const response = await transferedTicketServices(ticketData?.id, selectedManager?.id, transferReason || null, selectedManager?.department, filteredData[0]?.name, filteredData[0]?.email);
             //   const response = await transferedTicketServices(payload);
+            // console.log(response)
             if (response.status === 200) {
                 toast.success("Ticket transferred successfully!");
                 filteredTickets();

@@ -9,7 +9,7 @@ import AddTicketProblemCategory from '../Components/AddTicketProblemCategory/Add
 import Cookies from 'js-cookie'
 import { getAllStores } from '../Services/stores.services';
 import { getAllProblemCategory } from '../Services/categoryofproblem.services';
-import { getAllUser, getAllUsers } from '../Services/auth.services';
+import { getAllUser } from '../Services/auth.services';
 import { useSelector } from 'react-redux';
 const style = {
     position: 'absolute',
@@ -42,12 +42,9 @@ function ManagerCreateTickets({ fetchTickets }) {
     const [managerData, setManagerData] = useState([]);
     const [currentDatauser, setCurrentDatauser] = useState([])
     const id = Cookies.get('id')
-    // console.log(id)
-    // const a = parseInt(Cookies.get('id'))
-    // console.log("user", user)
-    // console.log("id", id)
+    const [isBlockedBtn, setIsBlockBtn] = useState(false);
     const MARKETS = useMemo(() => ([
-        "ALL MARKETS", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
+        "BOPK", "ALL MARKETS", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
         "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE",
         "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DEIGO",
         "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
@@ -55,27 +52,20 @@ function ManagerCreateTickets({ fetchTickets }) {
     const getCurrentUser = useCallback(async () => {
         const curremntUsre = await user;
         setCurrentDatauser(curremntUsre)
-        // console.log("Render User data", curremntUsre)
     }, [])
     useEffect(() => {
         getCurrentUser()
     }, [getCurrentUser])
     const fetchCUrrentUser = useCallback(async () => {
         try {
-            // const currentDatauser = await user;
             const response = await getAllUser();
-            // console.log(currentDatauser)
             const filteration = response.data.data.filter((data) => data.id === id)
             setCurrentUserData(filteration)
-            // console.log("response", currentDatauser?.id)
             setTicketData((prevData) => ({
                 ...prevData,
                 name: currentDatauser?.name || filteration[0]?.name,
                 email: currentDatauser?.email || filteration[0]?.email,
                 phone: currentDatauser?.phone || filteration[0]?.phone,
-                // name: filteration[0]?.name,
-                // email: filteration[0]?.email,
-                // phone: filteration[0]?.phone,
                 userId: id || currentDatauser?.id,
                 currentOwnerId: id || currentDatauser?.id,
                 creatordepartment: filteration[0]?.subDepartment,
@@ -99,10 +89,7 @@ function ManagerCreateTickets({ fetchTickets }) {
         try {
             const resposne = await getAllProblemCategory();
             const filteration = resposne.data.data;
-            // const filteration = resposne.data.data.filter((data) => data.department === currentUserData[0]?.department)
             setTypeofticket(filteration)
-            // console.log("currentUserData", currentUserData[0]?.department)
-            // console.log(resposne.data.data)
         } catch (error) {
             console.log("Error", error.message)
         }
@@ -110,19 +97,14 @@ function ManagerCreateTickets({ fetchTickets }) {
     const filterationManager = useCallback(async () => {
         try {
             const response = await getAllUser();
-            // const response = await getAllUsers();
             const filterationData = response?.data?.data?.filter((data) => data.department === ticketData.department && data.subDepartment === "Manager");
             setManagerData(filterationData)
-            // console.log(filterationData)
             if (filterationData.length === 1) {
                 setTicketData({
                     ...ticketData,
                     managerID: filterationData[0].id,
                     managerName: filterationData[0].name,
                     managerName_email: filterationData[0].email,
-                    // name: currentUserData[0]?.name || currentUserData[0]?.name,
-                    // email: currentUserData[0]?.email || currentUserData[0]?.email,
-                    // phone: currentUserData[0]?.phone || currentUserData[0]?.phone,
                     userId: id,
                     currentOwnerId: id,
                     name: currentDatauser?.name,
@@ -157,40 +139,8 @@ function ManagerCreateTickets({ fetchTickets }) {
         fetchCategory()
     }, [fetchCategory])
 
-    // const handleStore = async (e) => {
-    //     console.log(e.target.value, 'stores all')
-    //     const selectedStore = stores.find(store => store._id === e.target.value);
-    //     try {
-    //         if (e.target.value === 'All Stores') {
-    //             setTicketData({
-    //                 ...ticketData,
-    //                 storeId: 'All Stores',
-    //                 store: 'All Stores',
-    //                 store_email: 'All Stores',
-    //                 store_phone: 'All Stores',
-    //                 store_Tech_id: 'All Stores',
-    //                 store_detail: 'All Stores',
-    //             });
-    //             return;
-    //         }else{
-    //             setTicketData({
-    //                 ...ticketData,
-    //                 storeId: e.target.value,
-    //                 store: selectedStore?.store_name,
-    //                 store_email: selectedStore?.stroe_email,
-    //                 store_phone: selectedStore?.store_phone,
-    //                 store_Tech_id: selectedStore?.bdi_id,
-    //                 store_detail: selectedStore,
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.log('error', error.message)
-    //     }
-    // }
     const handleStore = async (e) => {
         const value = e.target.value;
-        // console.log(value, 'stores all');
-
         if (value === 'All Stores') {
             setTicketData(prev => ({
                 ...prev,
@@ -203,15 +153,13 @@ function ManagerCreateTickets({ fetchTickets }) {
             }));
             return;
         }
-
         const selectedStore = stores.find(store => store.id === value);
-        // console.log(selectedStore)
         if (selectedStore) {
             setTicketData(prev => ({
                 ...prev,
                 storeId: selectedStore.id,
                 store: selectedStore.store_name || '',
-                store_email: selectedStore.stroe_email || '', // Typo fixed if needed (see below)
+                store_email: selectedStore.stroe_email || '',
                 store_phone: selectedStore.store_phone || '',
                 store_Tech_id: selectedStore.bdi_id || '',
                 store_detail: selectedStore,
@@ -225,8 +173,6 @@ function ManagerCreateTickets({ fetchTickets }) {
             console.warn('Selected store not found!');
         }
     };
-
-
 
     const handleCategory = async (e) => {
         try {
@@ -249,8 +195,6 @@ function ManagerCreateTickets({ fetchTickets }) {
 
     const handleDepartmentChange = (event) => {
         const selectedManager = managerData.find(user => user.name === event.target.value);
-        // const selectedManager = managerData.find(user => user.name === event.target.value);
-        // console.log("selectedManager", selectedManager)
         setTicketData({
             ...ticketData,
             managerID: selectedManager.id,
@@ -271,6 +215,29 @@ function ManagerCreateTickets({ fetchTickets }) {
             ...ticketData,
             priority: e,
         });
+    }
+
+    const handleMaretBtn = async (e) => {
+        if (e === "BOPK") {
+            setIsBlockBtn(true)
+            setTicketData({
+                ...ticketData,
+                market: e,
+                storeId: 'BOPK',
+                store: 'BOPK',
+                store_email: 'BOPK',
+                store_phone: 'BOPK',
+                store_Tech_id: 'BOPK',
+                store_detail: 'BOPK',
+            });
+            return;
+        } else {
+            setIsBlockBtn(false)
+            setTicketData({
+                ...ticketData,
+                market: e,
+            });
+        }
     }
 
     return (
@@ -302,11 +269,10 @@ function ManagerCreateTickets({ fetchTickets }) {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            p: 2, // Padding for the header
-                            borderBottom: '1px solid #ccc', // Separator line
+                            p: 2,
+                            borderBottom: '1px solid #ccc',
                         }}
                     >
-                        {/* Title */}
                         <Typography
                             id="keep-mounted-modal-title"
                             variant="h5"
@@ -317,15 +283,12 @@ function ManagerCreateTickets({ fetchTickets }) {
                         >
                             Create New Ticket
                         </Typography>
-
-                        {/* Close Button */}
                         <IconButton
                             aria-label="close"
-                            // onClick={handleClose}
                             sx={{
-                                color: '#666', // Subtle color for the close button
+                                color: '#666',
                                 '&:hover': {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.04)', // Hover effect
+                                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
                                 },
                             }}
                             onClick={handleClose}
@@ -375,7 +338,8 @@ function ManagerCreateTickets({ fetchTickets }) {
                                         name="market"
                                         variant="outlined"
                                         value={ticketData.market || ''}
-                                        onChange={(e) => { setTicketData({ ...ticketData, market: e.target.value }) }}
+                                        onChange={(e) => { handleMaretBtn(e.target.value) }}
+                                        // onChange={(e) => { setTicketData({ ...ticketData, market: e.target.value }) }}
                                         error={!!ticketErrors.market}
                                         helperText={ticketErrors.market}
                                     >
@@ -390,7 +354,7 @@ function ManagerCreateTickets({ fetchTickets }) {
                                         <Select
                                             label="Stores"
                                             name="store"
-                                            disabled={!ticketData.market}
+                                            disabled={!ticketData.market || isBlockedBtn}
                                             value={ticketData.storeId || ""}
                                             onChange={handleStore}
                                             error={!!ticketErrors.store}
@@ -423,7 +387,6 @@ function ManagerCreateTickets({ fetchTickets }) {
                                             }
                                         </Select>
                                     </FormControl>
-                                    {/* <AddTicketProblemCategory fetchCategory={fetchCategory} /> */}
                                 </div>
                                 <div className="col-md-6">
                                     <TextField

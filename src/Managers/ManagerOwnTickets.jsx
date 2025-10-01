@@ -14,7 +14,21 @@ function ManagerOwnTickets() {
         setLoading(true);
         try {
             const resposne = await getalltickets();
-            const filteration = resposne.data.data.filter((data) => data.assignerId === id)
+            // console.log(resposne.data.data)
+            const filteration = resposne.data.data.filter((data) => {
+                if (data.assignerId !== null && data.assignerId !== id) return false;
+                // Case 1: assignerId match kare
+                if (data.assignerId === id) return true;
+
+                // Case 2: managerID match kare
+                if (data.managerID === id) return true;
+
+                // Case 3: assignerId kisi aur ka ho (aur null bhi na ho) -> skip
+
+                return false;
+            });
+
+            // const filteration = resposne.data.data.filter((data) => data.assignerId === id)
             setTickets(filteration)
         } catch (error) {
             console.log("ERROR", error.message);

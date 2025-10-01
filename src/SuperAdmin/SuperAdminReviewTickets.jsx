@@ -15,6 +15,7 @@ import { getAllUser, getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import axios from 'axios';
 import SuperAdminComments from './SuperAdminComments';
+import ManagerTransferedTickets from '../Managers/ManagerTransferedTickets';
 function SuperAdminReviewTickets() {
     const [comments, setComments] = useState([
         { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
@@ -256,7 +257,7 @@ function SuperAdminReviewTickets() {
         </div>
     }
     const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
-
+    console.log(detailTicket[0])
     return (
         <div className='container d-flex flex-column gap-3'>
             <div className="row">
@@ -300,6 +301,7 @@ function SuperAdminReviewTickets() {
                                 <Button variant='outlined' disabled>Re-open</Button> : ""
                         }
                     </div>
+                    <ManagerTransferedTickets loading={loading} ticketData={detailTicket[0]} filteredTickets={filteredTickets} />
                     <div className="d-flex gap-2">
                         {
                             detailTicket[0]?.assignerId ?
