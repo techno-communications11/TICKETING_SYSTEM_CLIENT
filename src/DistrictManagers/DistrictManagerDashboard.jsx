@@ -19,6 +19,7 @@ import { useGlobalState } from '../Context/context';
 // import MarketManagersPiechart from './MarketManagersPiechart';
 import DistrictManagerFilterationTickets from './DistrictManagerFilterationTickets';
 import DistrictManagersPiechart from './DistrictManagersPiechart';
+import DistrictManagerCreateTickets from './DistrictManagerCreateTickets';
 
 
 function DistrictManagerDashboard() {
@@ -169,6 +170,7 @@ function DistrictManagerDashboard() {
                     </FormControl>
 
                     <Button variant='contained' onClick={fetchTickets}>Refresh</Button>
+                    <DistrictManagerCreateTickets fetchTickets={fetchTickets} />
                 </div>
             </div>
 

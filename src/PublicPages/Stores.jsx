@@ -23,7 +23,6 @@ function Stores() {
       const response = await getAllStores();
       setStores(response); // Update the stores state with the fetched data
       setFilteredStores(response); // Initially filter all stores
-      console.log(response);
     } catch (error) {
       console.error("Error fetching stores:", error);
     }
@@ -120,16 +119,16 @@ function Stores() {
                     }}
                     checked={selectedRows.length === filteredStores.length && filteredStores.length > 0}
                     indeterminate={selectedRows.length > 0 && selectedRows.length < filteredStores.length}
-                    // onChange={handleSelectAll}
+                  // onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell className='p-0' sx={{ color: 'white',width:"200px", fontSize: "14px" }}>TECH ID</TableCell>
-                <TableCell sx={{ color: 'white',width:"200px", fontSize: "14px" }} className='p-0'>Market</TableCell>
-                <TableCell sx={{ color: 'white',width:"200px", fontSize: "14px" }} className='p-0'>Door Code</TableCell>
-                <TableCell sx={{ color: 'white',width:"200px", fontSize: "14px" }}>Store Name</TableCell>
-                <TableCell sx={{ color: 'white',width:"200px", fontSize: "14px" }}>Store Email</TableCell>
-                <TableCell sx={{ color: 'white',width:"200px", fontSize: "14px" }}>Store Phone</TableCell>
-                <TableCell className='p-0' sx={{ color: 'white',fontSize: "14px",width:"200px"  }}>Store Address</TableCell>
+                <TableCell className='p-0' sx={{ color: 'white', width: "200px", fontSize: "14px" }}>TECH ID</TableCell>
+                <TableCell sx={{ color: 'white', width: "200px", fontSize: "14px" }} className='p-0'>Market</TableCell>
+                <TableCell sx={{ color: 'white', width: "200px", fontSize: "14px" }} className='p-0'>Door Code</TableCell>
+                <TableCell sx={{ color: 'white', width: "200px", fontSize: "14px" }}>Store Name</TableCell>
+                <TableCell sx={{ color: 'white', width: "200px", fontSize: "14px" }}>Store Email</TableCell>
+                <TableCell sx={{ color: 'white', width: "200px", fontSize: "14px" }}>Store Phone</TableCell>
+                <TableCell className='p-0' sx={{ color: 'white', fontSize: "14px", width: "200px" }}>Store Address</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -142,19 +141,19 @@ function Stores() {
                         onChange={() => handleRowSelect(store._id)}
                       />
                     </TableCell>
-                    <TableCell className='p-0' sx={{fontSize:"14px"}}>{store.bdi_id}</TableCell>
-                    <TableCell className='p-0' sx={{fontSize:"14px"}}>{store.market}</TableCell>
-                    <TableCell className='p-0' sx={{fontSize:"14px"}}>{store.door_code}</TableCell>
-                    <TableCell sx={{fontSize:"14px"}}>{store.store_name}</TableCell>
-                    <TableCell className='p-0' sx={{fontSize:"14px"}}>{store.stroe_email}</TableCell>
-                    <TableCell sx={{fontSize:"14px"}}>{store.store_phone}</TableCell>
-                    <TableCell sx={{fontSize:"14px"}}>{store.store_addres}</TableCell>
+                    <TableCell className='p-0' sx={{ fontSize: "14px" }}>{store.bdi_id}</TableCell>
+                    <TableCell className='p-0' sx={{ fontSize: "14px" }}>{store.market}</TableCell>
+                    <TableCell className='p-0' sx={{ fontSize: "14px" }}>{store.door_code}</TableCell>
+                    <TableCell sx={{ fontSize: "14px" }}>{store.store_name}</TableCell>
+                    <TableCell className='p-0' sx={{ fontSize: "14px" }}>{store.stroe_email}</TableCell>
+                    <TableCell sx={{ fontSize: "14px" }}>{store.store_phone}</TableCell>
+                    <TableCell sx={{ fontSize: "14px" }}>{store.store_addres}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} height={500} align="center">
-                    <CircularProgress size={30}/>
+                    <CircularProgress size={30} />
                   </TableCell>
                 </TableRow>
               )}

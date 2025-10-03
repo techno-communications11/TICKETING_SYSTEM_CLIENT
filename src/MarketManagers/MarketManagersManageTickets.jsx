@@ -1,8 +1,8 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, Checkbox, Select, MenuItem, FormControl, InputLabel, TextField,
+  Paper, Select, MenuItem, FormControl, InputLabel, TextField,
   InputAdornment, IconButton, CircularProgress
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -27,7 +27,6 @@ function MarketManagersManageTickets() {
 
   const [allTickets, setAllTickets] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
   const [activeFilter, setActiveFilter] = useState("Total");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
@@ -118,7 +117,19 @@ function MarketManagersManageTickets() {
   const handleReviewTicket = (id) => {
     navigate(`/market-manager-review-ticket/${id}`);
   };
+  function getTicketAge(createdAt) {
+    const now = new Date();
+    const created = new Date(createdAt);
+    const diffMs = now - created; // difference in milliseconds
 
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+    const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+    if (diffDays > 0) return `${diffDays}d ${diffHours}h ago`;
+    if (diffHours > 0) return `${diffHours}h ${diffMinutes}m ago`;
+    return `${diffMinutes}m ago`;
+  }
   return (
     <div className="container">
       <div className="row">
@@ -222,7 +233,8 @@ function MarketManagersManageTickets() {
                 <TableCell sx={{ color: 'white' }}>Status</TableCell>
                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
-                <TableCell sx={{ color: 'white' }}>Assigned To</TableCell>
+                <TableCell sx={{ color: 'white' }}>Age</TableCell>
+                <TableCell sx={{ color: 'white' }}>Solved By</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -241,9 +253,9 @@ function MarketManagersManageTickets() {
               ) : (
                 filteredTickets.map(ticket => (
                   <TableRow
-                    key={ticket._id}
+                    key={ticket.id}
                     hover
-                    onClick={() => handleReviewTicket(ticket._id)}
+                    onClick={() => handleReviewTicket(ticket.id)}
                     sx={{ cursor: 'pointer' }}
                   >
                     <TableCell>{ticket.ticketId}</TableCell>
@@ -252,7 +264,14 @@ function MarketManagersManageTickets() {
                     <TableCell>{ticket.status}</TableCell>
                     <TableCell>{ticket.category}</TableCell>
                     <TableCell>{ticket.ticketDescription}</TableCell>
-                    <TableCell>{ticket.assignerName || "N/A"}</TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: "0.85rem",
+                        whiteSpace: "nowrap",
+                        padding: "10px 12px"
+                      }}
+                    >{getTicketAge(ticket.createdAt)}</TableCell>
+                    <TableCell>{ticket.assignerName || "-"}</TableCell>
                   </TableRow>
                 ))
               )}

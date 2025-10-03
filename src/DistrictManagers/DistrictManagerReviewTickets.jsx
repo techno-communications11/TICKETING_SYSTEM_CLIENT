@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { addNotificationsServices } from '../Services/notifications.services';
 import { getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
+import ManagerComments from '../Managers/ManagerComments';
 function DistrictManagerReviewTickets() {
   const [comments, setComments] = useState([
     { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
@@ -37,7 +38,7 @@ function DistrictManagerReviewTickets() {
     settLoading(true)
     try {
       const response = await getalltickets();
-      const filterartion = response.data.data.filter((data) => data._id === id);
+      const filterartion = response.data.data.filter((data) => data.id === id);
       setDetailTicket(filterartion);
       console.log(filterartion);
     } catch (error) {
@@ -104,6 +105,53 @@ function DistrictManagerReviewTickets() {
       Data NOt FOund Yet
     </div>
   }
+
+  const handleChangeStatus = async (e) => {
+    setLoading(true)
+    try {
+      const notificationObj = {
+        ticketId: detailTicket[0]?.id,
+        ticket_Id: detailTicket[0]?.ticketId,
+        recipientId: detailTicket[0]?.assignerId,
+        manager: detailTicket[0]?.managerID,
+        marketmanager: detailTicket[0]?.marketManager_id,
+        distrcitmanager: detailTicket[0]?.districtManager_id,
+        senderId: id,
+        notification_type: "ticket closed",
+      };
+      socket.emit('notify', notificationObj)
+      await addNotificationsServices(notificationObj);
+      closeTicket(detailTicket[0].id)
+        .then(async (response) => {
+          // console.log(response)
+          if (response.data.status == 200) {
+            try {
+              // const resposne = await ticketProgressServices(detailTicket[0]?._id, "Closed");
+              toast.success(`🎉 Ticket #${detailTicket[0].ticketId} has been closed!`);
+              filteredTickets()
+              setTimeout(() => {
+                setLoading(false)
+              }, 3000);
+            } catch (error) {
+              setLoading(false)
+              console.log("ERROR FROM UPDATING TICKET PROGRESS", error.message)
+            }
+          }
+        })
+        .catch(error => {
+          setLoading(false)
+          console.error("Failed to update ticket status:", error.message);
+        });
+      return setLoading(false);
+    } catch (error) {
+      setLoading(false)
+      console.log("error", error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
   const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
 
   return (
@@ -138,15 +186,17 @@ function DistrictManagerReviewTickets() {
           <div className="d-flex gap-2">
             <TextField
               size='small'
-              value={"open"}
+              sx={{ width: "150px" }}
+              value={detailTicket[0]?.status}
               InputProps={{ readOnly: true }}
               disabled
               variant="outlined"
             />
+            <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Closed"}</Button>
           </div>
         </div>
       </div>
-      <TicketProgress status={latestStatus} />
+      {/* <TicketProgress status={latestStatus} /> */}
       <div className="row">
         <Typography variant='h6' className='mb-3'>Detail</Typography>
         <div className="col-md-8">
@@ -160,13 +210,17 @@ function DistrictManagerReviewTickets() {
                   <Typography variant='body1'><span className='fw-semibold'>Department:</span> {'N/A'}</Typography>
                   <Typography variant='body1'><span className='fw-semibold'>Created At:</span> {detailTicket[0]?.createdAt && moment(detailTicket[0]?.createdAt).format("DD-MM-YYYY hh:mm A")}</Typography>
                 </div>
-                {/* <div className="col-md-6">
+                <div className="col-md-6">
                   <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Department:</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Department Name:</span> {detailTicket[0]?.department}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Department Email:</span> {"N/A"}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Department Manager Name:</span> {detailTicket[0]?.managerName}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Department Manager Email:</span> {detailTicket[0]?.managerName_email}</Typography>
-                </div> */}
+                  <Typography variant='body1'><span className='fw-semibold'>Department Name:</span> {detailTicket[0]?.istransfereticket
+                    ? detailTicket[0]?.departmentName : detailTicket[0]?.department}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Department Email:</span> {detailTicket[0]?.istransfereticket
+                    ? transferedData?.department_email : detailTicket[0]?.department_email}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Department Manager Name:</span> {detailTicket[0]?.istransfereticket
+                    ? transferedData?.name : detailTicket[0]?.managerName}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Department Manager Email:</span> {detailTicket[0]?.istransfereticket
+                    ? transferedData?.email : detailTicket[0]?.managerName_email}</Typography>
+                </div>
                 <div className="col-md-6">
                   <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Ticket Detail:</Typography>
                   <Typography variant='body1'><span className='fw-semibold'>Ticket ID:</span> {detailTicket[0]?.ticketId}</Typography>
@@ -180,64 +234,32 @@ function DistrictManagerReviewTickets() {
                   <Typography variant='body1'><span className='fw-semibold'>Aproved:</span> {detailTicket[0]?.approved === true ? "Aproved" : "N/A"}</Typography>
                   <Typography variant='body1'><span className='fw-semibold'>Current Status:</span> {detailTicket[0]?.status}</Typography>
                 </div>
-                {/* <div className="col-md-6">
+                <div className="col-md-6">
                   <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Agent  Detail:</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Assigned By:</span> {detailTicket[0]?.assignedmanagername}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Assigned To:</span> {detailTicket[0]?.assignerName}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Assignee Email:</span> {"N/A"}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Assigned At:</span> {detailTicket[0]?.status}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Agent Status:</span> {detailTicket[0]?.agentstatus}</Typography>
-                  <Typography variant='body1'><span className='fw-semibold'>Agent Complete At :</span> {detailTicket[0]?.completedAt ? moment(detailTicket[0]?.completedAt).format("DD-MM-YYYY hh:mm A") : "N/A"}</Typography>
-                </div> */}
+                  <Typography variant='body1'><span className='fw-semibold'>Assigned By:</span> {detailTicket[0]?.assignedmanagername || "-"}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Assigned To:</span> {detailTicket[0]?.assignerName || "-"}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Assignee Email:</span> {detailTicket[0]?.assign_email || "-"}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Assigned At:</span> {detailTicket[0]?.assign_At ? moment(detailTicket[0]?.assign_At).format("DD-MM-YYYY hh:mm A") : "-"}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Agent Status:</span> {detailTicket[0]?.agentstatus || "-"}</Typography>
+                  <Typography variant='body1'><span className='fw-semibold'>Agent Complete At :</span> {detailTicket[0]?.completedAt ? moment(detailTicket[0]?.completedAt).format("DD-MM-YYYY hh:mm A") : "-"}</Typography>
+                </div>
               </div>
           }
         </div>
         <div className="col-md-4">
-          <UploadDocCompo images={detailTicket[0]?.files} />
+          {detailTicket[0]?.files && JSON.parse(detailTicket[0].files).length > 0 ? (
+            <UploadDocCompo images={JSON.parse(detailTicket[0].files)} />
+          ) : (
+            <div className="slide-content text-center d-flex align-items-center justify-content-center" style={{ height: "300px", backgroundColor: "#f8f9fa", borderRadius: "10px" }}>
+              <p className="text-muted">No images available</p>
+            </div>
+          )}
         </div>
       </div>
       <div className="row">
         <div className="col-md-6">
           <div className="mt-4">
-            <Typography variant="h5" gutterBottom>Comments</Typography>
-            <List className="mb-3 py-3 px-3 border border-dark rounded-3 bg-white" style={{ height: "400px", overflow: "auto" }}>
-              {/* {comments.map((comment, index) => (
-                                  <ListItem key={index} alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
-                                      <Avatar>{comment.user.charAt(0)}</Avatar>
-                                      <ListItemText
-                                          className="ms-3"
-                                          primary={<Typography variant="subtitle2" fontWeight="bold">{comment.user}</Typography>}
-                                          secondary={
-                                              <>
-                                                  <Typography variant="body2" style={{ background: "#f4f6f8", padding: "8px", borderRadius: "10px" }}>{comment.text}</Typography>
-                                                  <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginTop: "5px" }}>{comment.time}</Typography>
-                                              </>
-                                          }
-                                      />
-                                  </ListItem>
-                              ))} */}
-              <ListItem alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
-                <ListItemText
-                  className="ms-3"
-                  primary={<Typography variant="subtitle2" fontWeight="bold">Working on it!</Typography>}
-                />
-              </ListItem>
-            </List>
-            <TextField
-              multiline
-              rows={3}
-              fullWidth
-              variant="outlined"
-              // value={note}
-              // onChange={(e) => setNote(e.target.value)}
-              placeholder="Add a comment..."
-            />
-            <div className="text-end">
-              <Button variant='contained' className="mt-2" onClick={() => {
-                setComments([...comments, note]);
-                setNote("");
-              }}>Submit Comment</Button>
-            </div>
+            <ManagerComments ticketId={detailTicket[0]?.id} />
           </div>
         </div>
       </div>

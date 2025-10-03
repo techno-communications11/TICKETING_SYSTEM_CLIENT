@@ -44,7 +44,7 @@ function MarketManagerReopenTickets() {
      }, [fetchAllTickets]);
  
      const handleReviewTicket = (id) => {
-         navigate(`/manager-review-ticket/${id}`);
+         navigate(`/market-manager-review-ticket/${id}`);
      };
  
      const filteredTickets = tickets.filter((ticket) =>
@@ -110,9 +110,9 @@ function MarketManagerReopenTickets() {
                              ) : (
                                  filteredTickets.map(ticket => (
                                      <TableRow
-                                         key={ticket._id}
+                                         key={ticket.id}
                                          hover
-                                         onClick={() => handleReviewTicket(ticket._id)}
+                                         onClick={() => handleReviewTicket(ticket.id)}
                                          sx={{ cursor: 'pointer' }}
                                      >
                                          <TableCell>{ticket.ticketId}</TableCell>

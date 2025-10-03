@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../Context/context';
 import MarketManagerFilterationTickets from './MarketManagerFilterationTickets';
 import MarketManagersPiechart from './MarketManagersPiechart';
+import MarketManagerCreateTickets from './MarketManagerCreateTickets';
 function MarketManagerDashboard() {
     const { filterationsData, setFilterationsData } = useGlobalState();
     const decodedTickets = decodeToken();
@@ -91,7 +92,6 @@ function MarketManagerDashboard() {
         if (socket) {
             socket.on('receiveNotification', fetchTickets);
         }
-
         return () => {
             if (socket) {
                 socket.off('receiveNotification', fetchTickets);
@@ -164,6 +164,7 @@ function MarketManagerDashboard() {
                     </FormControl>
 
                     <Button variant='contained' onClick={fetchTickets}>Refresh</Button>
+                    <MarketManagerCreateTickets fetchTickets={fetchTickets} />
                 </div>
             </div>
 

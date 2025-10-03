@@ -168,7 +168,7 @@ function AddUserCompo({ fetchAllUserData }) {
             department: finalData.department,
             subDepartment: finalData.role,
             doorcode: finalData.mainDoorCode,
-            markets: finalData.selectedMarkets,
+            markets: finalData.selectedMarkets[0],
             stores: finalData.selectedStores,
             store_detail: storeDetail,
             managedDepartments: finalData.selectedDepts
@@ -213,7 +213,6 @@ function AddUserCompo({ fetchAllUserData }) {
                             <FormHelperText>{errors.department}</FormHelperText>
                         </FormControl>
 
-                        {/* {["Admin", "Finance (GL)", "HR", "Finance", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance"].includes(formData.department) && ( */}
                         {departments.includes(formData.department) && (
                             <FormControl fullWidth error={!!errors.role}>
                                 <InputLabel>Role</InputLabel>
@@ -296,9 +295,9 @@ function AddUserCompo({ fetchAllUserData }) {
                                 />
                                 <Grid container spacing={2}>
                                     {filteredStores.map((store, index) => (
-                                        <Grid item xs={6} md={6} key={store._id}>
+                                        <Grid item xs={6} md={6} key={store.id}>
                                             <FormControlLabel
-                                                control={<Checkbox checked={selectedStores.includes(store._id)} onChange={() => handleMarketSelectionDis(store._id)} />}
+                                                control={<Checkbox checked={selectedStores.includes(store.id)} onChange={() => handleMarketSelectionDis(store.id)} />}
                                                 label={store.store_name}
                                             />
                                         </Grid>

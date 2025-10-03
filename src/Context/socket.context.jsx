@@ -945,6 +945,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const SocketContext = createContext();
 const SOCKET_URL = "https://ticketingapi.techno-communications.com";
+// const SOCKET_URL = "http://localhost:5000";
 
 export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);

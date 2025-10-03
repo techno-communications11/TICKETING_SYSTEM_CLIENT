@@ -41,7 +41,6 @@ function DistrictManagerManageTickets() {
         try {
             const response = await getAllStores();
             const filterationStores = response.filter((data) => currentUserData.includes(data.market))
-            console.log(filterationStores)
             setStores(filterationStores)
         } catch (error) {
             console.log("error", error.message);
@@ -236,9 +235,9 @@ function DistrictManagerManageTickets() {
                             ) : (
                                 filteredTickets.map(ticket => (
                                     <TableRow
-                                        key={ticket._id}
+                                        key={ticket.id}
                                         hover
-                                        onClick={() => handleReviewTicket(ticket._id)}
+                                        onClick={() => handleReviewTicket(ticket.id)}
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell>{ticket.ticketId}</TableCell>

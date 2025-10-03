@@ -404,8 +404,6 @@ function ManagerReviewTicketDetail() {
                                     <Typography variant='body1'><span className='fw-semibold'>Department:</span> {'N/A'}</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Created At:</span> {detailTicket[0]?.createdAt && moment(detailTicket[0]?.createdAt).format("DD-MM-YYYY hh:mm A")}</Typography>
                                 </div>
-                                {/* departmentName
- */}
                                 <div className="col-md-6">
                                     <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Department:</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Department Name:</span> {detailTicket[0]?.istransfereticket
@@ -456,47 +454,6 @@ function ManagerReviewTicketDetail() {
             <div className="row">
                 <div className="col-md-6">
                     <ManagerComments ticketId={detailTicket[0]?.id} />
-                    {/* <div className="mt-4">
-                        <Typography variant="h5" gutterBottom>Comments</Typography>
-                        <List className="mb-3 py-3 px-3 border border-dark rounded-3 bg-white" style={{ height: "400px", overflow: "auto" }}>
-                            {comments.map((comment, index) => (
-                                <ListItem key={index} alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
-                                    <Avatar>{comment.user.charAt(0)}</Avatar>
-                                    <ListItemText
-                                        className="ms-3"
-                                        primary={<Typography variant="subtitle2" fontWeight="bold">{comment.user}</Typography>}
-                                        secondary={
-                                            <>
-                                                <Typography variant="body2" style={{ background: "#f4f6f8", padding: "8px", borderRadius: "10px" }}>{comment.text}</Typography>
-                                                <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginTop: "5px" }}>{comment.time}</Typography>
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                            ))}
-                            // {/* <ListItem alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">
-                            //     <ListItemText
-                            //         className="ms-3"
-                            //         primary={<Typography variant="subtitle2" fontWeight="bold">Working on it!</Typography>}
-                            //     />
-                            // </ListItem>
-                        </List>
-                        <TextField
-                            multiline
-                            rows={3}
-                            fullWidth
-                            variant="outlined"
-                            // value={note}
-                            // onChange={(e) => setNote(e.target.value)}
-                            placeholder="Add a comment..."
-                        />
-                        <div className="text-end">
-                            <Button variant='contained' className="mt-2" onClick={() => {
-                                setComments([...comments, note]);
-                                setNote("");
-                            }}>Submit Comment</Button>
-                        </div>
-                    </div> */}
                 </div>
             </div>
         </div>

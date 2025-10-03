@@ -15,6 +15,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import HistoryIcon from "@mui/icons-material/History";
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
+// import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 export const NAVIGATION = [
   {
@@ -130,7 +131,7 @@ export const NAVIGATION = [
   {
     title: 'Manage Ticket',
     segment: 'market-manager-manage-ticket',
-    icon: <DashboardIcon />,
+    icon: <ConfirmationNumberIcon />,
     roles: ['market manager'],
   },
   // {
@@ -256,7 +257,7 @@ export const NAVIGATION = [
     title: 'Market Structure',
     segment: '',
     icon: <InfoOutlineIcon />,
-    roles: ['manager', 'agent', 'Sales', 'senior manager'],
+    roles: ['manager', 'agent', 'Sales', 'senior manager', 'district manager', 'market manager'],
     type: 'dropdown',
     children: [
       {

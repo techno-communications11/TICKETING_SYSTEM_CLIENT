@@ -22,6 +22,7 @@ function AddTicketProblemCategory({ fetchCategory }) {
 
   const departments = [
     { name: 'Admin', email: 'admin@example.com' },
+    { name: "Admin / IT", email: 'admin@example.com' },
     { name: 'Management', email: 'superadmin@example.com' },
 
     { name: 'Compliance', email: 'compliance@techno-communications.com' },

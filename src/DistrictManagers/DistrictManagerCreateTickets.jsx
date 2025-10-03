@@ -12,6 +12,7 @@ import { getAllProblemCategory } from '../Services/categoryofproblem.services';
 import { getAllUsers } from '../Services/auth.services';
 import DistrictManagerCreateTicketBttn from './DistrictManagerCreateTicketBttn';
 import { use } from 'react';
+import { useSelector } from 'react-redux';
 // import MarketManagerCreateTicketBttn from './MarketManagerCreateTicketBttn';
 const style = {
     position: 'absolute',
@@ -41,9 +42,9 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
     const [stores, setStores] = useState([]);
     const [managerData, setManagerData] = useState([]);
     const [filteredStores, setFilteredStores] = useState([]);
-
+    const { user } = useSelector((state) => state.currentUser);
     const [allStores, setAllStores] = useState([]);
-
+    const [currentDatauser, setCurrentDatauser] = useState([])
 
     const id = Cookies.get('id')
     const MARKETS = useMemo(() => ([
@@ -52,26 +53,32 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
         "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO",
         "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
     ]), []);
+    const getCurrentUser = useCallback(async () => {
+        const curremntUsre = await user;
+        setCurrentDatauser(curremntUsre)
+    }, [])
+    useEffect(() => {
+        getCurrentUser()
+    }, [getCurrentUser])
     const fetchCUrrentUser = useCallback(async () => {
         try {
             const response = await getAllUsers();
-            const filteration = response.data.data.filter((data) => data._id === id)
+            const filteration = response.data.data.filter((data) => data.id === id)
             setCurrentUserData(filteration)
-            console.log(filteration)
             setTicketData((prevData) => ({
                 ...prevData,
-                name: filteration[0]?.name,
-                email: filteration[0]?.email,
-                phone: filteration[0]?.phone,
-                userId: filteration[0]?._id,
+                name: currentDatauser?.name || filteration[0]?.name,
+                email: currentDatauser?.email || filteration[0]?.email,
+                phone: currentDatauser?.phone || filteration[0]?.phone,
+                userId: currentDatauser?.id || filteration[0]?.id,
                 creatordepartment: filteration[0]?.subDepartment || filteration[0]?.department,
-                market: filteration[0]?.markets[0],
-                districtManager_id: filteration[0]?._id,
-                dm_email: filteration[0]?.email,
-                dm_name: filteration[0]?.name,
-                dm_phone: filteration[0]?.phone,
+                market: currentDatauser?.markets || filteration[0]?.markets,
+                districtManager_id: filteration[0]?.id,
+                dm_email: currentDatauser?.email || filteration[0]?.email,
+                dm_name: currentDatauser?.name || filteration[0]?.name,
+                dm_phone: currentDatauser?.phone || filteration[0]?.phone,
             }));
-            setStores(filteration[0]?.stores)
+            setStores(JSON.parse(filteration[0]?.stores))
         } catch (error) {
             console.log("error", error.message)
         }
@@ -86,28 +93,42 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
         }
     }, [ticketData?.market])
 
-    // const filterationStores = useCallback(async () => {
-    //     const currentUseStoresIds = stores
-    //     console.log(currentUseStoresIds)
-    //     if (currentUseStoresIds && Array.isArray(currentUseStoresIds)) {
-    //         const filtered = allStores.filter(store => currentUseStoresIds.includes(store._id));
-    //         setFilteredStores(filtered);
-    //         console.log(filtered);
-    //     } else {
-    //         setFilteredStores([]);
-    //     }
-    // }, [setFilteredStores])
-    // useEffect(() => {
-    //     filterationStores()
-    // }, [allStores, stores, ticketData?.market,filterationStores]);
-
-    useEffect(() => {
-        if (Array.isArray(stores) && Array.isArray(allStores)) {
-            const filtered = allStores.filter(store => stores.includes(store._id));
+    const filterationStores = useCallback(async () => {
+        const currentUseStoresIds = await stores
+        if (currentUseStoresIds && Array.isArray(currentUseStoresIds)) {
+            const filtered = allStores.filter(store => currentUseStoresIds.includes(store.id));
             setFilteredStores(filtered);
             console.log(filtered);
+        } else {
+            setFilteredStores([]);
         }
-    }, [allStores, stores, ticketData?.market]);
+    }, [setFilteredStores])
+    useEffect(() => {
+        filterationStores()
+    }, [allStores, stores, ticketData?.market, filterationStores]);
+
+    // useEffect(() => {
+    //     if (Array.isArray(stores) && Array.isArray(allStores)) {
+    //         const filtered = allStores.filter(store => stores.includes(store.id));
+    //         setFilteredStores(filtered);
+    //         console.log(filtered);
+    //     }
+    // }, [allStores, stores, ticketData?.market]);
+    const fetchStoreData = useCallback(async () => {
+        try {
+            if (Array.isArray(stores) && Array.isArray(allStores)) {
+                const storeSet = new Set(stores); // ✅ fast lookup
+                const filtered = await allStores.filter(store => storeSet.has(store.id));
+                setFilteredStores(filtered);
+            }
+        } catch (error) {
+            console.log("ERROR", error.message)
+        }
+    }, [allStores, stores])
+    useEffect(() => {
+        fetchStoreData()
+    }, [fetchStoreData]);
+
 
     // useEffect(() => {
     //     filterationStores()
@@ -125,13 +146,22 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
         try {
             const response = await getAllUsers();
             const filterationData = response?.data?.data?.filter((data) => data.department === ticketData.department && data.subDepartment === "Manager");
-            // setManagerData(filterationData)
+            setManagerData(filterationData)
             if (filterationData.length === 1) {
                 setTicketData({
                     ...ticketData,
                     managerID: "N/A",
                     managerName: 'N/A',
                     managerName_email: 'N/A',
+                    market: currentDatauser?.markets,
+                    name: currentDatauser?.name,
+                    email: currentDatauser?.email,
+                    phone: currentDatauser?.phone,
+                    userId: currentDatauser?.id,
+                    districtManager_id: currentDatauser?.id,
+                    dm_email: currentDatauser?.email,
+                    dm_name: currentDatauser?.name,
+                    dm_phone: currentDatauser?.phone,
                 });
             } else {
                 setTicketData({
@@ -139,6 +169,15 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                     managerID: '',
                     managerName: '',
                     managerName_email: '',
+                    market: currentDatauser?.markets,
+                    name: currentDatauser?.name,
+                    email: currentDatauser?.email,
+                    phone: currentDatauser?.phone,
+                    userId: currentDatauser?.id,
+                    districtManager_id: currentDatauser?.id,
+                    dm_email: currentDatauser?.email,
+                    dm_name: currentDatauser?.name,
+                    dm_phone: currentDatauser?.phone,
                 });
             }
 
@@ -163,7 +202,7 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
 
     const handleStore = async (e) => {
         try {
-            const selectedStore = filteredStores.find(store => store._id === e.target.value);
+            const selectedStore = filteredStores.find(store => store.id === e.target.value);
             setTicketData({
                 ...ticketData,
                 storeId: e.target.value,
@@ -172,6 +211,15 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                 store_phone: selectedStore?.store_phone,
                 store_Tech_id: selectedStore?.bdi_id,
                 store_detail: selectedStore,
+                market: currentDatauser?.markets,
+                name: currentDatauser?.name,
+                email: currentDatauser?.email,
+                phone: currentDatauser?.phone,
+                userId: currentDatauser?.id,
+                districtManager_id: currentDatauser?.id,
+                dm_email: currentDatauser?.email,
+                dm_name: currentDatauser?.name,
+                dm_phone: currentDatauser?.phone,
             });
         } catch (error) {
             console.log('error', error.message)
@@ -181,29 +229,46 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
     const handleCategory = async (e) => {
         try {
             const resposne = await getAllProblemCategory();
-            const filterationType = resposne.data.data.filter((data) => data._id === e.target.value)
+            const filterationType = resposne.data.data.filter((data) => data.id === e.target.value)
             setTicketData({
                 ...ticketData,
-                categoryId: filterationType[0]?._id,
+                categoryId: filterationType[0]?.id,
                 category: filterationType[0]?.name,
                 department: filterationType[0]?.department,
                 department_email: filterationType[0]?.department_email,
+                market: currentDatauser?.markets,
+                name: currentDatauser?.name,
+                email: currentDatauser?.email,
+                phone: currentDatauser?.phone,
+                userId: currentDatauser?.id,
+                districtManager_id: currentDatauser?.id,
+                dm_email: currentDatauser?.email,
+                dm_name: currentDatauser?.name,
+                dm_phone: currentDatauser?.phone,
             });
         } catch (error) {
             console.log('error', error.message)
         }
     }
 
-    // const handleDepartmentChange = (event) => {
-    //     const selectedManager = managerData.find(user => user.name === event.target.value);
-    //     console.log("selectedManager", selectedManager)
-    //     setTicketData({
-    //         ...ticketData,
-    //         managerID: selectedManager._id,
-    //         managerName: selectedManager.name,
-    //         managerName_email: selectedManager.email,
-    //     });
-    // };
+    const handleDepartmentChange = (event) => {
+        const selectedManager = managerData.find(user => user.name === event.target.value);
+        setTicketData({
+            ...ticketData,
+            managerID: selectedManager.id,
+            managerName: selectedManager.name,
+            managerName_email: selectedManager.email,
+            market: currentDatauser?.markets,
+            name: currentDatauser?.name,
+            email: currentDatauser?.email,
+            phone: currentDatauser?.phone,
+            userId: currentDatauser?.id,
+            districtManager_id: currentDatauser?.id,
+            dm_email: currentDatauser?.email,
+            dm_name: currentDatauser?.name,
+            dm_phone: currentDatauser?.phone,
+        });
+    };
 
     const handleDescription = (e) => {
         setTicketData({
@@ -316,27 +381,11 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                     <TextField
                                         fullWidth
                                         size='medium'
-                                        defaultValue={currentUserData[0]?.markets[0]}
+                                        defaultValue={currentUserData[0]?.markets}
                                         InputProps={{ readOnly: true }}
                                         disabled
                                         variant="outlined"
                                     />
-                                    {/* <TextField
-                                        select
-                                        fullWidth
-                                        size='medium'
-                                        label="Markets"
-                                        name="market"
-                                        variant="outlined"
-                                        value={ticketData.market || ''}
-                                        onChange={(e) => { setTicketData({ ...ticketData, market: e.target.value }) }}
-                                        error={!!ticketErrors.market}
-                                        helperText={ticketErrors.market}
-                                    >
-                                        {MARKETS?.map((market, index) => (
-                                            <MenuItem key={index} value={market}>{market}</MenuItem>
-                                        ))}
-                                    </TextField> */}
                                 </div>
                                 <div className="col-md-6">
                                     <FormControl size="medium" fullWidth >
@@ -344,7 +393,7 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                         <Select
                                             label="Stores"
                                             name="store"
-                                            disabled={!ticketData.market}
+                                            disabled={!currentUserData[0]?.markets}
                                             value={ticketData.storeId || ""}
                                             onChange={handleStore}
                                             error={!!ticketErrors.store}
@@ -353,7 +402,7 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                             <MenuItem value="">Select Store</MenuItem>
                                             {filteredStores.length > 0 ?
                                                 filteredStores.map((store, index) => (
-                                                    <MenuItem key={index} value={store._id}>{store.store_name}</MenuItem>
+                                                    <MenuItem key={index} value={store.id}>{store.store_name}</MenuItem>
                                                 )) : <MenuItem value=""><CircularProgress size={25} /></MenuItem>}
                                         </Select>
                                     </FormControl>
@@ -371,14 +420,15 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                             <MenuItem value="">Select Category of Problem</MenuItem>
                                             {
                                                 typeofticket?.map((data) => (
-                                                    <MenuItem value={data._id}>{data.name}</MenuItem>
+                                                    <MenuItem value={data.id}>{data.name}</MenuItem>
                                                 ))
                                             }
                                         </Select>
                                     </FormControl>
                                     <AddTicketProblemCategory fetchCategory={fetchCategory} />
                                 </div>
-                                {/* <div className="col-md-6">
+
+                                <div className="col-md-6">
                                     <TextField
                                         fullWidth
                                         label="Department"
@@ -406,7 +456,7 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                                 fullWidth
                                                 label="Manager's Name"
                                                 value={ticketData.managerName}
-                                                // onChange={handleDepartmentChange}
+                                                onChange={handleDepartmentChange}
                                                 variant="outlined"
                                                 error={!!ticketErrors.managerName}
                                                 helperText={ticketErrors.managerName}
@@ -430,7 +480,7 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                                 // ""
                                             )
                                     }
-                                </div> */}
+                                </div>
                                 <div className="col-md-6">
                                     <FormControl size="medium" fullWidth>
                                         <InputLabel>Priority</InputLabel>

@@ -63,7 +63,7 @@ function DistrictManagerNotification() {
     try {
       const response = await getAllNotificationsServices();
       const allUser = await getAllUsers();
-      const filteredUser = allUser.data.data.find((data) => data._id === id);
+      const filteredUser = allUser.data.data.find((data) => data.id === id);
 
       if (!filteredUser || !response?.data?.data) return;
       console.log(response.data.data)
@@ -93,7 +93,7 @@ function DistrictManagerNotification() {
           }
 
           return {
-            id: noti._id,
+            id: noti.id,
             ticket_Id: noti.ticketId,
             title,
             description,
@@ -144,7 +144,7 @@ function DistrictManagerNotification() {
       if (!title) return;
 
       const newNotification = {
-        id: ticket._id || Date.now(),
+        id: ticket.id || Date.now(),
         title,
         ticket_Id: ticket.ticketId,
         description,

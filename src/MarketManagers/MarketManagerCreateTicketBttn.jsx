@@ -43,16 +43,14 @@ function MarketManagerCreateTicketBttn({ handleClose, fetchTickets }) {
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
-        console.log("DATA",ticketData)
         setLoader(true);
         if (!validateForm()) return setLoader(false);
         try {
             const ticketId = await generatedTicketId();
-            const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
+            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
-            console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
                     ticketId: resposne.data.data._id,
@@ -65,18 +63,17 @@ function MarketManagerCreateTicketBttn({ handleClose, fetchTickets }) {
                     store: resposne.data.data?.store_detail[0]?._id,
                     notification_type: "new Ticket open",
                 };
-                socket.emit('notify', notificationObj)
-                const r = await ticketProgressServices(resposne.data.data._id, "Created");
+                socket.emit('notify', notificationObj);
+                setLoader(false);
+                generatedTicketId();
+                reset();
+                handleClose();
+                fetchTickets()
+                // const r = await ticketProgressServices(resposne.data.data._id, "Created");
             }
         } catch (error) {
             setLoader(false)
             console.log("error", error.message)
-        } finally {
-            setLoader(false);
-            generatedTicketId();
-            reset();
-            handleClose();
-            fetchTickets()
         }
     };
     return (
