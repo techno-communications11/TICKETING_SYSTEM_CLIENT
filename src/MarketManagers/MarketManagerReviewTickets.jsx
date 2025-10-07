@@ -247,12 +247,27 @@ function MarketManagerReviewTickets() {
           }
         </div>
         <div className="col-md-4">
+          <Typography variant="h6" gutterBottom>
+            Uploaded Images:
+          </Typography>
           {detailTicket[0]?.files && JSON.parse(detailTicket[0].files).length > 0 ? (
             <UploadDocCompo images={JSON.parse(detailTicket[0].files)} />
           ) : (
             <div className="slide-content text-center d-flex align-items-center justify-content-center" style={{ height: "300px", backgroundColor: "#f8f9fa", borderRadius: "10px" }}>
               <p className="text-muted">No images available</p>
             </div>
+          )}
+        </div>
+        <div className="col-md-4">
+          <Typography variant="h6" gutterBottom>
+            Uploaded Documents:
+          </Typography>
+          {detailTicket[0]?.documents && JSON.parse(detailTicket[0]?.documents).length > 0 ? (
+            <ShowAttachmentsFile documents={JSON.parse(detailTicket[0]?.documents)} />
+          ) : (
+            <Typography color="textSecondary">
+              No documents uploaded yet.
+            </Typography>
           )}
         </div>
       </div>

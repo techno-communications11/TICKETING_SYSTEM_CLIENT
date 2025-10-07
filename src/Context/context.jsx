@@ -18,6 +18,7 @@ const defaultTicketData = {
     managerName: '',
     managerID: "",
     files: [],
+    documents: [],
     userId: "",
     priority: "Low",
     storeId: "",

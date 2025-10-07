@@ -43,7 +43,7 @@ function DistrictManagerCreateTicketBttn({ handleClose, fetchTickets }) {
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
-        const ticketId = await generatedTicketId();
+        // const ticketId = await generatedTicketId();
 
         // console.log("DATA", {
         //     ticketId,
@@ -54,10 +54,11 @@ function DistrictManagerCreateTicketBttn({ handleClose, fetchTickets }) {
         try {
             const ticketId = await generatedTicketId();
             const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
+            // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
-            console.log(resposne, "ticketData")
+            // console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
                     ticketId: resposne.data.data._id,

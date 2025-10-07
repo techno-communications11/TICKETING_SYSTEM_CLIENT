@@ -7,7 +7,7 @@ import cookies from 'js-cookie';
 import { useSocket } from '../Context/socket.context';
 import { useGlobalState } from '../Context/context';
 
-function StoreCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) {
+function StoreCreateTicketBttn({ handleClose, fetchTickets }) {
     const { ticketData, reset, setTicketErrors } = useGlobalState();
     const id = cookies.get('id');
     // console.log("user Id",id)
@@ -51,65 +51,66 @@ function StoreCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) {
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
-        const ticketId = await generatedTicketId();
-        console.log(
-            {
-                ticketId,
-                formData: ticketData,
-            }
-        )
-        // console.log(ticketId)
-        // setLoader(true);
-        // if (!validateForm()) return setLoader(false);
-        // try {
-        //     // const ticketId = 'Ticket#1001';
-        //     const ticketId = await generatedTicketId();
-        //     // console.log(
-        //     //     {
-        //     //         ticketId,
-        //     //         formData: ticketData,
-        //     //     }
-        //     // )
-
-        //     // const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
-        //     // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
-        //     const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
+        // const ticketId = await generatedTicketId();
+        // console.log(
+        //     {
         //         ticketId,
         //         formData: ticketData,
-        //     })
-        //     // console.log(resposne, "ticketData")
-        //     if (resposne.status === 200) {
-        //         const notificationObj = {
-        //             ticketId: resposne.data.data._id,
-        //             ticket_Id: ticketId,
-        //             recipientId: ticketData?.marketManager_id,
-        //             manager: ticketData?.managerID,
-        //             marketmanager: ticketData?.marketManager_id,
-        //             distrcitmanager: ticketData?.districtManager_id,
-        //             senderId: id,
-        //             store: resposne.data.data?.store_detail[0]?._id,
-        //             notification_type: "new Ticket open",
-        //         };
-        //         socket.emit('notify', notificationObj)
-        //         setLoader(false);
-        //         generatedTicketId();
-        //         reset();
-        //         handleClose();
-        //         fetchTickets();
-        //         generatedTicketId();
-        //         getCurrentUser()
-        //         setSnackbarMessage('Student data added successfully!');
-        //         setSnackbarSeverity('success');
-        //         setSnackbarOpen(true);
-        //         // const r = await ticketProgressServices(resposne.data.data._id, "Created");
         //     }
-        // } catch (error) {
-        //     setLoader(false)
-        //     console.log("error", error.message)
-        //     setSnackbarMessage('Error occurred: ' + error.message);
-        //     setSnackbarSeverity('error');
-        //     setSnackbarOpen(true);
-        // }
+        // )
+        // console.log(ticketId)
+        setLoader(true);
+        if (!validateForm()) return setLoader(false);
+        try {
+            // const ticketId = 'Ticket#1001';
+            const ticketId = await generatedTicketId();
+            // console.log(
+            //     {
+            //         ticketId,
+            //         formData: ticketData,
+            //     }
+            // )
+
+            // const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
+            // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
+            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
+                // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
+                ticketId,
+                formData: ticketData,
+            })
+            // console.log(resposne, "ticketData")
+            if (resposne.status === 200) {
+                const notificationObj = {
+                    ticketId: resposne.data.data._id,
+                    ticket_Id: ticketId,
+                    recipientId: ticketData?.marketManager_id,
+                    manager: ticketData?.managerID,
+                    marketmanager: ticketData?.marketManager_id,
+                    distrcitmanager: ticketData?.districtManager_id,
+                    senderId: id,
+                    store: resposne.data.data?.store_detail[0]?._id,
+                    notification_type: "new Ticket open",
+                };
+                socket.emit('notify', notificationObj)
+                setLoader(false);
+                generatedTicketId();
+                reset();
+                handleClose();
+                fetchTickets();
+                generatedTicketId();
+                // getCurrentUser()
+                setSnackbarMessage('Student data added successfully!');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+                // const r = await ticketProgressServices(resposne.data.data._id, "Created");
+            }
+        } catch (error) {
+            setLoader(false)
+            console.log("error", error.message)
+            setSnackbarMessage('Error occurred: ' + error.message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+        }
     };
     return (
         <div>

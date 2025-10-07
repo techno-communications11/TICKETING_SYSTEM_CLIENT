@@ -12,6 +12,7 @@ import { getAllProblemCategory } from '../Services/categoryofproblem.services';
 import { getAllUsers } from '../Services/auth.services';
 import MarketManagerCreateTicketBttn from './MarketManagerCreateTicketBttn';
 import { useSelector } from 'react-redux';
+import UploadAttachments from '../Components/UploadAttachnents/UploadAttachnents';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -544,9 +545,13 @@ function MarketManagerCreateTickets({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
+                                    <Typography>Uplaod Images:</Typography>
                                     <UploadFiles setTicketData={setTicketData} />
                                 </div>
-
+                                <div className="col-md-12">
+                                    <Typography>Uplaod attachments:</Typography>
+                                    <UploadAttachments setTicketData={setTicketData} />
+                                </div>
                             </div>
                         </div>
                     </Box>

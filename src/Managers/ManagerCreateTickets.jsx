@@ -11,6 +11,7 @@ import { getAllStores } from '../Services/stores.services';
 import { getAllProblemCategory } from '../Services/categoryofproblem.services';
 import { getAllUser } from '../Services/auth.services';
 import { useSelector } from 'react-redux';
+import UploadAttachments from '../Components/UploadAttachnents/UploadAttachnents';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -474,9 +475,13 @@ function ManagerCreateTickets({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
+                                    <Typography>Uplaod Image:</Typography>
                                     <UploadFiles setTicketData={setTicketData} />
                                 </div>
-
+                                <div className="col-md-12">
+                                    <Typography>Uplaod attachments:</Typography>
+                                    <UploadAttachments setTicketData={setTicketData} />
+                                </div>
                             </div>
                         </div>
                     </Box>

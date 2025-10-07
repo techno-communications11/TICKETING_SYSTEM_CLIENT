@@ -11,10 +11,10 @@ function StoreTicketPiechart() {
         datasets: [
             {
                 data: [300, 50, 250],
-                backgroundColor: ['#6F2DA8', '#E01B24', '#FFC107'], // Purple, Red, Yellow
-                borderColor: ['transparent', 'transparent', 'transparent'], // No border
+                backgroundColor: ['#6F2DA8', '#E01B24', '#FFC107'], 
+                borderColor: ['transparent', 'transparent', 'transparent'], 
                 borderWidth: 0,
-                hoverOffset: 12, // Offset on hover
+                hoverOffset: 12, 
             },
         ],
     };

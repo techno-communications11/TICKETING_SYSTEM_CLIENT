@@ -491,7 +491,6 @@
 
 // export default ManagerTicket;
 
-
 import React, { useCallback, useEffect, useState } from 'react';
 import {
     Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,

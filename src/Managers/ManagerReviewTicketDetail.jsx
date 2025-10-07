@@ -15,16 +15,9 @@ import { getAllUser, getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import ManagerComments from './ManagerComments';
 import ManagerTransferedTickets from './ManagerTransferedTickets';
+import ShowAttachmentsFile from '../Components/ShowAttachmentsFile/ShowAttachmentsFile';
 
 function ManagerReviewTicketDetail() {
-    const [comments, setComments] = useState([
-        { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
-        { user: "Alice Smith", text: "Noted, will look into it.", time: "10:45 AM" },
-        { user: "Robert Johnson", text: "We need more details on this.", time: "11:00 AM" },
-        { user: "Emily Davis", text: "I'll handle this ticket.", time: "11:15 AM" },
-        { user: "Michael Brown", text: "Please update the status.", time: "11:30 AM" },
-        { user: "Sarah Connor", text: "Ticket is under review.", time: "11:45 AM" }
-    ]);
     const [assignieName, setAssigneeName] = useState({ name: "", id: "", assign_email: "" });
     const [detailTicket, setDetailTicket] = useState([]);
     const { socket } = useSocket();
@@ -440,6 +433,7 @@ function ManagerReviewTicketDetail() {
                     }
                 </div>
                 <div className="col-md-4">
+                    <Typography variant='h6' className='mb-3'>Images</Typography>
                     {/* {detailTicket[0]?.files != [] && <UploadDocCompo images={detailTicket[0]?.files || []} />} */}
                     {detailTicket[0]?.files && JSON.parse(detailTicket[0].files).length > 0 ? (
                         <UploadDocCompo images={JSON.parse(detailTicket[0].files)} />
@@ -448,7 +442,18 @@ function ManagerReviewTicketDetail() {
                             <p className="text-muted">No images available</p>
                         </div>
                     )}
-
+                </div>
+                <div className="col-md-4">
+                    <Typography variant="h6" gutterBottom>
+                        Uploaded Documents:
+                    </Typography>
+                    {detailTicket[0]?.documents && JSON.parse(detailTicket[0]?.documents).length > 0 ? (
+                        <ShowAttachmentsFile documents={JSON.parse(detailTicket[0]?.documents)} />
+                    ) : (
+                        <Typography color="textSecondary">
+                            No documents uploaded yet.
+                        </Typography>
+                    )}
                 </div>
             </div>
             <div className="row">

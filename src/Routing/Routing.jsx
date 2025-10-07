@@ -85,6 +85,7 @@ import TestingWhatsappAPi from '../PublicPages/TestingWhatsappAPi';
 import SuperAdminProblemsofCategory from '../SuperAdmin/SuperAdminProblemsofCategory';
 import SuperAdminAllNotifications from '../SuperAdmin/SuperAdminAllNotifications';
 import ForgetPassword from '../PublicPages/ForgetPassword';
+import StoreReviewTickets from '../Stores/StoreReviewTickets';
 // const ProtectedRoute = ({ children, allowedDepartments }) => {
 //     const id = cookies.get("id");
 //     const token = cookies.get("token");
@@ -151,6 +152,7 @@ function Routing() {
                             <Route path="/agent-reopen-ticket" element={<ProtectedRoute allowedDepartments={'Agent'}><AgentReopenTickets /></ProtectedRoute>} />
                             <Route path="/store-dashboard" element={<ProtectedRoute allowedDepartments={ 'Store'}><StoreDashboard /></ProtectedRoute>} />
                             <Route path="/store-create-tickte" element={<ProtectedRoute allowedDepartments={ 'Store'}><StoreCreateTickets /></ProtectedRoute>} />
+                            <Route path="/store-reviews-tickte/:id" element={<ProtectedRoute allowedDepartments={ 'Store'}><StoreReviewTickets /></ProtectedRoute>} />
                             <Route path="/senior-managers-dashboard" element={<ProtectedRoute allowedDepartments={'Senior Manager'}><SeniorManagerDashboard /></ProtectedRoute>} />
                             <Route path="/senior-managers-manage-tickets" element={<ProtectedRoute allowedDepartments={'Senior Manager'}><SeniorManagerManageTickets /></ProtectedRoute>} />
                             <Route path="/senior-managers-reviews-tickets/:id" element={<ProtectedRoute allowedDepartments={'Senior Manager'}><SeniorManagerReviewTickets /></ProtectedRoute>} />

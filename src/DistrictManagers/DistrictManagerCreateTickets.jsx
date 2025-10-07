@@ -13,6 +13,7 @@ import { getAllUsers } from '../Services/auth.services';
 import DistrictManagerCreateTicketBttn from './DistrictManagerCreateTicketBttn';
 import { use } from 'react';
 import { useSelector } from 'react-redux';
+import UploadAttachments from '../Components/UploadAttachnents/UploadAttachnents';
 // import MarketManagerCreateTicketBttn from './MarketManagerCreateTicketBttn';
 const style = {
     position: 'absolute',
@@ -514,9 +515,13 @@ function DistrictManagerCreateTickets({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
-                                    <UploadFiles />
+                                    <Typography>Uplaod Image:</Typography>
+                                    <UploadFiles setTicketData={setTicketData}/>
                                 </div>
-
+                                <div className="col-md-12">
+                                    <Typography>Uplaod attachments:</Typography>
+                                    <UploadAttachments setTicketData={setTicketData} />
+                                </div>
                             </div>
                         </div>
                     </Box>
