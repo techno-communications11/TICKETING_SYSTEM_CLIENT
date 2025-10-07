@@ -364,72 +364,6 @@ function SuperAdminManageTickets() {
                 ))}
               </TableRow>
             </TableHead>
-
-            {/* <TableHead>
-              <TableRow sx={{ backgroundColor: '#6f2da8' }}>
-                <TableCell sx={{ color: 'white' }} padding="checkbox">
-                  <Checkbox
-                    sx={{
-                      color: '#fff',
-                      '&.Mui-checked': {
-                        color: '#fff',
-                      },
-                    }}
-                    disabled
-                    checked={selectedRows.length === tickets.length && tickets.length > 0}
-                    indeterminate={selectedRows.length > 0 && selectedRows.length < tickets.length}
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell sx={{ color: 'white' }}>Ticket ID</TableCell>
-                <TableCell sx={{ color: 'white' }}>Priority</TableCell>
-                <TableCell sx={{ color: 'white' }}>Creator Name</TableCell>
-                <TableCell sx={{ color: 'white' }}>Status</TableCell>
-                <TableCell sx={{ color: 'white' }}>Type</TableCell>
-                <TableCell sx={{ color: 'white' }}>Description</TableCell>
-                <TableCell sx={{ color: 'white' }}>Solved By</TableCell>
-                <TableCell sx={{ color: 'white' }}>Age</TableCell>
-                <TableCell sx={{ color: 'white' }}>Action</TableCell>
-              </TableRow>
-            </TableHead> */}
-            {/* <TableBody>
-              {loader ? (
-                <TableRow>
-                  <TableCell colSpan={9} height={500} align="center">
-                    <CircularProgress size={30} />
-                  </TableCell>
-                </TableRow>
-              ) :
-                tickets.length > 0 ? (
-                  tickets.map((ticket) => (
-                    <TableRow key={ticket.id} hover sx={{ cursor: 'pointer' }} >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={selectedRows.includes(ticket.id)}
-                          onChange={() => handleRowSelect(ticket.id)}
-                        />
-                      </TableCell>
-                      <TableCell>{ticket.ticketId}</TableCell>
-                      <TableCell>{ticket.priority}</TableCell>
-                      <TableCell>{ticket.name}</TableCell>
-                      <TableCell>{ticket.status}</TableCell>
-                      <TableCell>{ticket.category}</TableCell>
-                      <TableCell>{ticket.ticketDescription}</TableCell>
-                      <TableCell>{ticket.assignerName || 'N/A'}</TableCell>
-                      <TableCell>
-                        <Button onClick={() => { navigate(`/superAdmin-review-tickets/${ticket.id}`) }} >View</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={9} height={500} align="center">
-                      Data Not Found
-                    </TableCell>
-                  </TableRow>
-
-                )}
-            </TableBody> */}
             <TableBody>
               {loader ? (
                 <TableRow>
@@ -452,63 +386,55 @@ function SuperAdminManageTickets() {
                       <TableCell
                         sx={{
                           fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.ticketId}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",  
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.priority}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",  
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.name}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",   
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.status}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",   
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.category}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",   
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.ticketDescription}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",   
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.assignerName || 'N/A'}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   // smaller font
-                          // fontWeight: 600,
+                          fontSize: "0.85rem",   
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}

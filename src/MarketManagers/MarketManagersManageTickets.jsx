@@ -228,13 +228,15 @@ function MarketManagersManageTickets() {
             <TableHead>
               <TableRow sx={{ backgroundColor: '#6f2da8' }}>
                 <TableCell sx={{ color: 'white' }}>Ticket ID</TableCell>
-                <TableCell sx={{ color: 'white' }}>Priority</TableCell>
                 <TableCell sx={{ color: 'white' }}>Creator Name</TableCell>
-                <TableCell sx={{ color: 'white' }}>Status</TableCell>
+                <TableCell sx={{ color: 'white' }}>Priority</TableCell>
                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
+                <TableCell sx={{ color: 'white' }}>Market</TableCell>
+                <TableCell sx={{ color: 'white' }}>Store</TableCell>
+                <TableCell sx={{ color: 'white' }}>Status</TableCell>
                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
-                <TableCell sx={{ color: 'white' }}>Age</TableCell>
-                <TableCell sx={{ color: 'white' }}>Solved By</TableCell>
+                <TableCell sx={{ color: 'white' }}>Aage</TableCell>
+                <TableCell sx={{ color: 'white' }}>Solved by</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -259,18 +261,14 @@ function MarketManagersManageTickets() {
                     sx={{ cursor: 'pointer' }}
                   >
                     <TableCell>{ticket.ticketId}</TableCell>
-                    <TableCell>{ticket.priority}</TableCell>
                     <TableCell>{ticket.name}</TableCell>
-                    <TableCell>{ticket.status}</TableCell>
+                    <TableCell>{ticket.priority}</TableCell>
                     <TableCell>{ticket.category}</TableCell>
+                    <TableCell>{ticket.market}</TableCell>
+                    <TableCell>{ticket.store}</TableCell>
+                    <TableCell>{ticket.status}</TableCell>
                     <TableCell>{ticket.ticketDescription}</TableCell>
-                    <TableCell
-                      sx={{
-                        fontSize: "0.85rem",
-                        whiteSpace: "nowrap",
-                        padding: "10px 12px"
-                      }}
-                    >{getTicketAge(ticket.createdAt)}</TableCell>
+                    <TableCell>{getTicketAge(ticket.createdAt)}</TableCell>
                     <TableCell>{ticket.assignerName || "-"}</TableCell>
                   </TableRow>
                 ))

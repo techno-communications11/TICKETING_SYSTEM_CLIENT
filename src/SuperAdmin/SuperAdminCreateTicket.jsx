@@ -10,6 +10,7 @@ import { getAllStores } from '../Services/stores.services';
 import { getAllProblemCategory } from '../Services/categoryofproblem.services';
 import { getAllUser, getAllUsers } from '../Services/auth.services';
 import SuperAdminCreateTicketbtn from './SuperAdminCreateTicketbtn';
+import UploadAttachments from '../Components/UploadAttachnents/UploadAttachnents';
 // import SeniorManagerCreateTicketBttn from './SeniorManagerCreateTicketBttn';
 const style = {
     position: 'absolute',

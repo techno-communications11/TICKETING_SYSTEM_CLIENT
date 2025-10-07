@@ -112,7 +112,19 @@ function DistrictManagerManageTickets() {
     const handleReviewTicket = (id) => {
         navigate(`/district-manager-review-ticket/${id}`);
     };
+    function getTicketAge(createdAt) {
+        const now = new Date();
+        const created = new Date(createdAt);
+        const diffMs = now - created; // difference in milliseconds
 
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+        const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+        if (diffDays > 0) return `${diffDays}d ${diffHours}h ago`;
+        if (diffHours > 0) return `${diffHours}h ${diffMinutes}m ago`;
+        return `${diffMinutes}m ago`;
+    }
     return (
         <div className="container">
             <div className="row">
@@ -211,12 +223,15 @@ function DistrictManagerManageTickets() {
                         <TableHead>
                             <TableRow sx={{ backgroundColor: '#6f2da8' }}>
                                 <TableCell sx={{ color: 'white' }}>Ticket ID</TableCell>
-                                <TableCell sx={{ color: 'white' }}>Priority</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Creator Name</TableCell>
-                                <TableCell sx={{ color: 'white' }}>Status</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Priority</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Market</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Store</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Status</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
-                                <TableCell sx={{ color: 'white' }}>Assigned To</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Aage</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Solved by</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -241,12 +256,15 @@ function DistrictManagerManageTickets() {
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell>{ticket.ticketId}</TableCell>
-                                        <TableCell>{ticket.priority}</TableCell>
                                         <TableCell>{ticket.name}</TableCell>
-                                        <TableCell>{ticket.status}</TableCell>
+                                        <TableCell>{ticket.priority}</TableCell>
                                         <TableCell>{ticket.category}</TableCell>
+                                        <TableCell>{ticket.market}</TableCell>
+                                        <TableCell>{ticket.store}</TableCell>
+                                        <TableCell>{ticket.status}</TableCell>
                                         <TableCell>{ticket.ticketDescription}</TableCell>
-                                        <TableCell>{ticket.assignerName || "N/A"}</TableCell>
+                                        <TableCell>{getTicketAge(ticket.createdAt)}</TableCell>
+                                        <TableCell>{ticket.assignerName || "-"}</TableCell>
                                     </TableRow>
                                 ))
                             )}
