@@ -246,7 +246,8 @@ function UploadAttachments({ setTicketData }) {
         name: "files",
         multiple: true,
         // action: "https://ticketing-images-backend-aws.vercel.app/uploads",
-        action: "http://localhost:3000/uploads",
+        // action: "http://localhost:3000/uploads",
+        action: "https://ticketing-images-backend-aws.vercel.app/uploads",
         // ✅ allow all supported file types
         accept:
             ".png,.jpg,.jpeg,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.csv,.mp4,.mov,.avi,.mkv",
