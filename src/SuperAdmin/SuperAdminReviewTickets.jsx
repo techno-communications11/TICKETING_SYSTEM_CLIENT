@@ -16,6 +16,7 @@ import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import axios from 'axios';
 import SuperAdminComments from './SuperAdminComments';
 import ManagerTransferedTickets from '../Managers/ManagerTransferedTickets';
+import ShowAttachmentsFile from '../Components/ShowAttachmentsFile/ShowAttachmentsFile';
 function SuperAdminReviewTickets() {
     const [comments, setComments] = useState([
         { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
@@ -388,6 +389,18 @@ function SuperAdminReviewTickets() {
                     )}
 
                     {/* <UploadDocCompo images={detailTicket[0]?.files} /> */}
+                </div>
+                <div className="col-md-4">
+                    <Typography variant="h6" gutterBottom>
+                        Uploaded Documents:
+                    </Typography>
+                    {detailTicket[0]?.documents && JSON.parse(detailTicket[0]?.documents).length > 0 ? (
+                        <ShowAttachmentsFile documents={JSON.parse(detailTicket[0]?.documents)} />
+                    ) : (
+                        <Typography color="textSecondary">
+                            No documents uploaded yet.
+                        </Typography>
+                    )}
                 </div>
             </div>
             <div className="row">

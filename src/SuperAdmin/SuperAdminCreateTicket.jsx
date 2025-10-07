@@ -471,9 +471,14 @@ function SuperAdminCreateTicket({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
-                                    <UploadFiles />
-                                </div>
+                                    <Typography>Uplaod Images:</Typography>
 
+                                    <UploadFiles setTicketData={setTicketData} />
+                                </div>
+                                <div className="col-md-12">
+                                    <Typography>Uplaod attachments:</Typography>
+                                    <UploadAttachments setTicketData={setTicketData} />
+                                </div>
                             </div>
                         </div>
                     </Box>
