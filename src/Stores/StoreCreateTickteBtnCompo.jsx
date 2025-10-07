@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Button, Typography, TextField, Box, IconButton,
     FormControl, InputLabel, Select, MenuItem, CircularProgress
@@ -44,14 +44,21 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
     const [typeOfTicket, setTypeOfTicket] = useState([]);
     const [stores, setStores] = useState([]);
     const [managerData, setManagerData] = useState([]);
+    const [currentDatauser, setCurrentDatauser] = useState([])
 
     const id = Cookies.get('id');
-
+    const getCurrentUser = useCallback(async () => {
+        const curremntUsre = await user;
+        setCurrentDatauser(curremntUsre)
+    }, [])
+    useEffect(() => {
+        getCurrentUser()
+    }, [getCurrentUser])
     // ✅ Fetch all data before opening modal
     const fetchAllDataBeforeOpen = useCallback(async () => {
         try {
             setLoading(true);
-
+            // console.log("currentDatauser", currentDatauser)
             const [allUsers, allStores, allCategories] = await Promise.all([
                 getAllUser(),
                 getAllStores(),
@@ -71,19 +78,19 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
 
             setTicketData(prev => ({
                 ...prev,
-                name: loggedInUser?.name || '',
-                email: loggedInUser?.email || '',
-                phone: loggedInUser?.phone || '',
-                userId: id,
-                currentOwnerId: id,
-                creatordepartment: loggedInUser?.subDepartment || '',
-                store_id: filteredStore?.id || '',
-                store: filteredStore?.store_name || '',
-                store_email: filteredStore?.store_email || '',
-                store_phone: filteredStore?.store_phone || '',
+                name: currentDatauser?.name || loggedInUser?.name || '',
+                email: currentDatauser?.email || loggedInUser?.email || '',
+                phone: currentDatauser?.phone || loggedInUser?.phone || '',
+                userId: currentDatauser?.id || id,
+                currentOwnerId: currentDatauser?.id || id,
+                creatordepartment: currentDatauser?.subDepartment || loggedInUser?.subDepartment || '',
+                store_id: currentDatauser?.id || filteredStore?.id || '',
+                store: currentDatauser?.name || filteredStore?.store_name || '',
+                store_email: currentDatauser?.email || filteredStore?.store_email || '',
+                store_phone: currentDatauser?.phone || filteredStore?.store_phone || '',
                 store_Tech_id: filteredStore?.bdi_id || '',
                 store_detail: filteredStore || '',
-                market: filteredStore?.market || '',
+                market: currentDatauser?.markets || filteredStore?.market || '',
             }));
 
             // ✅ Managers (department based)
@@ -109,6 +116,7 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
     };
 
     const handleClose = () => {
+        getCurrentUser()
         reset();
         setOpen(false);
     };
@@ -128,6 +136,17 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                 category: selectedCat.name,
                 department: selectedCat.department,
                 department_email: selectedCat.department_email,
+                name: currentDatauser?.name || '',
+                email: currentDatauser?.email || '',
+                phone: currentDatauser?.phone || '',
+                userId: currentDatauser?.id || id,
+                currentOwnerId: currentDatauser?.id || id,
+                creatordepartment: currentDatauser?.subDepartment || '',
+                store_id: currentDatauser?.id || '',
+                store: currentDatauser?.name || '',
+                store_email: currentDatauser?.email || '',
+                store_phone: currentDatauser?.phone || '',
+                market: currentDatauser?.markets
             }));
 
             // ✅ Fetch managers for this department
@@ -145,6 +164,17 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                         managerID: filteredManagers[0].id,
                         managerName: filteredManagers[0].name,
                         managerName_email: filteredManagers[0].email,
+                        name: currentDatauser?.name || '',
+                        email: currentDatauser?.email || '',
+                        phone: currentDatauser?.phone || '',
+                        userId: currentDatauser?.id || id,
+                        currentOwnerId: currentDatauser?.id || id,
+                        creatordepartment: currentDatauser?.subDepartment || '',
+                        store_id: currentDatauser?.id || '',
+                        store: currentDatauser?.name || '',
+                        store_email: currentDatauser?.email || '',
+                        store_phone: currentDatauser?.phone || '',
+                        market: currentDatauser?.markets
                     }));
                 } else {
                     setTicketData(prev => ({
@@ -168,6 +198,17 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                 managerID: selected.id,
                 managerName: selected.name,
                 managerName_email: selected.email,
+                name: currentDatauser?.name || '',
+                email: currentDatauser?.email || '',
+                phone: currentDatauser?.phone || '',
+                userId: currentDatauser?.id || id,
+                currentOwnerId: currentDatauser?.id || id,
+                creatordepartment: currentDatauser?.subDepartment || '',
+                store_id: currentDatauser?.id || '',
+                store: currentDatauser?.name || '',
+                store_email: currentDatauser?.email || '',
+                store_phone: currentDatauser?.phone || '',
+                market: currentDatauser?.markets
             }));
         }
     };

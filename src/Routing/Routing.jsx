@@ -86,6 +86,7 @@ import SuperAdminProblemsofCategory from '../SuperAdmin/SuperAdminProblemsofCate
 import SuperAdminAllNotifications from '../SuperAdmin/SuperAdminAllNotifications';
 import ForgetPassword from '../PublicPages/ForgetPassword';
 import StoreReviewTickets from '../Stores/StoreReviewTickets';
+import CreateUsersAccountFromExcel from '../PublicPages/CreateUsersAccountFromExcel';
 // const ProtectedRoute = ({ children, allowedDepartments }) => {
 //     const id = cookies.get("id");
 //     const token = cookies.get("token");
@@ -128,6 +129,9 @@ function Routing() {
                         <ForgetPassword />
                     </PublicRoute>
                 } />
+                {/* <Route path="/create-users" element={
+                        <CreateUsersAccountFromExcel />
+                } /> */}
                 <Route path="*" element={
                     <DashboardLayouts>
                         <Routes>
