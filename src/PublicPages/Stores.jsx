@@ -5,24 +5,19 @@ import { getAllStores } from '../Services/stores.services';
 import SearchIcon from '@mui/icons-material/Search';
 
 function Stores() {
-  const tickets = [
-    { id: "TID0934893", priority: "Low", clientName: "Dane John", status: "Open", dueBy: "22 Dec 2022", type: "Technical", solvedBy: "Shekhar Khan" },
-    { id: "TID0934894", priority: "Medium", clientName: "John Doe", status: "Closed", dueBy: "23 Dec 2022", type: "Support", solvedBy: "Jane Smith" },
-    { id: "TID0934895", priority: "High", clientName: "Alice Brown", status: "Assigned", dueBy: "24 Dec 2022", type: "Billing", solvedBy: "Mark Johnson" },
-  ];
-
   const [selectedRows, setSelectedRows] = useState([]);
   const [stores, setStores] = useState([]);
-  const [filteredStores, setFilteredStores] = useState([]); // New state for filtered data
-  const [searchQuery, setSearchQuery] = useState(''); // State for search input
+  const [filteredStores, setFilteredStores] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
 
   const fetchAllStores = useCallback(async () => {
     try {
       const response = await getAllStores();
-      setStores(response); // Update the stores state with the fetched data
-      setFilteredStores(response); // Initially filter all stores
+      setStores(response);
+      console.log(response);
+      setFilteredStores(response);
     } catch (error) {
       console.error("Error fetching stores:", error);
     }
@@ -54,22 +49,21 @@ function Stores() {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(1); // Reset to the first page when changing rows per page
+    setCurrentPage(1);
   };
 
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
-    setSearchQuery(query); // Update the search query state
-    setCurrentPage(1); // Reset to the first page when searching
+    setSearchQuery(query);
+    setCurrentPage(1);
 
-    // Filter the stores based on the search query
     const filteredData = stores.filter(store =>
       Object.values(store).some(value =>
         typeof value === 'string' && value.toLowerCase().includes(query)
       )
     );
 
-    setFilteredStores(filteredData); // Update the filtered data state
+    setFilteredStores(filteredData);
   };
 
   const indexOfLastRow = currentPage * rowsPerPage;

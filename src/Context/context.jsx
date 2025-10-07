@@ -65,12 +65,12 @@ const GlobalStates = ({ children }) => {
         stroe_email: '',
         store_phone: '',
         market: '',
-        name: '',
-        title: '',
-        ntid: '',
-        tmobile_email: '',
-        company_email: '',
-        contact_numbers: '',
+        // name: '',
+        // title: '',
+        // ntid: '',
+        // tmobile_email: '',
+        // company_email: '',
+        // contact_numbers: '',
     });
     const [mmdmformData, setMMDMFormData] = useState({
         market: '',

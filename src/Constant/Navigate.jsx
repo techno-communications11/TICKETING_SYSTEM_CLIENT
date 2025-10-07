@@ -59,13 +59,13 @@ export const NAVIGATION = [
     title: 'Dashboard',
     segment: 'store-dashboard',
     icon: <DashboardIcon />,
-    roles: ['sales'],
+    roles: ['store'],
   },
   {
     title: 'Create Ticket',
     segment: 'store-create-tickte',
     icon: <ConfirmationNumberIcon />,
-    roles: ['sales'],
+    roles: ['store'],
   },
   {
     title: 'Super Admin Dashboard',

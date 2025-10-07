@@ -11,9 +11,10 @@ export const getAllStores = async () => {
     }
 }
 
-export const addNewStoreServices = async (obj) => {
+export const addNewStoreServices = async ({obj}) => {
     try {
-        const response = await axios.post(`${API_URL}/stores/addstoresformat`, {
+        console.log("obj", obj)
+        const response = await axios.post(`${"http://localhost:5000"}/stores/addstoresformat`, {
             obj
         })
         return response;

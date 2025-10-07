@@ -36,6 +36,7 @@ function AddProblemCategoryTicket({fetchCategory}) {
         { name: 'HR', email: 'HR@techno-communications.com' },
         { name: 'IT', email: 'it@techno-communications.com' },
         { name: 'Local IT', email: 'it@techno-communications.com' },
+        { name: 'MIS', email: 'it@techno-communications.com' },
 
         { name: 'Inventory', email: 'reporting@techno-communications.com' },
         { name: 'QA', email: 'reporting@techno-communications.com' },

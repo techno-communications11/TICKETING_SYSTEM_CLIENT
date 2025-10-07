@@ -14,9 +14,13 @@ function AddUserCompo({ fetchAllUserData }) {
 
     // "Finance",
     const [departments] = useState([
-        "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT","Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
-        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics","Supervisor","Local IT"
+        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
+    ]);
+    const [department] = useState([
+        "Admin", "Admin / IT", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "MIS",
+        "AR", "Managment", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
     ]);
 
     const [formData, setFormData] = useState({
@@ -31,7 +35,7 @@ function AddUserCompo({ fetchAllUserData }) {
     const [errors, setErrors] = useState({});
     const [selectedDepts, setSelectedDepts] = useState([]);
     const [stores, setStores] = useState([]);
-    const [markets] = useState(["ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"]);
+    const [markets] = useState(["ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY", "EAST BAY AREA", "ATLANTA", "NORTH BAY AREA", "OXNARD/PALMDALE", "NORTH CAROL", "CHARLOTTE"]);
     const [selectedMarkets, setSelectedMarkets] = useState([]);
     const [marketSelectionVisible, setMarketSelectionVisible] = useState(true);
     const [selectedStores, setSelectedStores] = useState([]);
@@ -42,6 +46,7 @@ function AddUserCompo({ fetchAllUserData }) {
         try {
             const response = await getAllStores();
             setStores(response);
+            console.log(response);
         } catch (error) {
             console.error("Error fetching stores:", error);
         }
@@ -213,7 +218,7 @@ function AddUserCompo({ fetchAllUserData }) {
                             <FormHelperText>{errors.department}</FormHelperText>
                         </FormControl>
 
-                        {departments.includes(formData.department) && (
+                        {department.includes(formData.department) && (
                             <FormControl fullWidth error={!!errors.role}>
                                 <InputLabel>Role</InputLabel>
                                 <Select name="role" value={formData.role} onChange={handleChange}>

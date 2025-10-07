@@ -1,4 +1,4 @@
-import React, {  useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -19,28 +19,24 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import Notifications from '../PublicPages/Notifications';
-import { OverlayTrigger } from 'react-bootstrap';
 import Navbar from '../Components/Navbar/Navbar';
-import GlobalInstallBar from '../Components/GlobalInstallBar/GlobalInstallBar';
 const demoTheme = createTheme({
   palette: {
     primary: {
-      main: '#6F2DA8', // Purple
+      main: '#6F2DA8',
       light: '#9C27B0',
       dark: '#3F0A78',
     },
     secondary: {
-      main: '#E01B24', // Red
+      main: '#E01B24',
     },
     background: {
-      default: '#F5F5F5', // Light gray
-      paper: '#FFFFFF', // White
+      default: '#F5F5F5',
+      paper: '#FFFFFF',
     },
     text: {
-      //   primary: '#000000', // Black
-      //   secondary: '#616161', // Dark gray
-      primary: '#000000', // Black
-      secondary: '#000000', // Dark gray
+      primary: '#000000',
+      secondary: '#000000', 
     }
   },
   typography: {
@@ -242,18 +238,10 @@ function ToolbarActionsSearch() {
       <div className="rounded-circle" >
 
         <IconButton onClick={() => { navigate('/chat-system') }}>
-          {/* <OverlayTrigger
-            placement="bottom"
-            overlay={<Tooltip id="tooltip-disabled">Working on it! Please stay tuned.</Tooltip>}
-          >
-          </OverlayTrigger> */}
           <ChatBubbleOutlineIcon sx={{ color: '#616161' }} />
         </IconButton>
       </div>
       <div className="rounded-circle" >
-        {/* <IconButton>
-          <NotificationsIcon sx={{ color: '#616161' }} />
-        </IconButton> */}
         <Notifications />
       </div>
       <ThemeSwitcher />
@@ -269,9 +257,6 @@ CustomAppTitle.propTypes = {
 function CustomAppTitle() {
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-      {/* <Typography variant="h6" sx={{ fontWeight: 600 }}>
-        TECHNO COMMUNICATIONS LLC
-      </Typography> */}
       <Navbar />
     </Stack>
   );
@@ -283,11 +268,8 @@ export default function DashboardLayouts({ children }) {
   const { user } = useSelector((state) => state.currentUser);
   const [currentUserData, setCurrentUserData] = useState(null);
   const [session, setSession] = useState(null);
-  // const [anchorEl, setAnchorEl] = useState(null);
-
   const fetchUser = useCallback(async () => {
     const currentDatauser = await user;
-    // console.log("currentDatauser", currentDatauser)
     setCurrentUserData(currentDatauser);
   }, [user]);
 
@@ -303,7 +285,7 @@ export default function DashboardLayouts({ children }) {
           image: currentUserData?.profile_image || currentUserData?.name[0] || 'https://avatars.githubusercontent.com/u/1',
           // role: currentUserData?.subDepartment ? currentUserData?.subDepartment.toLowerCase() : currentUserData?.department.toLowerCase(),
           // role: currentUserData?.department ? currentUserData?.department.toLowerCase() : currentUserData?.subDepartment.toLowerCase(),
-          role: ["Senior Manager", "District Manager", "Market Manager", "SuperAdmin"].includes(currentUserData?.department)
+          role: ["Senior Manager", "District Manager", "Market Manager", "SuperAdmin", "Store"].includes(currentUserData?.department)
             ? currentUserData?.department.toLowerCase()
             : currentUserData?.subDepartment.toLowerCase(),
 
@@ -312,8 +294,6 @@ export default function DashboardLayouts({ children }) {
       setSession(demoSession);
     }
   }, [currentUserData]);
-  // console.log(["Senior Manager", "District Manager", "Market Manager","SuperAdmin"].includes(currentUserData?.department))
-  // console.log(currentUserData)
 
   const authentication = {
     signIn: () => setSession(session),
@@ -327,22 +307,8 @@ export default function DashboardLayouts({ children }) {
   };
 
   const userRole = session?.user?.role || 'guest';
-  // console.log('userRole', userRole);
-  // const allowedNavigation =
-  //   userRole === 'superadmin' department
-
-  //     ? NAVIGATION
-  //     : NAVIGATION.filter((item) => item.roles.includes(userRole));
   const allowedNavigation =
     NAVIGATION.filter((item) => item.roles.includes(userRole));
-
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
   if (!session) {
     return (
       <div

@@ -59,7 +59,7 @@ function StoreCreateTickets() {
                         </Button>
                     </div>
                     <div className="">
-                        <StoreCreateTickteBtnCompo />
+                        <StoreCreateTickteBtnCompo  />
                     </div>
                 </div>
             </div>

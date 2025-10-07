@@ -7,16 +7,17 @@ import SuperAdminAddStores from './SuperAdminAddStores';
 function SuperAdminManageStores() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [stores, setStores] = useState([]);
-  const [filteredStores, setFilteredStores] = useState([]);  
-  const [searchQuery, setSearchQuery] = useState('');  
+  const [filteredStores, setFilteredStores] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
 
   const fetchAllStores = useCallback(async () => {
     try {
       const response = await getAllStores();
-      setStores(response);  
-      setFilteredStores(response);  
+      setStores(response);
+      console.log(response);
+      setFilteredStores(response);
     } catch (error) {
       console.error("Error fetching stores:", error);
     }
@@ -39,20 +40,20 @@ function SuperAdminManageStores() {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
-    setSearchQuery(query); 
-    setCurrentPage(1);  
+    setSearchQuery(query);
+    setCurrentPage(1);
     const filteredData = stores.filter(store =>
       Object.values(store).some(value =>
         typeof value === 'string' && value.toLowerCase().includes(query)
       )
     );
 
-    setFilteredStores(filteredData); 
+    setFilteredStores(filteredData);
   };
 
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -117,7 +118,7 @@ function SuperAdminManageStores() {
             </TableHead>
             <TableBody>
               {currentRows.length > 0 ? (
-                currentRows.map((store,i) => (
+                currentRows.map((store, i) => (
                   <TableRow key={i} hover role="checkbox" tabIndex={-1}>
                     <TableCell padding="checkbox">
                       <Checkbox

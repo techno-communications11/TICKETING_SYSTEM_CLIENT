@@ -34,24 +34,24 @@ function Login() {
             const response = await loginServices(formData);
             const { department, subDepartment } = jwtDecode(response.data.token);
             dispatch(login(response.data.data))
+            console.log(department, subDepartment )
             // cookie.set('id', response.data.id, { expires: 0.0007, path: "/" });
             // cookie.set('token', response.data.token, { expires: 0.0007, path: "/" });
             cookie.set('id', response.data.id, { expires: 0.375, path: "/" });
             cookie.set('token', response.data.token, { expires: 0.375, path: "/" });
-            // console.log(response.data.data.id);
-            // console.log(response.data.token);
             if (response.data.data.first === false) {
                 cookie.set("id", response.data.id, { expires: 0.375, path: "/" });
                 // toast.success("Login successful!");
                 return navigate('/reset-password')
             }
             const departmentRoutes = {
-                Sales: "/store-dashboard",
+                "Store": "/store-dashboard",
                 "Admin Manager": "/admin-manager-dashboard",
                 "Senior Manager": "/senior-managers-dashboard",
                 "District Manager": "/district-manager-dashboard",
                 "Market Manager": "/market-manager-dashboard",
                 SuperAdmin: "/superAdminHome",
+
             };
             if (departmentRoutes[department]) {
                 navigate(departmentRoutes[department]);

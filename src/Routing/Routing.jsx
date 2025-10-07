@@ -118,7 +118,7 @@ function Routing() {
                     </PublicRoute>
                 } />
                 <Route path="/reset-password" element={
-                        <ResetPassword />
+                    <ResetPassword />
                     // <PublicRoute>
                     // </PublicRoute>
                 } />
@@ -149,8 +149,8 @@ function Routing() {
                             <Route path="/agent-complete-ticket" element={<ProtectedRoute allowedDepartments={'Agent'}><AgentCompleteTickets /></ProtectedRoute>} />
                             <Route path="/agent-pending-ticket" element={<ProtectedRoute allowedDepartments={'Agent'}><AgentPendingTickets /></ProtectedRoute>} />
                             <Route path="/agent-reopen-ticket" element={<ProtectedRoute allowedDepartments={'Agent'}><AgentReopenTickets /></ProtectedRoute>} />
-                            <Route path="/store-dashboard" element={<ProtectedRoute allowedDepartments={'Sales'}><StoreDashboard /></ProtectedRoute>} />
-                            <Route path="/store-create-tickte" element={<ProtectedRoute allowedDepartments={'Sales'}><StoreCreateTickets /></ProtectedRoute>} />
+                            <Route path="/store-dashboard" element={<ProtectedRoute allowedDepartments={ 'Store'}><StoreDashboard /></ProtectedRoute>} />
+                            <Route path="/store-create-tickte" element={<ProtectedRoute allowedDepartments={ 'Store'}><StoreCreateTickets /></ProtectedRoute>} />
                             <Route path="/senior-managers-dashboard" element={<ProtectedRoute allowedDepartments={'Senior Manager'}><SeniorManagerDashboard /></ProtectedRoute>} />
                             <Route path="/senior-managers-manage-tickets" element={<ProtectedRoute allowedDepartments={'Senior Manager'}><SeniorManagerManageTickets /></ProtectedRoute>} />
                             <Route path="/senior-managers-reviews-tickets/:id" element={<ProtectedRoute allowedDepartments={'Senior Manager'}><SeniorManagerReviewTickets /></ProtectedRoute>} />
