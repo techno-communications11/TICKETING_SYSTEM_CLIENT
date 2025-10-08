@@ -9,65 +9,6 @@ import StoreCreateTickteBtnCompo from './StoreCreateTickteBtnCompo';
 import { useSelector } from 'react-redux';
 import { getAllStores } from '../Services/stores.services';
 function StoreDashboard() {
-  // const id = cookie.get('id');
-  // const { user } = useSelector((state) => state.currentUser);
-  // const [currentDatauser, setCurrentDatauser] = useState([])
-  // const [loader, setLoader] = useState(false);
-  // const [store, setStore] = useState('');
-
-  // const getCurrentUser = useCallback(async () => {
-  //   const curremntUsre = await user;
-  //   setCurrentDatauser(curremntUsre)
-  // }, [id])
-  // useEffect(() => {
-  //   getCurrentUser()
-  // }, [getCurrentUser])
-  // const [filterationData, setFilteration] = useState([]);
-  // const [stores, setStores] = useState([]);
-  // const fetchAllStores = useCallback(async () => {
-  //   setLoader(true);
-  //   try {
-  //     const response = await getAllStores();
-  //     const filteredStores = market ? response.filter((s) => s.market === currentDatauser) : [];
-  //     setStores(filteredStores);
-  //   } catch (error) {
-  //     console.error('ERROR', error.message);
-  //   } finally {
-  //     setLoader(false);
-  //   }
-  // }, [currentDatauser]);
-  // useEffect(() => {
-  //   fetchAllStores()
-  // }, [fetchAllStores])
-  // const [tickets, setTickets] = useState({
-  //   total: 0,
-  //   open: 0,
-  //   closed: 0,
-  //   complete: 0,
-  //   Pending: 0,
-  //   reopen: 0
-  // });
-  // const fetchTickets = useCallback(async () => {
-  //   try {
-  //     const resposne = await getalltickets();
-  //     const filterartion = resposne.data.data.filter((data) => data.store_id === id || data.userId === id);
-  //     setTickets({
-  //       total: filterartion.length,
-  //       open: filterartion.filter((data) => data.status === "open").length,
-  //       closed: filterartion.filter((data) => data.status === "close").length,
-  //       Pending: filterartion.filter((data) => data.status === "pending").length,
-  //       complete: filterartion.filter((data) => data.status === "complete").length,
-  //       reopen: filterartion.filter((data) => data.status === "re-open").length,
-  //     })
-  //     setFilteration(filterartion);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [setTickets])
-
-  // useEffect(() => {
-  //   fetchTickets();
-  // }, [id, fetchTickets]);
   const id = cookie.get('id');
   const { user } = useSelector((state) => state.currentUser);
   const [currentDatauser, setCurrentDatauser] = useState({});
