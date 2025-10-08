@@ -50,7 +50,7 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
     const getCurrentUser = useCallback(async () => {
         const curremntUsre = await user;
         setCurrentDatauser(curremntUsre)
-    }, [])
+    }, [id])
     useEffect(() => {
         getCurrentUser()
     }, [getCurrentUser])
@@ -58,7 +58,6 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
     const fetchAllDataBeforeOpen = useCallback(async () => {
         try {
             setLoading(true);
-            // console.log("currentDatauser", currentDatauser)
             const [allUsers, allStores, allCategories] = await Promise.all([
                 getAllUser(),
                 getAllStores(),
@@ -70,12 +69,13 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
             const categoryList = allCategories?.data?.data || [];
 
             // ✅ Find current user
-            const loggedInUser = userList.find(u => u.id === id);
+            const loggedInUser = userList.find(u => u.id == id);
             const filteredStore = storeList.find(store => store.door_code === loggedInUser?.doorcode);
 
             setCurrentUserData(loggedInUser);
             setTypeOfTicket(categoryList);
-
+            console.log(filteredStore)
+            console.log(currentDatauser)
             setTicketData(prev => ({
                 ...prev,
                 name: currentDatauser?.name || loggedInUser?.name || '',
@@ -90,7 +90,7 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                 store_phone: currentDatauser?.phone || filteredStore?.store_phone || '',
                 store_Tech_id: filteredStore?.bdi_id || '',
                 store_detail: filteredStore || '',
-                market: currentDatauser?.markets || filteredStore?.market || '',
+                market: filteredStore?.markets || '',
             }));
 
             // ✅ Managers (department based)
@@ -146,7 +146,6 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                 store: currentDatauser?.name || '',
                 store_email: currentDatauser?.email || '',
                 store_phone: currentDatauser?.phone || '',
-                market: currentDatauser?.markets
             }));
 
             // ✅ Fetch managers for this department
@@ -174,7 +173,6 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                         store: currentDatauser?.name || '',
                         store_email: currentDatauser?.email || '',
                         store_phone: currentDatauser?.phone || '',
-                        market: currentDatauser?.markets
                     }));
                 } else {
                     setTicketData(prev => ({
@@ -208,7 +206,6 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                 store: currentDatauser?.name || '',
                 store_email: currentDatauser?.email || '',
                 store_phone: currentDatauser?.phone || '',
-                market: currentDatauser?.markets
             }));
         }
     };

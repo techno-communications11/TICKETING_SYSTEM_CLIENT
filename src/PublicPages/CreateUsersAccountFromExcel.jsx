@@ -136,15 +136,14 @@ function CreateUsersAccountFromExcel() {
                     name: row["Store Name"] || "",
                     email: row["Store Email"] || "",
                     password: "123456",
-                    phone: row["Store Phone Number"] || "0000000000",
+                    phone: row["Store Phone Number"] || "xxxxxxxxxxxx",
                     department: row["Designation"] || "",
-                    doorcode: row["Market"] || "",
+                    doorcode: row["Door Code"] || "",
                     markets: row["Market"] || "",
                 }));
 
                 console.log("📊 Extracted Users:", extracted);
 
-                // ✅ Send extracted data to backend
                 console.log("🚀 Uploading users to backend...");
                 const response = await axios.post(
                     "http://localhost:5000/auth/registered-multiple-user", // 🔹 your backend API endpoint

@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import BasicBreadcrumbs from '../Components/BasicBreadcrumbs/BasicBreadcrumbs';
-import { deleteUserServices, getAllUser, getAllUsers } from '../Services/auth.services';
+import { deleteMultipleUserServices, deleteUserServices, getAllUser, getAllUsers } from '../Services/auth.services';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -35,7 +35,7 @@ function SuperAdminManageUser() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [departments] = useState([
-        "COO", "DCO", "SuperAdmin", "Admin","Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
@@ -110,10 +110,19 @@ function SuperAdminManageUser() {
             setConfirmed(false);
         }
     }
-
-
-    const handleDeleteAll = () => {
-        console.log("Delete all selected users:", selectedRows);
+    
+    
+    const handleDeleteAll = async () => {
+        try {
+            console.log("Delete all selected users:", selectedRows);
+            // setDeleteId(selectedRows);
+            // setConfirmed(true);
+            const resposne = await deleteMultipleUserServices(selectedRows);
+            fetchAllUserData();
+            console.log(resposne)
+        } catch (error) {
+            console.log("ERROR", error.message)
+        }
     };
     const handleChangePage = (event, newPage) => {
         setPage(newPage);

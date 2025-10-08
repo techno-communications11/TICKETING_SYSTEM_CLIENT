@@ -38,7 +38,7 @@ function Notifications() {
 
     return (
         <div style={{ padding: '1rem', color: '#888' }}>
-            No notifications available for your role.
+            {/* No notifications available for your role. */}
         </div>
     );
 }
