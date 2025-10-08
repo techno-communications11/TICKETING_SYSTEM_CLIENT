@@ -1,8 +1,280 @@
+// import React, { useCallback, useEffect, useState } from 'react';
+// import {
+//     Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+//     Paper, Select, MenuItem, FormControl, InputLabel, TextField,
+//     InputAdornment, IconButton, CircularProgress
+// } from '@mui/material';
+// import SearchIcon from '@mui/icons-material/Search';
+// import { useNavigate } from 'react-router-dom';
+// import cookie from 'js-cookie';
+// import { decodeToken } from '../Utils/decodedToken.utils';
+// import { getalltickets } from '../Services/tickets.services';
+// import StoreCreateTickteBtnCompo from './StoreCreateTickteBtnCompo';
+// import { useSelector } from 'react-redux';
+// import { getAllStores } from '../Services/stores.services';
+
+// function StoreCreateTickets() {
+//     const { department, subDepartment } = decodeToken();
+//     const id = cookie.get('id');
+//     const navigate = useNavigate();
+//     const { user } = useSelector((state) => state.currentUser);
+//     const [allTickets, setAllTickets] = useState([]);
+//     const [filteredTickets, setFilteredTickets] = useState([]);
+//     const [activeFilter, setActiveFilter] = useState("Total");
+//     const [priority, setPriority] = useState("");
+//     const [status, setStatus] = useState("");
+//     const [market, setMarket] = useState("");
+//     const [searchTerm, setSearchTerm] = useState("");
+//     const [loading, setLoading] = useState(false);
+//     const [currentDatauser, setCurrentDatauser] = useState({});
+//     const [stores, setStores] = useState([]);
+//     const [store, setStore] = useState('');
+//     const [loader, setLoader] = useState(false);
+
+//     const fetchTickets = useCallback(async () => {
+//         setLoading(true);
+//         try {
+//             const response = await getalltickets();
+//             const filtered = response?.data?.data?.filter(ticket =>
+//                 (ticket.department == department && ticket.subDepartment == subDepartment) ||
+//                 ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
+//             );
+//             setLoading(false);
+//             setAllTickets(filtered || []);
+//         } catch (error) {
+//             setLoading(false);
+//             console.error("Error fetching tickets:", error.message);
+//         }
+//     }, [department, subDepartment, id]);
+//     const getCurrentUser = useCallback(async () => {
+//         if (user) setCurrentDatauser(user);
+//     }, [user]);
+//     const fetchAllStores = useCallback(async () => {
+//         setLoader(true);
+//         try {
+//             const response = await getAllStores();
+//             const filteredStores = currentDatauser?.markets ? response.filter((s) => s.market === currentDatauser?.markets) : [];
+//             setStores(filteredStores);
+//         } catch (error) {
+//             console.error('ERROR', error.message);
+//         } finally {
+//             setLoader(false);
+//         }
+//     }, [currentDatauser?.markets]);
+//     useEffect(() => {
+//         fetchAllStores();
+//     }, [fetchAllStores])
+//     useEffect(() => {
+//         getCurrentUser();
+//     }, [getCurrentUser]);
+//     useEffect(() => {
+//         fetchTickets();
+//     }, [fetchTickets]);
+
+//     useEffect(() => {
+//         const timeout = setTimeout(() => {
+//             let filtered = [...allTickets];
+//             switch (activeFilter) {
+//                 case "Closed":
+//                     filtered = filtered.filter(t => t.status === "closed");
+//                     break;
+//                 case "Complete":
+//                     filtered = filtered.filter(t => t.status === "completed");
+//                     break;
+//                 case "Pending":
+//                     filtered = filtered.filter(t => t.status === "pending");
+//                     break;
+//                 default:
+//                     break;
+//             }
+
+//             if (priority) filtered = filtered.filter(t => t.priority === priority);
+//             if (status) filtered = filtered.filter(t => t.status === status.toLowerCase());
+//             if (market) filtered = filtered.filter(t => t.market === market);
+//             if (searchTerm.trim()) {
+//                 const term = searchTerm.toLowerCase();
+//                 filtered = filtered.filter(t =>
+//                     t.ticketId?.toLowerCase().includes(term) ||
+//                     t.name?.toLowerCase().includes(term) ||
+//                     t.ticketDescription?.toLowerCase().includes(term)
+//                 );
+//             }
+//             filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+//             setFilteredTickets(filtered);
+//         }, 300);
+
+//         return () => clearTimeout(timeout);
+//     }, [allTickets, activeFilter, priority, status, market, searchTerm]);
+
+//     const handleReviewTicket = (id) => {
+//         navigate(`/store-reviews-tickte/${id}`);
+//     };
+//     return (
+//         <div className="container">
+//             <div className="row">
+//                 <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white">
+//                     <div className="d-flex align-items-center" style={{ gap: "6px" }}>
+//                         {["Total", "Complete", "Closed", "Pending"].map(label => (
+//                             <Button
+//                                 key={label}
+//                                 variant={activeFilter === label ? "contained" : "outlined"}
+//                                 onClick={() => setActiveFilter(label)}
+//                             >
+//                                 {label}
+//                             </Button>
+//                         ))}
+//                     </div>
+//                     <StoreCreateTickteBtnCompo fetchTickets={fetchTickets} />
+//                 </div>
+//             </div>
+
+//             <div className="row my-4">
+//                 <div className="col-md-12 d-flex flex-wrap gap-3">
+//                     <FormControl size="small" sx={{ minWidth: 120 }}>
+//                         <InputLabel>Priority</InputLabel>
+//                         <Select value={priority} label="Priority" onChange={(e) => setPriority(e.target.value)}>
+//                             <MenuItem value="">All</MenuItem>
+//                             <MenuItem value="Low">Low</MenuItem>
+//                             <MenuItem value="Medium">Medium</MenuItem>
+//                             <MenuItem value="High">High</MenuItem>
+//                         </Select>
+//                     </FormControl>
+
+//                     <FormControl size="small" sx={{ minWidth: 150 }}>
+//                         <InputLabel>Status</InputLabel>
+//                         <Select value={status} label="Status" onChange={(e) => setStatus(e.target.value)}>
+//                             <MenuItem value="">All</MenuItem>
+//                             <MenuItem value="open">Open</MenuItem>
+//                             <MenuItem value="closed">Closed</MenuItem>
+//                             <MenuItem value="pending">Paused</MenuItem>
+//                             <MenuItem value="assigned">Assigned</MenuItem>
+//                         </Select>
+//                     </FormControl>
+
+//                     <TextField
+//                         size='small'
+//                         defaultValue={currentDatauser?.markets}
+//                         InputProps={{ readOnly: true }}
+//                         disabled
+//                         variant="outlined"
+//                     />
+//                     <div className="">
+//                         <FormControl size="small" sx={{ minWidth: 200 }}>
+//                             <InputLabel>Stores</InputLabel>
+//                             <Select
+//                                 value={store}
+//                                 label='Store' onChange={(e) => setStore(e.target.value)}
+//                             >
+//                                 <MenuItem value="All">All Stores</MenuItem>
+//                                 {loader ? (
+//                                     <MenuItem disabled>
+//                                         <CircularProgress size={20} />
+//                                     </MenuItem>
+//                                 ) : (
+//                                     stores.map((storeItem, index) => (
+//                                         <MenuItem key={index} value={storeItem.store_name}>
+//                                             {storeItem.store_name}
+//                                         </MenuItem>
+//                                     ))
+//                                 )}
+//                             </Select>
+//                         </FormControl>
+//                     </div>
+//                     <TextField
+//                         size="small"
+//                         placeholder="Search..."
+//                         value={searchTerm}
+//                         onChange={(e) => setSearchTerm(e.target.value)}
+//                         sx={{ width: 300 }}
+//                         InputProps={{
+//                             endAdornment: (
+//                                 <InputAdornment position="end">
+//                                     <IconButton>
+//                                         <SearchIcon />
+//                                     </IconButton>
+//                                 </InputAdornment>
+//                             ),
+//                         }}
+//                     />
+//                     <Button
+//                         variant="outlined"
+//                         color="secondary"
+//                         onClick={() => {
+//                             setActiveFilter("Total");
+//                             setPriority("");
+//                             setStatus("");
+//                             setMarket("");
+//                             setSearchTerm("");
+//                         }}
+//                     >
+//                         Reset Filters
+//                     </Button>
+//                 </div>
+//             </div>
+
+//             <Box sx={{ mt: 3 }}>
+//                 <TableContainer component={Paper}>
+//                     <Table>
+//                         <TableHead>
+//                             <TableRow sx={{ backgroundColor: '#6f2da8' }}>
+//                                 <TableCell sx={{ color: 'white' }}>Ticket ID</TableCell>
+//                                 <TableCell sx={{ color: 'white' }}>Priority</TableCell>
+//                                 <TableCell sx={{ color: 'white' }}>Creator Name</TableCell>
+//                                 <TableCell sx={{ color: 'white' }}>Status</TableCell>
+//                                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
+//                                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
+//                                 <TableCell sx={{ color: 'white' }}>Assigned To</TableCell>
+//                             </TableRow>
+//                         </TableHead>
+//                         <TableBody>
+//                             {loading ? (
+//                                 <TableRow>
+//                                     <TableCell colSpan={8} align="center" height={200}>
+//                                         <CircularProgress />
+//                                     </TableCell>
+//                                 </TableRow>
+//                             ) : filteredTickets.length === 0 ? (
+//                                 <TableRow>
+//                                     <TableCell colSpan={8} align="center" height={100}>
+//                                         No tickets found
+//                                     </TableCell>
+//                                 </TableRow>
+//                             ) : (
+//                                 filteredTickets.map(ticket => {
+//                                     return (
+//                                         <TableRow
+//                                             key={ticket.id}
+//                                             hover
+//                                             onClick={() => handleReviewTicket(ticket.id)}
+//                                             sx={{ cursor: 'pointer' }}
+//                                         >
+//                                             <TableCell>{ticket.ticketId}</TableCell>
+//                                             <TableCell>{ticket.priority}</TableCell>
+//                                             <TableCell>{ticket.name}</TableCell>
+//                                             <TableCell>{ticket.status}</TableCell>
+//                                             <TableCell>{ticket.category}</TableCell>
+//                                             <TableCell>{ticket.ticketDescription}</TableCell>
+//                                             <TableCell>{ticket.assignerName || "N/A"}</TableCell>
+//                                         </TableRow>
+//                                     )
+//                                 })
+//                             )}
+//                         </TableBody>
+//                     </Table>
+//                 </TableContainer>
+//             </Box>
+//         </div>
+//     );
+// }
+
+// export default StoreCreateTickets
+
+
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-    Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    Paper, Select, MenuItem, FormControl, InputLabel, TextField,
-    InputAdornment, IconButton, CircularProgress
+  Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, Select, MenuItem, FormControl, InputLabel, TextField,
+  InputAdornment, IconButton, CircularProgress, Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
@@ -10,223 +282,282 @@ import cookie from 'js-cookie';
 import { decodeToken } from '../Utils/decodedToken.utils';
 import { getalltickets } from '../Services/tickets.services';
 import StoreCreateTickteBtnCompo from './StoreCreateTickteBtnCompo';
-
-const marketsList = [
-    "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON",
-    "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE",
-    "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
-];
-
+import { useSelector } from 'react-redux';
+import { getAllStores } from '../Services/stores.services';
 
 function StoreCreateTickets() {
   const { department, subDepartment } = decodeToken();
-     const id = cookie.get('id');
-     const navigate = useNavigate();
- 
-     const [allTickets, setAllTickets] = useState([]);
-     const [filteredTickets, setFilteredTickets] = useState([]);
-     const [activeFilter, setActiveFilter] = useState("Total");
-     const [priority, setPriority] = useState("");
-     const [status, setStatus] = useState("");
-     const [market, setMarket] = useState("");
-     const [searchTerm, setSearchTerm] = useState("");
-     const [loading, setLoading] = useState(false);
- 
-     const fetchTickets = useCallback(async () => {
-         setLoading(true);
-         try {
-             const response = await getalltickets();
-             const filtered = response?.data?.data?.filter(ticket =>
-                 (ticket.department == department && ticket.subDepartment == subDepartment) ||
-                 ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
-             );
-             setLoading(false);
-             setAllTickets(filtered || []);
-         } catch (error) {
-             setLoading(false);
-             console.error("Error fetching tickets:", error.message);
-         }
-     }, [department, subDepartment, id]);
- 
-     useEffect(() => {
-         fetchTickets();
-     }, [fetchTickets]);
- 
-     useEffect(() => {
-         const timeout = setTimeout(() => {
-             let filtered = [...allTickets];
-             switch (activeFilter) {
-                 case "Closed":
-                     filtered = filtered.filter(t => t.status === "closed");
-                     break;
-                 case "Complete":
-                     filtered = filtered.filter(t => t.status === "completed");
-                     break;
-                 case "Pending":
-                     filtered = filtered.filter(t => t.status === "pending");
-                     break;
-                 default:
-                     break;
-             }
- 
-             if (priority) filtered = filtered.filter(t => t.priority === priority);
-             if (status) filtered = filtered.filter(t => t.status === status.toLowerCase());
-             if (market) filtered = filtered.filter(t => t.market === market);
-             if (searchTerm.trim()) {
-                 const term = searchTerm.toLowerCase();
-                 filtered = filtered.filter(t =>
-                     t.ticketId?.toLowerCase().includes(term) ||
-                     t.name?.toLowerCase().includes(term) ||
-                     t.ticketDescription?.toLowerCase().includes(term)
-                 );
-             }
-             filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-             setFilteredTickets(filtered);
-         }, 300);
- 
-         return () => clearTimeout(timeout);
-     }, [allTickets, activeFilter, priority, status, market, searchTerm]);
- 
-     const handleReviewTicket = (id) => {
-         navigate(`/store-reviews-tickte/${id}`);
-     };
-     return (
-         <div className="container">
-             <div className="row">
-                 <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white">
-                     <div className="d-flex align-items-center" style={{ gap: "6px" }}>
-                         {["Total", "Complete", "Closed", "Pending"].map(label => (
-                             <Button
-                                 key={label}
-                                 variant={activeFilter === label ? "contained" : "outlined"}
-                                 onClick={() => setActiveFilter(label)}
-                             >
-                                 {label}
-                             </Button>
-                         ))}
-                     </div>
-                     <StoreCreateTickteBtnCompo fetchTickets={fetchTickets} />
-                 </div>
-             </div>
- 
-             <div className="row my-4">
-                 <div className="col-md-12 d-flex flex-wrap gap-3">
-                     <FormControl size="small" sx={{ minWidth: 120 }}>
-                         <InputLabel>Priority</InputLabel>
-                         <Select value={priority} label="Priority" onChange={(e) => setPriority(e.target.value)}>
-                             <MenuItem value="">All</MenuItem>
-                             <MenuItem value="Low">Low</MenuItem>
-                             <MenuItem value="Medium">Medium</MenuItem>
-                             <MenuItem value="High">High</MenuItem>
-                         </Select>
-                     </FormControl>
- 
-                     <FormControl size="small" sx={{ minWidth: 150 }}>
-                         <InputLabel>Status</InputLabel>
-                         <Select value={status} label="Status" onChange={(e) => setStatus(e.target.value)}>
-                             <MenuItem value="">All</MenuItem>
-                             <MenuItem value="open">Open</MenuItem>
-                             <MenuItem value="closed">Closed</MenuItem>
-                             <MenuItem value="pending">Paused</MenuItem>
-                             <MenuItem value="assigned">Assigned</MenuItem>
-                         </Select>
-                     </FormControl>
- 
-                     <FormControl size="small" sx={{ minWidth: 180 }}>
-                         <InputLabel>Markets</InputLabel>
-                         <Select value={market} label="Markets" onChange={(e) => setMarket(e.target.value)}>
-                             <MenuItem value="">All</MenuItem>
-                             {marketsList.map((m, idx) => (
-                                 <MenuItem key={idx} value={m}>{m}</MenuItem>
-                             ))}
-                         </Select>
-                     </FormControl>
- 
-                     <TextField
-                         size="small"
-                         placeholder="Search..."
-                         value={searchTerm}
-                         onChange={(e) => setSearchTerm(e.target.value)}
-                         sx={{ width: 300 }}
-                         InputProps={{
-                             endAdornment: (
-                                 <InputAdornment position="end">
-                                     <IconButton>
-                                         <SearchIcon />
-                                     </IconButton>
-                                 </InputAdornment>
-                             ),
-                         }}
-                     />
-                     <Button
-                         variant="outlined"
-                         color="secondary"
-                         onClick={() => {
-                             setActiveFilter("Total");
-                             setPriority("");
-                             setStatus("");
-                             setMarket("");
-                             setSearchTerm("");
-                         }}
-                     >
-                         Reset Filters
-                     </Button>
-                 </div>
-             </div>
- 
-             <Box sx={{ mt: 3 }}>
-                 <TableContainer component={Paper}>
-                     <Table>
-                         <TableHead>
-                             <TableRow sx={{ backgroundColor: '#6f2da8' }}>
-                                 <TableCell sx={{ color: 'white' }}>Ticket ID</TableCell>
-                                 <TableCell sx={{ color: 'white' }}>Priority</TableCell>
-                                 <TableCell sx={{ color: 'white' }}>Creator Name</TableCell>
-                                 <TableCell sx={{ color: 'white' }}>Status</TableCell>
-                                 <TableCell sx={{ color: 'white' }}>Type</TableCell>
-                                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
-                                 <TableCell sx={{ color: 'white' }}>Assigned To</TableCell>
-                             </TableRow>
-                         </TableHead>
-                         <TableBody>
-                             {loading ? (
-                                 <TableRow>
-                                     <TableCell colSpan={8} align="center" height={200}>
-                                         <CircularProgress />
-                                     </TableCell>
-                                 </TableRow>
-                             ) : filteredTickets.length === 0 ? (
-                                 <TableRow>
-                                     <TableCell colSpan={8} align="center" height={100}>
-                                         No tickets found
-                                     </TableCell>
-                                 </TableRow>
-                             ) : (
-                                 filteredTickets.map(ticket => {
-                                     return (
-                                         <TableRow
-                                             key={ticket.id}
-                                             hover
-                                             onClick={() => handleReviewTicket(ticket.id)}
-                                             sx={{ cursor: 'pointer' }}
-                                         >
-                                             <TableCell>{ticket.ticketId}</TableCell>
-                                             <TableCell>{ticket.priority}</TableCell>
-                                             <TableCell>{ticket.name}</TableCell>
-                                             <TableCell>{ticket.status}</TableCell>
-                                             <TableCell>{ticket.category}</TableCell>
-                                             <TableCell>{ticket.ticketDescription}</TableCell>
-                                             <TableCell>{ticket.assignerName || "N/A"}</TableCell>
-                                         </TableRow>
-                                     )
-                                 })
-                             )}
-                         </TableBody>
-                     </Table>
-                 </TableContainer>
-             </Box>
-         </div>
-     );
+  const id = cookie.get('id');
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.currentUser);
+
+  const [allTickets, setAllTickets] = useState([]);
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("Total");
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
+  const [store, setStore] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [currentDatauser, setCurrentDatauser] = useState({});
+  const [stores, setStores] = useState([]);
+  const [loader, setLoader] = useState(false);
+
+  // ✅ Fetch All Tickets
+  const fetchTickets = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getalltickets();
+      const filtered = response?.data?.data?.filter(ticket =>
+        (ticket.department === department && ticket.subDepartment === subDepartment) ||
+        ticket.managerID === id ||
+        ticket.userId === id ||
+        ticket.previousOwnerId === id ||
+        ticket.currentOwnerId === id ||
+        (ticket.assignerId === id && ticket.approved === true)
+      );
+      setAllTickets(filtered || []);
+    } catch (error) {
+      console.error("Error fetching tickets:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [department, subDepartment, id]);
+
+  // ✅ Get Current Logged-In User
+  const getCurrentUser = useCallback(async () => {
+    if (user) setCurrentDatauser(user);
+  }, [user]);
+
+  // ✅ Fetch All Stores
+  const fetchAllStores = useCallback(async () => {
+    setLoader(true);
+    try {
+      const response = await getAllStores();
+      const filteredStores = currentDatauser?.markets
+        ? response.filter((s) => s.market === currentDatauser?.markets)
+        : [];
+      setStores(filteredStores);
+    } catch (error) {
+      console.error('ERROR', error.message);
+    } finally {
+      setLoader(false);
+    }
+  }, [currentDatauser?.markets]);
+
+  useEffect(() => {
+    getCurrentUser();
+  }, [getCurrentUser]);
+
+  useEffect(() => {
+    fetchTickets();
+  }, [fetchTickets]);
+
+  useEffect(() => {
+    fetchAllStores();
+  }, [fetchAllStores]);
+
+  // ✅ Filtering Logic
+  useEffect(() => {
+    let filtered = [...allTickets];
+
+    // Filter by Active Status Tabs
+    if (activeFilter === "Closed") filtered = filtered.filter(t => t.status === "closed");
+    else if (activeFilter === "Complete") filtered = filtered.filter(t => t.status === "complete");
+    else if (activeFilter === "Pending") filtered = filtered.filter(t => t.status === "pending");
+
+    // Apply dropdown filters
+    if (priority) filtered = filtered.filter(t => t.priority === priority);
+    if (status) filtered = filtered.filter(t => t.status === status.toLowerCase());
+
+    // ✅ Store filter (All shows all)
+    if (store && store !== "All") filtered = filtered.filter(t => t.store_name === store);
+
+    // ✅ Search filter
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(t =>
+        t.ticketId?.toLowerCase().includes(term) ||
+        t.name?.toLowerCase().includes(term) ||
+        t.ticketDescription?.toLowerCase().includes(term)
+      );
+    }
+
+    // Sort latest first
+    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    setFilteredTickets(filtered);
+  }, [allTickets, activeFilter, priority, status, store, searchTerm]);
+
+  const handleReviewTicket = (id) => navigate(`/store-reviews-tickte/${id}`);
+
+  // ✅ Reset filters
+  const handleResetFilters = () => {
+    setActiveFilter("Total");
+    setPriority("");
+    setStatus("");
+    setStore("All");
+    setSearchTerm("");
+    fetchTickets();
+  };
+
+  return (
+    <div className="container">
+      {/* 🔹 Header Buttons */}
+      <div className="row">
+        <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white shadow-sm rounded-3">
+          <div className="d-flex align-items-center gap-2 flex-wrap">
+            {["Total", "Complete", "Closed", "Pending"].map(label => (
+              <Button
+                key={label}
+                variant={activeFilter === label ? "contained" : "outlined"}
+                onClick={() => setActiveFilter(label)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+          <div className="d-flex align-items-center gap-2">
+            <Button variant="outlined" onClick={fetchTickets}>Refresh</Button>
+            <StoreCreateTickteBtnCompo fetchTickets={fetchTickets} />
+          </div>
+        </div>
+      </div>
+
+      {/* 🔹 Filters Section */}
+      <div className="row my-4">
+        <div className="col-md-12 d-flex flex-wrap gap-3">
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Priority</InputLabel>
+            <Select value={priority} label="Priority" onChange={(e) => setPriority(e.target.value)}>
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Low">Low</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="High">High</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Status</InputLabel>
+            <Select value={status} label="Status" onChange={(e) => setStatus(e.target.value)}>
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="assigned">Assigned</MenuItem>
+            </Select>
+          </FormControl>
+
+          <TextField
+            size="small"
+            disabled
+            fullWidth
+            sx={{ maxWidth: 200 }}
+            defaultValue={currentDatauser?.markets || ""}
+            variant="outlined"
+            label="Market"
+          />
+
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>Stores</InputLabel>
+            <Select
+              value={store}
+              label="Stores"
+              onChange={(e) => setStore(e.target.value)}
+            >
+              <MenuItem value="All">All Stores</MenuItem>
+              {loader ? (
+                <MenuItem disabled>
+                  <CircularProgress size={20} />
+                </MenuItem>
+              ) : (
+                stores.map((storeItem, index) => (
+                  <MenuItem key={index} value={storeItem.store_name}>
+                    {storeItem.store_name}
+                  </MenuItem>
+                ))
+              )}
+            </Select>
+          </FormControl>
+
+          <TextField
+            size="small"
+            placeholder="Search tickets..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: 300 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleResetFilters}
+          >
+            Reset Filters
+          </Button>
+        </div>
+      </div>
+
+      {/* 🔹 Table Section */}
+      <Box sx={{ mt: 3 }}>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#6f2da8' }}>
+                <TableCell sx={{ color: 'white' }}>Ticket ID</TableCell>
+                <TableCell sx={{ color: 'white' }}>Priority</TableCell>
+                <TableCell sx={{ color: 'white' }}>Creator Name</TableCell>
+                <TableCell sx={{ color: 'white' }}>Status</TableCell>
+                <TableCell sx={{ color: 'white' }}>Type</TableCell>
+                <TableCell sx={{ color: 'white' }}>Description</TableCell>
+                <TableCell sx={{ color: 'white' }}>Assigned To</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" height={200}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : filteredTickets.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" height={100}>
+                    No tickets found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredTickets.map(ticket => (
+                  <TableRow
+                    key={ticket.id}
+                    hover
+                    onClick={() => handleReviewTicket(ticket.id)}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    <TableCell>{ticket.ticketId}</TableCell>
+                    <TableCell>{ticket.priority}</TableCell>
+                    <TableCell>{ticket.name}</TableCell>
+                    <TableCell>{ticket.status}</TableCell>
+                    <TableCell>{ticket.category}</TableCell>
+                    <TableCell>{ticket.ticketDescription}</TableCell>
+                    <TableCell>{ticket.assignerName || "N/A"}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </div>
+  );
 }
 
-export default StoreCreateTickets
+export default StoreCreateTickets;

@@ -68,7 +68,7 @@ function AdminManagerNotification() {
       const filteredUser = allUser.data.data.find((data) => data._id === id);
 
       if (!filteredUser || !response?.data?.data) return;
-      console.log(response.data.data)
+      // console.log(response.data.data)
       const filteredNoti = response.data.data
         // .filter((noti) => noti.recipientId === id)
         .map((noti) => {

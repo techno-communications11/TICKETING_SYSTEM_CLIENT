@@ -66,7 +66,7 @@ function DistrictManagerNotification() {
       const filteredUser = allUser.data.data.find((data) => data.id === id);
 
       if (!filteredUser || !response?.data?.data) return;
-      console.log(response.data.data)
+      // console.log(response.data.data)
       const filteredNoti = response.data.data
         .filter((noti) => noti.distrcitmanager === id)
         .map((noti) => {

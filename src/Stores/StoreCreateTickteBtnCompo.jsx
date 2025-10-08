@@ -69,13 +69,11 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
             const categoryList = allCategories?.data?.data || [];
 
             // ✅ Find current user
-            const loggedInUser = userList.find(u => u.id == id);
-            const filteredStore = storeList.find(store => store.door_code === loggedInUser?.doorcode);
+            const loggedInUser = userList.find(u => u.id === id);
+            const filteredStore = storeList.find(store => store.door_code == loggedInUser?.doorcode);
 
             setCurrentUserData(loggedInUser);
             setTypeOfTicket(categoryList);
-            console.log(filteredStore)
-            console.log(currentDatauser)
             setTicketData(prev => ({
                 ...prev,
                 name: currentDatauser?.name || loggedInUser?.name || '',
@@ -90,7 +88,7 @@ function StoreCreateTickteBtnCompo({ fetchTickets }) {
                 store_phone: currentDatauser?.phone || filteredStore?.store_phone || '',
                 store_Tech_id: filteredStore?.bdi_id || '',
                 store_detail: filteredStore || '',
-                market: filteredStore?.markets || '',
+                market: loggedInUser?.markets || '',
             }));
 
             // ✅ Managers (department based)
