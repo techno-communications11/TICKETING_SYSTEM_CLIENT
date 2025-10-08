@@ -141,7 +141,7 @@ function StoreDashboard() {
             />
           </div>
           <div className="">
-            <FormControl size="small" sx={{ minWidth: 200 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 200 }}>
               <InputLabel>Stores</InputLabel>
               <Select
                 value={store}
@@ -160,7 +160,15 @@ function StoreDashboard() {
                   ))
                 )}
               </Select>
-            </FormControl>
+            </FormControl> */}
+            <TextField
+              fullWidth
+              size='small'
+              defaultValue={currentDatauser?.name}
+              InputProps={{ readOnly: true }}
+              disabled
+              variant="outlined"
+            />
           </div>
           <div className="d-flex align-items-center" style={{ gap: "0px 10px" }}>
             <Button variant='contained' onClick={handleRefresh}>Refresh</Button>

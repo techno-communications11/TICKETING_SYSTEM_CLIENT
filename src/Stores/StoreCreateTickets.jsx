@@ -457,27 +457,14 @@ function StoreCreateTickets() {
             label="Market"
           />
 
-          <FormControl size="small" sx={{ minWidth: 200 }}>
-            <InputLabel>Stores</InputLabel>
-            <Select
-              value={store}
-              label="Stores"
-              onChange={(e) => setStore(e.target.value)}
-            >
-              <MenuItem value="All">All Stores</MenuItem>
-              {loader ? (
-                <MenuItem disabled>
-                  <CircularProgress size={20} />
-                </MenuItem>
-              ) : (
-                stores.map((storeItem, index) => (
-                  <MenuItem key={index} value={storeItem.store_name}>
-                    {storeItem.store_name}
-                  </MenuItem>
-                ))
-              )}
-            </Select>
-          </FormControl>
+          <TextField
+            // fullWidth
+            size='small'
+            defaultValue={currentDatauser?.name}
+            InputProps={{ readOnly: true }}
+            disabled
+            variant="outlined"
+          />
 
           <TextField
             size="small"
