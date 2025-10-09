@@ -126,7 +126,7 @@ function DistrictManagerManageTickets() {
         return `${diffMinutes}m ago`;
     }
     return (
-        <div className="container">
+        <div className="container-fluid">
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white">
                     <div className="d-flex align-items-center" style={{ gap: "6px" }}>
