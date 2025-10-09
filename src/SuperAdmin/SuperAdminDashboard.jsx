@@ -189,6 +189,13 @@ import ExporttoExcel from '../Components/ExporttoExcel/ExporttoExcel';
 import { getAllStores } from '../Services/stores.services';
 import { useNavigate } from 'react-router-dom';
 import SuperAdminCreateTicket from './SuperAdminCreateTicket';
+import SuperAdminDepartmentsFilteration from '../SuperAdminComponent/SuperAdminDepartmentsFilteration';
+import SuperAdminCategoryPiechart from '../SuperAdminComponent/SuperAdminCategoryPiechart';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import { getAllUser } from '../Services/auth.services';
 
 function SuperAdminDashboard() {
   const id = cookie.get('id');
@@ -208,6 +215,11 @@ function SuperAdminDashboard() {
     Pending: 0,
     reopen: 0
   });
+  const [totalStores, setTotalStores] = useState(0)
+  const [totalDistrictManagers, setTotalDistrictManagers] = useState(0)
+  const [totalMarketManagers, setTotalMarketManagers] = useState(0)
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const applyFilters = useCallback((ticketList) => {
     let filtered = [...ticketList];
@@ -219,6 +231,13 @@ function SuperAdminDashboard() {
     }
     if (priority) {
       filtered = filtered.filter(t => t.priority === priority);
+    }
+    if (startDate && endDate) {
+      filtered = filtered.filter(t => {
+        const ticketDate = dayjs(t.createdAt); // assuming ticket has createdAt
+        return ticketDate.isAfter(dayjs(startDate).startOf('day')) &&
+          ticketDate.isBefore(dayjs(endDate).endOf('day'));
+      });
     }
 
     setFilteredTickets(filtered);
@@ -250,13 +269,29 @@ function SuperAdminDashboard() {
       const filteredStores = market ? response.filter((s) => s.market === market) : [];
       setStores(filteredStores);
       setStore('');
+      setTotalStores(response.length)
     } catch (error) {
       console.error('ERROR', error.message);
     } finally {
       setLoader(false);
     }
   }, [market]);
+  const fetchGetAllUsersData = useCallback(async () => {
+    try {
+      const response = await getAllUser();
+      const getAllDistrictManagersData = await response.data.data.filter((data) => data.department === "District Manager")
+      const getAllMarketManagersData = await response.data.data.filter((data) => data.department === "Market Manager")
+      // console.log(getAllDistrictManagersData.length);
+      setTotalDistrictManagers(getAllDistrictManagersData.length || 0)
+      setTotalMarketManagers(getAllMarketManagersData.length || 0)
+    } catch (error) {
+      console.log("ERROR", error.message);
+    }
+  }, [])
 
+  useEffect(() => {
+    fetchGetAllUsersData();
+  }, [fetchGetAllUsersData])
   useEffect(() => {
     fetchTickets();
   }, [id, fetchTickets]);
@@ -270,7 +305,7 @@ function SuperAdminDashboard() {
   }, [market, store, priority, allTickets, applyFilters]);
 
   return (
-    <div className='container'>
+    <div className='container-fluid'>
       <div className="row">
         <div className="col-md-12 d-flex align-items-center mb-3 bg-white py-3 px-2 rounded-3 shadow-sm" style={{ gap: "20px 20px" }}>
           <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -309,6 +344,20 @@ function SuperAdminDashboard() {
               )}
             </Select>
           </FormControl>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="From Date"
+              value={startDate}
+              onChange={(newValue) => setStartDate(newValue)}
+              renderInput={(params) => <TextField size="small" {...params} />}
+            />
+            <DatePicker
+              label="To Date"
+              value={endDate}
+              onChange={(newValue) => setEndDate(newValue)}
+              renderInput={(params) => <TextField size="small" {...params} />}
+            />
+          </LocalizationProvider>
 
           <Button variant='contained' onClick={() => fetchTickets()}>Refresh</Button>
           <ExporttoExcel filterationData={filteredTickets} />
@@ -319,87 +368,100 @@ function SuperAdminDashboard() {
 
       <div className="row">
         <Typography variant='h6' className='mb-3'>Total Tickets: <span style={{ color: '#6f2da8' }}>{tickets.total}</span> </Typography>
-        <div className="col-md-8">
-          <div className="row mb-3 d-flex" style={{ gap: "0px 10px" }}>
+        <div className="col-12 mb-3">
+          <div className="row g-3">
 
-            <div className="bg-white p-3 rounded-3 text-center"
-              style={{
-                width: "140px",
-                border: "3px solid #ff099b",
-                boxShadow: "0px 4px 10px rgba(255, 9, 155, 0.3)",
-                cursor: "pointer"
-              }}
-              onClick={() => { navigate('/superAdmin-open-tickets') }}
-            >
-              <Typography variant='h2' sx={{ fontSize: "35px" }} className='fw-bold' color='#6f2da8'>
-                {tickets.open}
-              </Typography>
-              <Typography variant='subtitle1' sx={{ fontSize: "19px" }} className='fw-semibold'>Open</Typography>
-            </div>
-            <div className="bg-white p-3 rounded-3 text-center"
-              style={{
-                width: "140px",
-                border: "3px solid #ff099b",
-                boxShadow: "0px 4px 10px rgba(255, 9, 155, 0.3)",
-                cursor: "pointer"
-              }}
-              onClick={() => { navigate('/superAdmin-close-tickets') }}
-            >
-              <Typography variant='h2' sx={{ fontSize: "35px" }} className='fw-bold' color='#6f2da8'>
-                {tickets.closed}
-              </Typography>
-              <Typography variant='subtitle1' sx={{ fontSize: "19px" }} className='fw-semibold'>Closed</Typography>
-            </div>
-            <div className="bg-white p-3 rounded-3 text-center"
-              style={{
-                width: "140px",
-                border: "3px solid #ff099b",
-                boxShadow: "0px 4px 10px rgba(255, 9, 155, 0.3)",
-                cursor: "pointer"
-              }}
-              onClick={() => { navigate('/superAdmin-complete-tickets') }}
-            >
-              <Typography variant='h2' sx={{ fontSize: "35px" }} className='fw-bold' color='#6f2da8'>
-                {tickets.complete}
-              </Typography>
-              <Typography variant='subtitle1' sx={{ fontSize: "19px" }} className='fw-semibold'>Complete</Typography>
-            </div>
-            <div className="bg-white p-3 rounded-3 text-center"
-              style={{
-                width: "140px",
-                border: "3px solid #ff099b",
-                boxShadow: "0px 4px 10px rgba(255, 9, 155, 0.3)",
-                cursor: "pointer"
-              }}
-              onClick={() => { navigate('/superAdmin-pending-tickets') }}
-            >
-              <Typography variant='h2' sx={{ fontSize: "35px" }} className='fw-bold' color='#6f2da8'>
-                {tickets.Pending}
-              </Typography>
-              <Typography variant='subtitle1' sx={{ fontSize: "19px" }} className='fw-semibold'>Pending</Typography>
-            </div>
-            <div className="bg-white p-3 rounded-3 text-center"
-              style={{
-                width: "140px",
-                border: "3px solid #ff099b",
-                boxShadow: "0px 4px 10px rgba(255, 9, 155, 0.3)",
-                cursor: "pointer"
-              }}
-              onClick={() => { navigate('/superAdmin-reopen-tickets') }}
-            >
-              <Typography variant='h2' sx={{ fontSize: "35px" }} className='fw-bold' color='#6f2da8'>
-                {tickets.reopen}
-              </Typography>
-              <Typography variant='subtitle1' sx={{ fontSize: "19px" }} className='fw-semibold'>Re-open</Typography>
-            </div>
+            {/* Ticket Cards */}
+            {[
+              { label: 'Open', value: tickets.open, path: '/superAdmin-open-tickets', color: '#6f2da8' },
+              { label: 'Closed', value: tickets.closed, path: '/superAdmin-close-tickets', color: '#6f2da8' },
+              { label: 'Complete', value: tickets.complete, path: '/superAdmin-complete-tickets', color: '#6f2da8' },
+              { label: 'Pending', value: tickets.Pending, path: '/superAdmin-pending-tickets', color: '#6f2da8' },
+              { label: 'Re-open', value: tickets.reopen, path: '/superAdmin-reopen-tickets', color: '#6f2da8' },
+            ].map((ticket, idx) => (
+              <div key={idx} className="col-6 col-sm-6 col-md-4 col-lg-2 d-flex">
+                <div
+                  className="bg-white p-3 rounded-3 text-center shadow-sm w-100 d-flex flex-column justify-content-center align-items-center"
+                  style={{
+                    border: "3px solid #ff099b",
+                    cursor: "pointer",
+                    minHeight: 150,
+                  }}
+                  onClick={() => navigate(ticket.path)}
+                >
+                  <Typography
+                    variant='h2'
+                    className='fw-bold'
+                    color={ticket.color}
+                    sx={{
+                      fontSize: { xs: '36px', sm: '38px', md: '42px', lg: '46px' }, // slightly bigger
+                    }}
+                  >
+                    {ticket.value}
+                  </Typography>
+                  <Typography
+                    variant='subtitle1'
+                    className='fw-semibold'
+                    sx={{
+                      fontSize: { xs: '16px', sm: '17px', md: '18px', lg: '20px' }, // readable
+                    }}
+                  >
+                    {ticket.label} {ticket.value}/{tickets.total}
+                  </Typography>
+                </div>
+              </div>
+            ))}
+
+            {/* Additional Cards */}
+            {[
+              { label: 'Total Market Managers', value: totalMarketManagers },
+              { label: 'Total District Managers', value: totalDistrictManagers },
+              { label: 'Total Stores', value: totalStores },
+            ].map((item, idx) => (
+              <div key={`extra-${idx}`} className="col-6 col-sm-6 col-md-4 col-lg-2 d-flex">
+                <div
+                  className="bg-white p-3 rounded-3 text-center shadow-sm w-100 d-flex flex-column justify-content-center align-items-center"
+                  style={{
+                    border: "3px solid #ff099b",
+                    minHeight: 150,
+                  }}
+                >
+                  <Typography
+                    variant='h2'
+                    className='fw-bold'
+                    color='#ff6600'
+                    sx={{
+                      fontSize: { xs: '32px', sm: '34px', md: '38px', lg: '42px' }, // slightly bigger
+                    }}
+                  >
+                    {item.value}
+                  </Typography>
+                  <Typography
+                    variant='subtitle1'
+                    className='fw-semibold'
+                    sx={{
+                      fontSize: { xs: '14px', sm: '15px', md: '16px', lg: '18px' },
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                </div>
+              </div>
+            ))}
+
           </div>
+        </div>
+
+        <div className="col-md-8">
           <SuperAdminFilterationTickets datas={filteredTickets} />
+          <SuperAdminDepartmentsFilteration datas={filteredTickets} />
         </div>
         <div className="col-md-4">
           <SuperAdminPiechart datas={filteredTickets} />
+          <SuperAdminCategoryPiechart datas={filteredTickets} />
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
