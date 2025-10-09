@@ -230,7 +230,7 @@ function DistrictManagerManageTickets() {
                                 <TableCell sx={{ color: 'white' }}>Store</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Status</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Description</TableCell>
-                                <TableCell sx={{ color: 'white' }}>Aage</TableCell>
+                                <TableCell sx={{ color: 'white' }}>Age</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Solved by</TableCell>
                             </TableRow>
                         </TableHead>

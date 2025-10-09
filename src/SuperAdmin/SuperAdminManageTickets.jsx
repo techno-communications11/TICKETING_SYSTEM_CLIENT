@@ -40,6 +40,8 @@ import SuperAdminCreateTicket from './SuperAdminCreateTicket';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import cookies from "js-cookie";
 import EditTickets from '../SuperAdminComponent/EditTickets';
+import { getAllStores } from '../Services/stores.services';
+
 function SuperAdminManageTickets() {
   const role = cookies.get("it")
   const [selectedRows, setSelectedRows] = useState([]);
@@ -54,6 +56,8 @@ function SuperAdminManageTickets() {
   const [activeFilter, setActiveFilter] = useState("Total");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
+  const [department, setDepartments] = useState("");
+  const [storeName, setstoreName] = useState("");
   const [market, setMarket] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const marketsList = [
@@ -62,6 +66,14 @@ function SuperAdminManageTickets() {
     "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO",
     "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
   ];
+  const [departments] = useState([
+    "All", "HO", "BOPK", "BOIN", "Admin", "Admin / IT", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
+  ]);
+  const [store, setStore] = useState('');
+  const [stores, setStores] = useState([]);
+
+
+  // "Internal", 
   const fetchAllTickets = useCallback(async () => {
     setLoader(true);
     try {
@@ -73,6 +85,26 @@ function SuperAdminManageTickets() {
       console.error('Error fetching tickets:', error);
     }
   }, []);
+
+  const fetchAllStores = useCallback(async () => {
+    setLoader(true);
+    try {
+      const response = await getAllStores();
+      const filteredStores = market ? response.filter((s) => s.market === market) : [];
+      setStores(filteredStores);
+      console.log(filteredStores);
+      setLoader(false);
+      setStore(''); // Reset store when market changes
+    } catch (error) {
+      setLoader(false);
+      console.error('ERROR', error.message);
+    } finally {
+      setLoader(false);
+    }
+  }, [market]);
+  useEffect(() => {
+    fetchAllStores();
+  }, [fetchAllStores]);
 
   useEffect(() => {
     fetchAllTickets();
@@ -138,6 +170,8 @@ function SuperAdminManageTickets() {
 
       if (priority) filtered = filtered.filter(t => t.priority === priority);
       if (status) filtered = filtered.filter(t => t.status === status.toLowerCase());
+      if (department) filtered = filtered.filter(t => t.department === department);
+      if (storeName) filtered = filtered.filter(t => t.store === storeName);
       if (market) filtered = filtered.filter(t => t.market === market);
       if (searchTerm.trim()) {
         const term = searchTerm.toLowerCase();
@@ -153,7 +187,7 @@ function SuperAdminManageTickets() {
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [tickets, activeFilter, priority, status, market, searchTerm]);
+  }, [tickets, activeFilter, priority, status, market, searchTerm, department, stores]);
 
   function getTicketAge(createdAt) {
     const now = new Date();
@@ -169,6 +203,10 @@ function SuperAdminManageTickets() {
     return `${diffMinutes}m ago`;
   }
 
+  const reset = () => {
+    fetchAllTickets()
+    setDepartments('')
+  }
 
   return (
     <div className="container my-4 py-3">
@@ -179,7 +217,7 @@ function SuperAdminManageTickets() {
         </Typography>
         <div className="d-flex align-items-center">
           <IconButton
-            onClick={() => fetchAllTickets()}
+            onClick={() => reset()}
             sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
@@ -228,6 +266,26 @@ function SuperAdminManageTickets() {
             <MenuItem value="assigned">Assigned</MenuItem>
           </Select>
         </FormControl>
+        <FormControl size="small" sx={{ minWidth: 150 }}>
+          <InputLabel>Departments</InputLabel>
+          <Select value={department} label="Departments"
+            onChange={(e) => {
+              const value = e.target.value;
+              setDepartments(value);
+              if (value === "All") {
+                // yahan aap function call kar sakte ho jo sab tickets/data fetch kare
+                fetchAllTickets();
+              } else {
+                // yahan sirf selected department ka data fetch karo
+                setDepartments(value);
+              }
+            }}
+          >
+            {departments.map((dept, index) => (
+              <MenuItem key={index} value={dept}>{dept}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <FormControl size="small" sx={{ minWidth: 180 }}>
           <InputLabel>Markets</InputLabel>
@@ -238,6 +296,16 @@ function SuperAdminManageTickets() {
             ))}
           </Select>
         </FormControl>
+        <FormControl size='small' sx={{ minWidth: 200 }} disabled={!market}>
+          <InputLabel>Stores</InputLabel>
+          <Select value={store} label='Store' onChange={(e) => setstoreName(e.target.value)}>
+            <MenuItem value=''>All</MenuItem>
+            {loader ? < CircularProgress size={25} sx={{ alignItems: "center" }} /> : stores?.map((storeItem, index) => (
+              <MenuItem key={index} value={storeItem.store_name}>{storeItem.store_name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
       </div>
 
       {selectedRows.length > 0 && (
@@ -392,49 +460,49 @@ function SuperAdminManageTickets() {
                       >{ticket.ticketId}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",  
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.priority}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",  
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.name}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.status}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.category}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.ticketDescription}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{ticket.assignerName || 'N/A'}</TableCell>
                       <TableCell
                         sx={{
-                          fontSize: "0.85rem",   
+                          fontSize: "0.85rem",
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}

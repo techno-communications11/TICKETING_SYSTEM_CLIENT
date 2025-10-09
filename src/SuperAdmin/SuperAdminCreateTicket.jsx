@@ -51,7 +51,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
             const response = await getAllUser();
             const filteration = response.data.data.filter((data) => data.id == id)
             setCurrentUserData(filteration)
-            console.log("filteration", filteration)
+            // console.log("filteration", filteration)
             setTicketData((prevData) => ({
                 ...prevData,
                 name: filteration[0]?.name,

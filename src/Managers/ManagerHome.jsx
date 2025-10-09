@@ -53,7 +53,7 @@ function ManagerHome() {
                 (ticket.department == department && ticket.subDepartment == subDepartment) ||
                 ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
             );
-      console.log(response.data.data)
+      // console.log(response.data.data)
       // Apply filters
       if (market) filtered = filtered.filter((data) => data.market === market);
       if (store) filtered = filtered.filter((data) => data.store_name === store);
