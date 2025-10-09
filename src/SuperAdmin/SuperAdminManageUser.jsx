@@ -25,6 +25,7 @@ function SuperAdminManageUser() {
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [departmentFilter, setDepartmentFilter] = useState("");
+    const [selectedMarkets, setSelectedMarkets] = useState([]);
 
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [openResetModal, setOpenResetModal] = useState(false);
@@ -39,6 +40,9 @@ function SuperAdminManageUser() {
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
+    const [markets] = useState(["ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY", "EAST BAY AREA", "ATLANTA", "NORTH BAY AREA", "OXNARD/PALMDALE", "NORTH CAROL", "CHARLOTTE", "TEXAS"]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
+    const [paginatedUsers, setPaginatedUsers] = useState([]);
 
     const fetchAllUserData = useCallback(async () => {
         setLoading(true)
@@ -99,7 +103,7 @@ function SuperAdminManageUser() {
     const confirmDelete = async () => {
         setDeleteLoader(true)
         try {
-            console.log(deleteId)
+            // console.log(deleteId)
             const response = await deleteUserServices(deleteId);
             fetchAllUserData();
         } catch (error) {
@@ -110,11 +114,11 @@ function SuperAdminManageUser() {
             setConfirmed(false);
         }
     }
-    
-    
+
+
     const handleDeleteAll = async () => {
         try {
-            console.log("Delete all selected users:", selectedRows);
+            // console.log("Delete all selected users:", selectedRows);
             // setDeleteId(selectedRows);
             // setConfirmed(true);
             const resposne = await deleteMultipleUserServices(selectedRows);
@@ -133,25 +137,73 @@ function SuperAdminManageUser() {
         setPage(0);
     };
 
-    // const paginatedUsers = userData
-    //     .filter(user =>
-    //         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //         user.email.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    //         (departmentFilter === "" || user.department === departmentFilter)
-    //     )
-    //     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-    const filteredUsers = userData.filter(user =>
-        (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (departmentFilter === "" || user.department === departmentFilter) &&
-        (status === "" || user.status === departmentFilter)
-    );
+    // const filteredUsers = userData.filter(user =>
+    //     (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    //     (departmentFilter === "" || user.department === departmentFilter) &&
+    //     (status === "" || user.status === departmentFilter) ||
+    //     (selectedMarkets === "" || user.market == selectedMarkets)
+    // );
 
-    const paginatedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    // const paginatedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            let filtered = [...userData];
+
+            // ✅ Search filter (name or email)
+            if (searchTerm.trim()) {
+                const term = searchTerm.toLowerCase();
+                filtered = filtered.filter(user =>
+                    user.name?.toLowerCase().includes(term) ||
+                    user.email?.toLowerCase().includes(term)
+                );
+            }
+
+            // ✅ Department filter
+            if (departmentFilter) {
+                filtered = filtered.filter(
+                    user => user.department?.toLowerCase() === departmentFilter.toLowerCase()
+                );
+            }
+
+            // ✅ Status filter (if you want to use it later)
+            if (status) {
+                filtered = filtered.filter(
+                    user => user.status?.toLowerCase() === status.toLowerCase()
+                );
+            }
+
+            // ✅ Market filter — only apply when department is Market Manager / District Manager / Store
+            if (
+                (departmentFilter === "Market Manager" ||
+                    departmentFilter === "District Manager" ||
+                    departmentFilter === "Store") &&
+                selectedMarkets &&
+                selectedMarkets !== ""
+            ) {
+                filtered = filtered.filter(
+                    user =>
+                        user.market?.toLowerCase() === selectedMarkets?.toLowerCase() ||
+                        user.markets?.toLowerCase() === selectedMarkets?.toLowerCase()
+                );
+            }
+
+            // ✅ Pagination
+            const paginated = filtered.slice(
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+            );
+
+            setFilteredUsers(filtered); // optional if you want to export
+            setPaginatedUsers(paginated);
+        }, 300);
+
+        return () => clearTimeout(timeout);
+    }, [userData, searchTerm, departmentFilter, status, selectedMarkets, page, rowsPerPage]);
 
 
     return (
-        <div className="container">
+        <div className="container-fluid">
             <BasicBreadcrumbs name={"Manage Agents"} />
             {selectedRows.length > 0 && (
                 <div className="d-flex align-items-center justify-content-between my-3 p-3 bg-light border rounded">
@@ -193,6 +245,22 @@ function SuperAdminManageUser() {
                                 ))}
                             </Select>
                         </FormControl>
+                        {
+                            (departmentFilter === "Market Manager" || departmentFilter === "District Manager" || departmentFilter === "Store") && (
+                                <FormControl size="small" sx={{ minWidth: 200 }}>
+                                    <InputLabel>Markets</InputLabel>
+                                    <Select
+                                        value={selectedMarkets}
+                                        onChange={(e) => setSelectedMarkets(e.target.value)}
+                                        label="Markets">
+                                        <MenuItem value="">All</MenuItem>
+                                        {markets.map((dept, index) => (
+                                            <MenuItem key={index} value={dept}>{dept}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            )
+                        }
                         {/* <FormControl size="small" sx={{ minWidth: 150 }}>
                             <InputLabel>Status</InputLabel>
                             <Select
@@ -207,7 +275,7 @@ function SuperAdminManageUser() {
                             </Select>
                         </FormControl> */}
                         <AddUserCompo fetchAllUserData={fetchAllUserData} />
-                        <ExportUsers userData={userData} />
+                        <ExportUsers userData={filteredUsers} />
                     </div>
                 </div>
             </div>
@@ -347,6 +415,7 @@ function SuperAdminManageUser() {
                                 <TableCell sx={{ color: 'white' }}>Phone</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Department</TableCell>
                                 {/* {user.department === "SuperAdmin" ? "" : <TableCell sx={{ color: 'white' }}>Role</TableCell>} */}
+                                <TableCell sx={{ color: 'white' }}>Market</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Role</TableCell>
                                 <TableCell sx={{ color: 'white' }}>Status</TableCell>
                             </TableRow>
@@ -371,6 +440,7 @@ function SuperAdminManageUser() {
                                                 <TableCell>{user.email}</TableCell>
                                                 <TableCell>{user.phone}</TableCell>
                                                 <TableCell>{user.department}</TableCell>
+                                                <TableCell>{user.markets || user.market || "-"}</TableCell>
                                                 <TableCell>{user.subDepartment || "-"}</TableCell>
                                                 <TableCell>{user.isActive ? "Active" : "Un-active"}</TableCell>
                                             </TableRow>

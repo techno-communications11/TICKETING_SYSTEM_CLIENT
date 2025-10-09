@@ -46,7 +46,7 @@ function AddUserCompo({ fetchAllUserData }) {
         try {
             const response = await getAllStores();
             setStores(response);
-            console.log(response);
+            // console.log(response);
         } catch (error) {
             console.error("Error fetching stores:", error);
         }

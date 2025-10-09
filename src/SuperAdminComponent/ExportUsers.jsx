@@ -171,6 +171,7 @@ function ExportUsers({ userData }) {
             Email: user.email,
             Passowrd: 123456,
             Phone: user.phone,
+            Market: user.market || user.markets ||'-',
             Department: user.department,
             SubDepartment: user.subDepartment || "-"
         }));
