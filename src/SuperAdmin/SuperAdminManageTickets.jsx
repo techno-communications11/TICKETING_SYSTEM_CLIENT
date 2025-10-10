@@ -209,7 +209,7 @@ function SuperAdminManageTickets() {
   }
 
   return (
-    <div className="container my-4 py-3">
+    <div className="container-fluid my-4 py-3">
       <BasicBreadcrumbs name={'Manage Tickets'} />
       <div className="d-flex justify-content-between align-items-center mb-4">
         <Typography variant="h6" className="mb-3">

@@ -35,6 +35,8 @@ function DistrictManagerReviewTickets() {
   const { department, subDepartment } = decodedTickets;
   const [assignLoader, setAssignLoader] = useState(false);
   const [tloading, settLoading] = useState(false);
+  const [transferedData, setTranferedData] = useState([])
+
   const filteredTickets = useCallback(async () => {
     settLoading(true)
     try {
@@ -65,7 +67,18 @@ function DistrictManagerReviewTickets() {
   useEffect(() => {
     filteredTickets();
   }, [filteredTickets])
+  const filteredData = useCallback(async () => {
+    try {
+      const response = await getAllUser();
+      const filet = response.data.data.filter((data) => data.id === detailTicket[0]?.currentOwnerId)
+      setTranferedData(filet[0])
+    } catch (error) {
 
+    }
+  }, [detailTicket[0]?.currentOwnerId])
+  useEffect(() => {
+    filteredData();
+  }, [filteredData, detailTicket[0]?.currentOwnerId])
   useEffect(() => {
     if (socket && detailTicket?.length > 0) {
       const handleCloseTicket = (ticket) => {

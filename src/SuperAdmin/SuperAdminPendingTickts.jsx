@@ -61,7 +61,7 @@ function SuperAdminPendingTickts() {
     }, [fetchAllTickets]);
 
     const handleReviewTicket = (id) => {
-        navigate(`/manager-review-ticket/${id}`);
+        navigate(`/superAdmin-review-tickets/${id}`);
     };
 
     const filteredTickets = tickets.filter(ticket => {
@@ -195,9 +195,9 @@ function SuperAdminPendingTickts() {
                             ) : (
                                 filteredTickets.map(ticket => (
                                     <TableRow
-                                        key={ticket._id}
+                                        key={ticket.id}
                                         hover
-                                        onClick={() => handleReviewTicket(ticket._id)}
+                                        onClick={() => handleReviewTicket(ticket.id)}
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell>{ticket.ticketId}</TableCell>

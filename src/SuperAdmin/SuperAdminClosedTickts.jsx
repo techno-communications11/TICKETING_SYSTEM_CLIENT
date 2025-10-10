@@ -107,9 +107,9 @@
 // //                             ) : (
 // //                                 filteredTickets.map(ticket => (
 // //                                     <TableRow
-// //                                         key={ticket._id}
+// //                                         key={ticket.id}
 // //                                         hover
-// //                                         onClick={() => handleReviewTicket(ticket._id)}
+// //                                         onClick={() => handleReviewTicket(ticket.id)}
 // //                                         sx={{ cursor: 'pointer' }}
 // //                                     >
 // //                                         <TableCell>{ticket.ticketId}</TableCell>
@@ -343,9 +343,9 @@
 //                             ) : (
 //                                 filteredTickets.map(ticket => (
 //                                     <TableRow
-//                                         key={ticket._id}
+//                                         key={ticket.id}
 //                                         hover
-//                                         onClick={() => handleReviewTicket(ticket._id)}
+//                                         onClick={() => handleReviewTicket(ticket.id)}
 //                                         sx={{ cursor: 'pointer' }}
 //                                     >
 //                                         <TableCell>{ticket.ticketId}</TableCell>
@@ -456,7 +456,7 @@ function SuperAdminClosedTickets() {
     }, [fetchStores]);
 
     const handleReviewTicket = (id) => {
-        navigate(`/manager-review-ticket/${id}`);
+        navigate(`/superAdmin-review-tickets/${id}`);
     };
 
     // Filter tickets based on search, priority, status, department, market, and store
@@ -593,9 +593,9 @@ function SuperAdminClosedTickets() {
                             ) : (
                                 filteredTickets.map(ticket => (
                                     <TableRow
-                                        key={ticket._id}
+                                        key={ticket.id}
                                         hover
-                                        onClick={() => handleReviewTicket(ticket._id)}
+                                        onClick={() => handleReviewTicket(ticket.id)}
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell>{ticket.ticketId}</TableCell>

@@ -155,7 +155,8 @@ function SuperAdminManageUser() {
                 const term = searchTerm.toLowerCase();
                 filtered = filtered.filter(user =>
                     user.name?.toLowerCase().includes(term) ||
-                    user.email?.toLowerCase().includes(term)
+                    user.email?.toLowerCase().includes(term)||
+                    user.doorcode?.toLowerCase().includes(term)
                 );
             }
 

@@ -162,7 +162,7 @@ function AddUserCompo({ fetchAllUserData }) {
         const finalData = {
             ...formData,
             selectedDepts: formData.department === "Senior Manager" ? selectedDepts : [],
-            selectedMarkets: (formData.department === "Market Manager" || formData.department === "District Manager") ? selectedMarkets : [],
+            selectedMarkets: (formData.department === "Market Manager" || formData.department === "District Manager"|| formData.department === "Store") ? selectedMarkets : [],
             selectedStores: (formData.department === "District Manager") ? selectedStores : []
         };
         const obj = {
@@ -250,7 +250,7 @@ function AddUserCompo({ fetchAllUserData }) {
                             </>
                         )}
 
-                        {formData.department === 'Market Manager' && (
+                        {formData.department === 'Market Manager'|| formData.department === 'Store' && (
                             <>
                                 <Typography>Select Market:</Typography>
                                 <Grid container spacing={2}>

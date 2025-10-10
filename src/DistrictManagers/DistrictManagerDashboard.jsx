@@ -15,11 +15,10 @@ import { getAllStores } from '../Services/stores.services';
 import { useSocket } from '../Context/socket.context';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../Context/context';
-// import MarketManagerFilterationTickets from './MarketManagerFilterationTickets';
-// import MarketManagersPiechart from './MarketManagersPiechart';
 import DistrictManagerFilterationTickets from './DistrictManagerFilterationTickets';
 import DistrictManagersPiechart from './DistrictManagersPiechart';
 import DistrictManagerCreateTickets from './DistrictManagerCreateTickets';
+import { useSelector } from 'react-redux';
 
 
 function DistrictManagerDashboard() {
@@ -43,33 +42,79 @@ function DistrictManagerDashboard() {
         reopen: 0,
     });
     const { socket } = useSocket();
+    const { user } = useSelector((state) => state.currentUser);
+    const [currentDatauser, setCurrentDatauser] = useState([])
+
+    const getCurrentUser = useCallback(async () => {
+        const curremntUsre = await user;
+        setCurrentDatauser(curremntUsre)
+    }, [id])
+    useEffect(() => {
+        getCurrentUser()
+    }, [getCurrentUser])
+    // const fetchTickets = useCallback(async () => {
+    //     try {
+    //         console.log("currentDatauser", JSON.parse(currentDatauser?.stores))
+    //         const response = await getalltickets();
+    //         console.log(response.data.data)
+    //         let filtered = response.data.data.filter(
+    //             (data) =>
+    //                 data.districtManager_id === id
+    //         );
+    //         if (market) filtered = filtered.filter((data) => data.market === market);
+    //         if (store) filtered = filtered.filter((data) => data.store_name === store);
+    //         if (priority) filtered = filtered.filter((data) => data.priority === priority);
+
+    //         setTickets({
+    //             total: filtered.length,
+    //             open: filtered.filter((data) => data.status === 'open').length,
+    //             closed: filtered.filter((data) => data.status === 'close').length,
+    //             Pending: filtered.filter((data) => data.status === 'pending').length,
+    //             complete: filtered.filter((data) => data.agentstatus === 'complete').length,
+    //             reopen: filtered.filter((data) => data.status === 're-open').length,
+    //         });
+
+    //         setFilteration(filtered);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }, [department, subDepartment, id, market, store, priority]);
 
     const fetchTickets = useCallback(async () => {
         try {
+            const storeIds = JSON.parse(currentDatauser?.stores) || [];
+
             const response = await getalltickets();
-            console.log(response.data.data)
-            let filtered = response.data.data.filter(
-                (data) =>
-                    data.districtManager_id === id
-            );
+            const allTickets = response.data.data;
+            // 🔹 Filter logic:
+            let filtered = allTickets.filter((data) => {
+                const storeId = JSON.parse(data?.store_detail)?.id;
+                return (
+                    data.districtManager_id === id || data.userId === id ||
+                    (storeId && storeIds.includes(storeId))
+                );
+            });
+            // 🔹 Apply additional filters
             if (market) filtered = filtered.filter((data) => data.market === market);
             if (store) filtered = filtered.filter((data) => data.store_name === store);
             if (priority) filtered = filtered.filter((data) => data.priority === priority);
 
+            // 🔹 Calculate ticket stats
             setTickets({
                 total: filtered.length,
-                open: filtered.filter((data) => data.status === 'open').length,
-                closed: filtered.filter((data) => data.status === 'close').length,
-                Pending: filtered.filter((data) => data.status === 'pending').length,
-                complete: filtered.filter((data) => data.agentstatus === 'complete').length,
-                reopen: filtered.filter((data) => data.status === 're-open').length,
+                open: filtered.filter((data) => data.status === "open").length,
+                closed: filtered.filter((data) => data.status === "close").length,
+                Pending: filtered.filter((data) => data.status === "pending").length,
+                complete: filtered.filter((data) => data.agentstatus === "complete").length,
+                reopen: filtered.filter((data) => data.status === "re-open").length,
             });
 
+            // 🔹 Set filtered data
             setFilteration(filtered);
         } catch (error) {
-            console.error(error);
+            console.error("Error fetching tickets:", error);
         }
-    }, [department, subDepartment, id, market, store, priority]);
+    }, [department, subDepartment, id, market, store, priority, currentDatauser]);
 
     const fetchAllStores = useCallback(async () => {
         setLoader(true);
@@ -111,7 +156,7 @@ function DistrictManagerDashboard() {
         </div>
     }
     return (
-        <div className='container'>
+        <div className='container-fluid'>
             <div className='row'>
                 <div
                     className='col-md-12 d-flex align-items-center mb-3 bg-white py-3 px-2 rounded-3 shadow-sm'

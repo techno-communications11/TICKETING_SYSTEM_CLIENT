@@ -258,9 +258,8 @@ function SuperAdminReviewTickets() {
         </div>
     }
     const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
-    console.log(detailTicket[0])
     return (
-        <div className='container d-flex flex-column gap-3'>
+        <div className='container-fluid d-flex flex-column gap-3'>
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center" style={{ marginTop: '20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

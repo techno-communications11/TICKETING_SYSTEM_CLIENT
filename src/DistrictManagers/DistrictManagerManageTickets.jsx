@@ -31,10 +31,12 @@ function DistrictManagerManageTickets() {
     const [loading, setLoading] = useState(false);
     const [currentUserData, setCurrentUserData] = useState([])
     const [stores, setStores] = useState([])
+    const [userData, setUserdata] = useState([]);
 
     const fetchUser = useCallback(async () => {
         const currentDatauser = await user;
         setCurrentUserData(currentDatauser?.markets);
+        setUserdata(currentDatauser);
     }, [user]);
 
     const fecthAllStores = useCallback(async () => {
@@ -53,21 +55,62 @@ function DistrictManagerManageTickets() {
     useEffect(() => {
         fecthAllStores()
     }, [fecthAllStores])
+    // const fetchTickets = useCallback(async () => {
+    //     setLoading(true);
+    //     try {
+    //         const storeIds = JSON.parse(userData?.stores) || [];
+    //         const response = await getalltickets();
+    //         // const filtered = response?.data?.data?.filter(ticket =>
+    //         //     ticket.userId === id
+    //         // );
+    //         const allTickets = response.data.data;
+    //         // 🔹 Filter logic:
+    //         let filtered = allTickets.filter((data) => {
+    //             const storeId = JSON.parse(data?.store_detail)?.id;
+    //             return (
+    //                 data.districtManager_id === id || data.userId === id ||
+    //                 (storeId && storeIds.includes(storeId))
+    //             );
+    //         });
+    //         setAllTickets(filtered || []);
+    //     } catch (error) {
+    //         console.error("Error fetching tickets:", error.message);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }, [department, subDepartment, id]);
+
     const fetchTickets = useCallback(async () => {
         setLoading(true);
         try {
+            const storeIds = JSON.parse(userData?.stores) || [];
             const response = await getalltickets();
-            const filtered = response?.data?.data?.filter(ticket =>
-                (ticket.department === department && ticket.subDepartment === subDepartment) ||
-                ticket.managerID === id || ticket.userId === id || (ticket.assignerId === id && ticket.approved === true)
-            );
+            const allTickets = response.data.data || [];
+
+            // 🔹 Filter logic:
+            let filtered = allTickets.filter((data) => {
+                const storeDetail = typeof data?.store_detail === "string"
+                    ? JSON.parse(data.store_detail)
+                    : data.store_detail;
+
+                const storeId = storeDetail?.id;
+                return (
+                    data.districtManager_id === id ||
+                    data.userId === id ||
+                    (storeId && storeIds.includes(storeId))
+                );
+            });
+
+            // 🔹 Sort by latest (createdAt descending)
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
             setAllTickets(filtered || []);
         } catch (error) {
             console.error("Error fetching tickets:", error.message);
         } finally {
             setLoading(false);
         }
-    }, [department, subDepartment, id]);
+    }, [department, subDepartment, id, userData]);
 
     useEffect(() => {
         fetchTickets();
@@ -76,11 +119,10 @@ function DistrictManagerManageTickets() {
     useEffect(() => {
         const timeout = setTimeout(() => {
             let filtered = [...allTickets];
-
             // Apply status button filter
             switch (activeFilter) {
-                case "Closed":
-                    filtered = filtered.filter(t => t.status === "closed");
+                case "Close":
+                    filtered = filtered.filter(t => t.status === "close");
                     break;
                 case "Complete":
                     filtered = filtered.filter(t => t.status === "completed");
@@ -130,7 +172,7 @@ function DistrictManagerManageTickets() {
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white">
                     <div className="d-flex align-items-center" style={{ gap: "6px" }}>
-                        {["Total", "Complete", "Closed", "Pending"].map(label => (
+                        {["Total", "Complete", "Close", "Pending"].map(label => (
                             <Button
                                 key={label}
                                 variant={activeFilter === label ? "contained" : "outlined"}
@@ -237,13 +279,13 @@ function DistrictManagerManageTickets() {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} align="center" height={200}>
+                                    <TableCell colSpan={10} align="center" height={200}>
                                         <CircularProgress />
                                     </TableCell>
                                 </TableRow>
                             ) : filteredTickets.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} align="center" height={100}>
+                                    <TableCell colSpan={10} align="center" height={100}>
                                         No tickets found
                                     </TableCell>
                                 </TableRow>
