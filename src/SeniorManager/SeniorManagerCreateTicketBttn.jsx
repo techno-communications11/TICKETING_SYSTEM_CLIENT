@@ -44,11 +44,16 @@ function SeniorManagerCreateTicketBttn({ handleClose, fetchTickets }) {
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
+        // const ticketId = await generatedTicketId();
+        // console.log({
+        //     ticketId,
+        //     formData: ticketData,
+        // })
         setLoader(true);
         if (!validateForm()) return setLoader(false);
         try {
             const ticketId = await generatedTicketId();
-            const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
+            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
@@ -66,17 +71,16 @@ function SeniorManagerCreateTicketBttn({ handleClose, fetchTickets }) {
                     notification_type: "new Ticket open",
                 };
                 socket.emit('notify', notificationObj)
-                const r = await ticketProgressServices(resposne.data.data._id, "Created");
+                setLoader(false);
+                generatedTicketId();
+                reset();
+                handleClose();
+                fetchTickets()
+                // const r = await ticketProgressServices(resposne.data.data._id, "Created");
             }
         } catch (error) {
             setLoader(false)
             console.log("error", error.message)
-        } finally {
-            setLoader(false);
-            generatedTicketId();
-            reset();
-            handleClose();
-            fetchTickets()
         }
     };
     return (

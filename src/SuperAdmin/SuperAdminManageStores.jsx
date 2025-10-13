@@ -61,7 +61,7 @@ function SuperAdminManageStores() {
   const currentRows = filteredStores.slice(indexOfFirstRow, indexOfLastRow);
 
   return (
-    <div className="container my-4 py-3">
+    <div className="container-fluid my-4 py-3">
       <BasicBreadcrumbs name={'Manage Stores'} />
       <Typography variant='h6' className='mb-3'>Manage Stores</Typography>
       <div className="row">

@@ -5,14 +5,12 @@ import {
     InputAdornment, IconButton, CircularProgress
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-// import ManagerCreateTickets from './ManagerCreateTickets';
 import { useNavigate } from 'react-router-dom';
 import cookie from 'js-cookie';
 import { decodeToken } from '../Utils/decodedToken.utils';
 import { getalltickets } from '../Services/tickets.services';
 import SeniorManagerCreateTickets from './SeniorManagerCreateTickets';
 import { useSelector } from 'react-redux';
-// import AdminManagerCreateTickets from './AdminManagerCreateTickets';
 
 const marketsList = [
     "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON",
@@ -59,7 +57,7 @@ function SeniorManagerManageTickets() {
         } finally {
             setLoading(false);
         }
-    }, [department, subDepartment,currentUserDatas.managedDepartments, id]);
+    }, [department, subDepartment, currentUserDatas.managedDepartments, id]);
 
     useEffect(() => {
         fetchTickets();
@@ -95,7 +93,7 @@ function SeniorManagerManageTickets() {
                     t.ticketDescription?.toLowerCase().includes(term)
                 );
             }
-
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setFilteredTickets(filtered);
         }, 300);
 
@@ -103,7 +101,7 @@ function SeniorManagerManageTickets() {
     }, [allTickets, activeFilter, priority, status, market, searchTerm]);
 
     const handleSelectAll = () => {
-        setSelectedRows(selectedRows.length === filteredTickets.length ? [] : filteredTickets.map(t => t._id));
+        setSelectedRows(selectedRows.length === filteredTickets.length ? [] : filteredTickets.map(t => t.id));
     };
 
     const handleRowSelect = (ticketId) => {
@@ -117,7 +115,7 @@ function SeniorManagerManageTickets() {
     };
 
     return (
-        <div className="container">
+        <div className="container-fluid">
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white">
                     <div className="d-flex align-items-center" style={{ gap: "6px" }}>
@@ -230,9 +228,9 @@ function SeniorManagerManageTickets() {
                             ) : (
                                 filteredTickets.map(ticket => (
                                     <TableRow
-                                        key={ticket._id}
+                                        key={ticket.id}
                                         hover
-                                        onClick={() => handleReviewTicket(ticket?._id)}
+                                        onClick={() => handleReviewTicket(ticket?.id)}
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell>{ticket.ticketId}</TableCell>

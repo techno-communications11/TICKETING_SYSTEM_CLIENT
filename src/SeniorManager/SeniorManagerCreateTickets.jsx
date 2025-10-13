@@ -10,6 +10,7 @@ import { getAllStores } from '../Services/stores.services';
 import { getAllProblemCategory } from '../Services/categoryofproblem.services';
 import { getAllUsers } from '../Services/auth.services';
 import SeniorManagerCreateTicketBttn from './SeniorManagerCreateTicketBttn';
+import UploadAttachments from '../Components/UploadAttachnents/UploadAttachnents';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -47,14 +48,14 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
     const fetchCUrrentUser = useCallback(async () => {
         try {
             const response = await getAllUsers();
-            const filteration = response.data.data.filter((data) => data._id === id)
+            const filteration = response.data.data.filter((data) => data.id === id)
             setCurrentUserData(filteration)
             setTicketData((prevData) => ({
                 ...prevData,
                 name: filteration[0]?.name,
                 email: filteration[0]?.email,
                 phone: filteration[0]?.phone,
-                userId: filteration[0]?._id,
+                userId: filteration[0]?.id,
                 creatordepartment: filteration[0]?.subDepartment || filteration[0]?.department,
                 senior_managers: filteration[0]?.subDepartment || filteration[0]?.department
             }));
@@ -91,9 +92,9 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
             if (filterationData.length === 1) {
                 setTicketData({
                     ...ticketData,
-                    managerID: "N/A",
-                    managerName: 'N/A',
-                    managerName_email: 'N/A',
+                    managerID: filterationData[0]?.id,
+                    managerName: filterationData[0]?.name,
+                    managerName_email: filterationData[0]?.email,
                     department: ticketData.department
                 });
             } else {
@@ -128,7 +129,8 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
 
     const handleStore = async (e) => {
         try {
-            const selectedStore = stores.find(store => store._id === e.target.value);
+            const selectedStore = stores.find(store => store.id === e.target.value);
+            console.log(selectedStore)
             setTicketData({
                 ...ticketData,
                 storeId: e.target.value,
@@ -142,15 +144,23 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
             console.log('error', error.message)
         }
     }
-
+    const handleDepartmentChange = (event) => {
+        const selectedManager = managerData.find(user => user.name === event.target.value);
+        setTicketData({
+            ...ticketData,
+            managerID: selectedManager.id,
+            managerName: selectedManager.name,
+            managerName_email: selectedManager.email,
+        });
+    };
     const handleCategory = async (e) => {
         try {
             const resposne = await getAllProblemCategory();
-            const filterationType = resposne.data.data.filter((data) => data._id === e.target.value)
+            const filterationType = resposne.data.data.filter((data) => data.id === e.target.value)
             console.log(filterationType)
             setTicketData({
                 ...ticketData,
-                categoryId: filterationType[0]?._id,
+                categoryId: filterationType[0]?.id,
                 category: filterationType[0]?.name,
                 department: filterationType[0]?.department,
                 department_email: filterationType[0]?.department_email,
@@ -300,7 +310,7 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
                                             <MenuItem value="">Select Store</MenuItem>
                                             {stores.length > 0 ?
                                                 stores.map((store, index) => (
-                                                    <MenuItem key={index} value={store._id}>{store.store_name}</MenuItem>
+                                                    <MenuItem key={index} value={store.id}>{store.store_name}</MenuItem>
                                                 )) : <MenuItem value=""><CircularProgress size={25} /></MenuItem>}
                                         </Select>
                                     </FormControl>
@@ -318,7 +328,7 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
                                             <MenuItem value="">Select Category of Problem</MenuItem>
                                             {
                                                 typeofticket?.map((data) => (
-                                                    <MenuItem value={data._id}>{data.name}</MenuItem>
+                                                    <MenuItem value={data.id}>{data.name}</MenuItem>
                                                 ))
                                             }
                                         </Select>
@@ -336,7 +346,7 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
                                         variant="outlined"
                                     />
                                 </div>
-                                {/* <div className="col-md-6">
+                                <div className="col-md-6">
                                     {
                                         managerData && managerData.length === 1 ? (
                                             <TextField
@@ -377,7 +387,7 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
                                                 // ""
                                             )
                                     }
-                                </div> */}
+                                </div>
                                 <div className="col-md-6">
                                     <FormControl size="medium" fullWidth>
                                         <InputLabel>Priority</InputLabel>
@@ -411,9 +421,13 @@ function SeniorManagerCreateTickets({ fetchTickets }) {
                                     />
                                 </div>
                                 <div className="col-md-12">
-                                    <UploadFiles />
+                                    <Typography>Uplaod Images:</Typography>
+                                    <UploadFiles setTicketData={setTicketData} />
                                 </div>
-
+                                <div className="col-md-12">
+                                    <Typography>Uplaod attachments:</Typography>
+                                    <UploadAttachments setTicketData={setTicketData} />
+                                </div>
                             </div>
                         </div>
                     </Box>

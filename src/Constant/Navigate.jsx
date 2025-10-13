@@ -312,58 +312,58 @@ export const NAVIGATION = [
       },
     ],
   },
-  {
-    title: 'BRS Reports',
-    segment: '',
-    icon: <InfoOutlineIcon />,
-    roles: ['senior manager'],
-    type: 'dropdown',
-    children: [
-      {
-        title: 'Dashboard',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Market Summary',
-        segment: '',
-        icon: <InfoOutlineIcon />, // Updated icon
-      },
-      {
-        title: 'BRS Summary',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'BRS-OPS',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'BRS-COLL',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Capital-1',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Bank QB',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'JV',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Utility Account',
-        segment: '',
-        icon: <InfoOutlineIcon />,
-      }
-    ],
-  },
+  // {
+  //   title: 'BRS Reports',
+  //   segment: '',
+  //   icon: <InfoOutlineIcon />,
+  //   roles: ['senior manager'],
+  //   type: 'dropdown',
+  //   children: [
+  //     {
+  //       title: 'Dashboard',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'Market Summary',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />, // Updated icon
+  //     },
+  //     {
+  //       title: 'BRS Summary',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'BRS-OPS',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'BRS-COLL',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'Capital-1',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'Bank QB',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'JV',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     },
+  //     {
+  //       title: 'Utility Account',
+  //       segment: '',
+  //       icon: <InfoOutlineIcon />,
+  //     }
+  //   ],
+  // },
 ];

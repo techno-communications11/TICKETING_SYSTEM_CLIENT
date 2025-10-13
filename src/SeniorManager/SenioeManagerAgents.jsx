@@ -48,7 +48,7 @@ function SenioeManagerAgents() {
             const response = await getAllUsers();
             const filteredAgents = response.data.data.filter(
                 (data) =>
-                    data._id !== id &&
+                    data.id !== id &&
                     currentUserDatas.managedDepartments?.includes(data.department)
             );
 
@@ -70,18 +70,18 @@ function SenioeManagerAgents() {
             filteredAgents.forEach((agent) => {
                 const pending = ticketData.filter(
                     (ticket) =>
-                        ticket.assignerId === agent._id &&
+                        ticket.assignerId === agent.id &&
                         ticket.agentstatus !== 'complete'
                 );
 
                 const completed = ticketData.filter(
                     (ticket) =>
-                        ticket.assignerId === agent._id &&
+                        ticket.assignerId === agent.id &&
                         ticket.agentstatus === 'complete'
                 );
 
-                countsPending[agent._id] = pending.length;
-                countsCompleted[agent._id] = completed.length;
+                countsPending[agent.id] = pending.length;
+                countsCompleted[agent.id] = completed.length;
             });
 
             setPendingCounts(countsPending);
@@ -129,7 +129,7 @@ function SenioeManagerAgents() {
 
         // Filter tickets for this user
         const allTickets = await getalltickets();
-        const userTickets = allTickets.data.data.filter(t => t.assignerId === ticket._id);
+        const userTickets = allTickets.data.data.filter(t => t.assignerId === ticket.id);
 
         const total = userTickets.length;
         const pending = userTickets.filter(t => t.agentstatus !== 'complete').length;
@@ -210,14 +210,14 @@ function SenioeManagerAgents() {
                                 </TableRow>
                             ) : (
                                 paginatedTickets.map((ticket) => (
-                                    <TableRow key={ticket._id} hover>
+                                    <TableRow key={ticket.id} hover>
                                         <TableCell>{ticket.name}</TableCell>
                                         <TableCell>{ticket.email}</TableCell>
                                         <TableCell>{ticket.phone}</TableCell>
                                         <TableCell>{ticket.department}</TableCell>
                                         <TableCell>{ticket.subDepartment}</TableCell>
-                                        <TableCell>{pendingCounts[ticket._id] ?? 'Loading...'}</TableCell>
-                                        <TableCell>{completedCounts[ticket._id] ?? 'Loading...'}</TableCell>
+                                        <TableCell>{pendingCounts[ticket.id] ?? 'Loading...'}</TableCell>
+                                        <TableCell>{completedCounts[ticket.id] ?? 'Loading...'}</TableCell>
                                         <TableCell>
                                             <IconButton sx={{ color: '#6f2da8' }} onClick={() => generateExcelReport(ticket)}>
                                             <DownloadIcon color="primary" />
@@ -276,7 +276,7 @@ export default SenioeManagerAgents;
 //         try {
 //             const response = await getAllUsers();
 //             const filteredAgents = response.data.data.filter(
-//                 (data) => data._id !== id && currentUserDatas.managedDepartments.includes(data.department)
+//                 (data) => data.id !== id && currentUserDatas.managedDepartments.includes(data.department)
 //             );
 //             setTickets(filteredAgents);
 
@@ -289,18 +289,18 @@ export default SenioeManagerAgents;
 //             filteredAgents.forEach((agent) => {
 //                 const pending = ticketData.filter(
 //                     (ticket) =>
-//                         ticket.assignerId === agent._id &&
+//                         ticket.assignerId === agent.id &&
 //                         ticket.agentstatus !== 'complete'
 //                 );
 
 //                 const completed = ticketData.filter(
 //                     (ticket) =>
-//                         ticket.assignerId === agent._id &&
+//                         ticket.assignerId === agent.id &&
 //                         ticket.agentstatus === 'complete'
 //                 );
 
-//                 countsPending[agent._id] = pending.length;
-//                 countsCompleted[agent._id] = completed.length;
+//                 countsPending[agent.id] = pending.length;
+//                 countsCompleted[agent.id] = completed.length;
 //             });
 
 //             setPendingCounts(countsPending);
@@ -367,13 +367,13 @@ export default SenioeManagerAgents;
 //                                     ticket.email.toLowerCase().includes(searchTerm.toLowerCase())
 //                                 )
 //                                 .map((ticket) => (
-//                                     <TableRow key={ticket._id} hover>
+//                                     <TableRow key={ticket.id} hover>
 //                                         <TableCell>{ticket.name}</TableCell>
 //                                         <TableCell>{ticket.email}</TableCell>
 //                                         <TableCell>{ticket.phone}</TableCell>
 //                                         <TableCell>{ticket.department}</TableCell>
-//                                         <TableCell>{pendingCounts[ticket._id] ?? 'Loading...'}</TableCell>
-//                                         <TableCell>{completedCounts[ticket._id] ?? 'Loading...'}</TableCell>
+//                                         <TableCell>{pendingCounts[ticket.id] ?? 'Loading...'}</TableCell>
+//                                         <TableCell>{completedCounts[ticket.id] ?? 'Loading...'}</TableCell>
 //                                     </TableRow>
 //                                 ))}
 //                         </TableBody>

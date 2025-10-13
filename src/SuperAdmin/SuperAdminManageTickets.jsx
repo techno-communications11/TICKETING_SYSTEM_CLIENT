@@ -413,6 +413,7 @@ function SuperAdminManageTickets() {
                   "Status",
                   "Type",
                   "Description",
+                  "Market",
                   "Solved By",
                   "Age",
                   "Action"
@@ -468,6 +469,7 @@ function SuperAdminManageTickets() {
                       <TableCell
                         sx={{
                           fontSize: "0.85rem",
+                          maxWidth: 140,
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
@@ -489,10 +491,34 @@ function SuperAdminManageTickets() {
                       <TableCell
                         sx={{
                           fontSize: "0.85rem",
+                          maxWidth: 200, // 👈 Fixed width (adjust as you like: 150–250)
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          padding: "10px 12px",
+                        }}
+                      >
+                        <Tooltip title={ticket.ticketDescription || ''} arrow>
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{
+                              fontSize: "0.85rem",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {ticket.ticketDescription || "N/A"}
+                          </Typography>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",
+                          maxWidth: 140,
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
-                      >{ticket.ticketDescription}</TableCell>
+                      >{ticket.market}</TableCell>
                       <TableCell
                         sx={{
                           fontSize: "0.85rem",
