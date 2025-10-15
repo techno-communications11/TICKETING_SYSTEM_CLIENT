@@ -604,6 +604,18 @@ function ExportToExcel({ filterationData }) {
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
 
+  // const handleCloseMenu = (option) => {
+  //   setAnchorEl(null);
+  //   if (option === 'Market Wise') {
+  //     exportMarketWise();
+  //   } else if (option === 'Department Wise') {
+  //     setModalType('department');
+  //     setModalOpen(true);
+  //   } else if (option === 'Store Wise') {
+  //     setModalType('store');
+  //     setModalOpen(true);
+  //   }
+  // };
   const handleCloseMenu = (option) => {
     setAnchorEl(null);
     if (option === 'Market Wise') {
@@ -614,6 +626,8 @@ function ExportToExcel({ filterationData }) {
     } else if (option === 'Store Wise') {
       setModalType('store');
       setModalOpen(true);
+    } else if (option === 'All') {
+      exportAllData(); // <-- new function
     }
   };
 
@@ -643,6 +657,26 @@ function ExportToExcel({ filterationData }) {
   useEffect(() => {
     fetchAllStores();
   }, [fetchAllStores]);
+  const exportAllData = () => {
+    const reportData = filterationData.map(ticket => ({
+      "Ticket ID": ticket.ticketId || ticket._id || '',
+      "Name": ticket.name || ticket.createdBy || '',
+      "Market Name": ticket.market || '',
+      "Store Name": ticket.store || '',
+      "Category": ticket.category || '',
+      "Description": ticket.ticketDescription || ticket.details || ticket.comment || '',
+      // "Name": ticket.name || ticket.createdBy || '',
+      "Created At": ticket.createdAt
+        ? new Date(ticket.createdAt).toLocaleString()
+        : '',
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(reportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "All Tickets");
+
+    XLSX.writeFile(workbook, "AllTickets_Report.xlsx");
+  };
 
   const exportMarketWise = () => {
     const reportData = marketList.map(market => {
@@ -733,6 +767,7 @@ function ExportToExcel({ filterationData }) {
       <Button variant="contained" onClick={handleClick}><FileDownloadIcon /> Excel</Button>
 
       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
+        <MenuItem onClick={() => handleCloseMenu('All')}>All</MenuItem>
         <MenuItem onClick={() => handleCloseMenu('Market Wise')}>Market Wise</MenuItem>
         <MenuItem onClick={() => handleCloseMenu('Department Wise')}>Department Wise</MenuItem>
         <MenuItem onClick={() => handleCloseMenu('Store Wise')}>Store Wise</MenuItem>
