@@ -26,7 +26,7 @@ function SuperAdminAddStoreForm() {
                     error={!!errors.market} helperText={errors.market}
                 >
                     {
-                        ["HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY", "CHARLOTTE"]
+                        ["HO", "BOPK", "BOIN", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY", "CHARLOTTE","SANTA BARBARA"]
                             .map((data) => <MenuItem key={data} value={data}>{data}</MenuItem>)
                     }
                 </TextField>

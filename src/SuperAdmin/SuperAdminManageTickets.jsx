@@ -67,7 +67,7 @@ function SuperAdminManageTickets() {
     "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
   ];
   const [departments] = useState([
-    "All", "HO", "BOPK", "BOIN", "Admin", "Admin / IT", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
+    "All", "HO", "BOPK", "BOIN", "Admin", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
   ]);
   const [store, setStore] = useState('');
   const [stores, setStores] = useState([]);
@@ -170,7 +170,7 @@ function SuperAdminManageTickets() {
 
       if (priority) filtered = filtered.filter(t => t.priority === priority);
       if (status) filtered = filtered.filter(t => t.status === status.toLowerCase());
-      if (department) filtered = filtered.filter(t => t.department === department);
+      if (department) filtered = filtered.filter(t => t.department === department || t.market === department);
       if (storeName) filtered = filtered.filter(t => t.store === storeName);
       if (market) filtered = filtered.filter(t => t.market === market);
       if (searchTerm.trim()) {
@@ -189,9 +189,27 @@ function SuperAdminManageTickets() {
     return () => clearTimeout(timeout);
   }, [tickets, activeFilter, priority, status, market, searchTerm, department, stores]);
 
+  // function getTicketAge(createdAt) {
+  //   const now = new Date();
+  //   const created = new Date(createdAt);
+  //   const diffMs = now - created; // difference in milliseconds
+
+  //   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  //   const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+  //   const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+  //   if (diffDays > 0) return `${diffDays}d ${diffHours}h ago`;
+  //   if (diffHours > 0) return `${diffHours}h ${diffMinutes}m ago`;
+  //   return `${diffMinutes}m ago`;
+  // }
+
   function getTicketAge(createdAt) {
-    const now = new Date();
+    if (!createdAt) return "pending"; // agar null, undefined, ya empty ho
+
     const created = new Date(createdAt);
+    if (isNaN(created.getTime())) return "pending"; // agar invalid date ho
+
+    const now = new Date();
     const diffMs = now - created; // difference in milliseconds
 
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -274,7 +292,7 @@ function SuperAdminManageTickets() {
               setDepartments(value);
               if (value === "All") {
                 // yahan aap function call kar sakte ho jo sab tickets/data fetch kare
-                fetchAllTickets();
+                reset();
               } else {
                 // yahan sirf selected department ka data fetch karo
                 setDepartments(value);
@@ -415,7 +433,8 @@ function SuperAdminManageTickets() {
                   "Description",
                   "Market",
                   "Solved By",
-                  "Age",
+                  "Open Ticket",
+                  "Closed Ticket",
                   "Action"
                 ].map((head, i) => (
                   <TableCell
@@ -436,7 +455,7 @@ function SuperAdminManageTickets() {
             <TableBody>
               {loader ? (
                 <TableRow>
-                  <TableCell colSpan={10} height={500} align="center">
+                  <TableCell colSpan={12} height={500} align="center">
                     <CircularProgress size={30} /> Loading...
                   </TableCell>
                 </TableRow>
@@ -533,6 +552,13 @@ function SuperAdminManageTickets() {
                           padding: "10px 12px"   // tighter spacing
                         }}
                       >{getTicketAge(ticket.createdAt)}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: "0.85rem",
+                          whiteSpace: "nowrap", // prevent wrapping
+                          padding: "10px 12px"   // tighter spacing
+                        }}
+                      >{getTicketAge(ticket.closedAt || "-")}</TableCell>
                       <TableCell>
                         <Button onClick={() => navigate(`/superAdmin-review-tickets/${ticket.id}`)}>
                           View
@@ -542,7 +568,7 @@ function SuperAdminManageTickets() {
                   ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={10} height={500} align="center">
+                  <TableCell colSpan={12} height={500} align="center">
                     Data Not Found
                   </TableCell>
                 </TableRow>

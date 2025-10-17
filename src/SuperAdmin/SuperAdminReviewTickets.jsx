@@ -257,6 +257,7 @@ function SuperAdminReviewTickets() {
             Data NOt FOund Yet
         </div>
     }
+    console.log(detailTicket[0])
     const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
     return (
         <div className='container-fluid d-flex flex-column gap-3'>

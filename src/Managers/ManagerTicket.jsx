@@ -643,7 +643,7 @@ function ManagerTicket() {
                             <MenuItem value="">All</MenuItem>
                             <MenuItem value="open">Open</MenuItem>
                             <MenuItem value="closed">Closed</MenuItem>
-                            <MenuItem value="pending">Paused</MenuItem>
+                            <MenuItem value="pending">Pending</MenuItem>
                             <MenuItem value="assigned">Assigned</MenuItem>
                         </Select>
                     </FormControl>

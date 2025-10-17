@@ -31,12 +31,14 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
                 })
                 console.log(response)
                 if (response.status === 200) {
+                    setLoading(true);
                     toast.success("New Store Active Successfully");
+                    fetchAllStores();
                 }
             } catch (error) {
                 setLoading(true);
                 console.log("Error", error.message);
-            } 
+            }
             // finally {
             //     setLoading(true);
             //     fetchAllStores();
