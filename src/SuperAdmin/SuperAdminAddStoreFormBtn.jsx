@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
-    const { formData, setErrors } = useGlobalState();
+    const { formData, setErrors, setFormData } = useGlobalState();
     const [loading, setLoading] = useState(false)
     const validate = () => {
         let newErrors = {};
@@ -31,12 +31,25 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
                 })
                 console.log(response)
                 if (response.status === 200) {
-                    setLoading(true);
+                    setLoading(false);
+                    setOpen(false);
                     toast.success("New Store Active Successfully");
                     fetchAllStores();
+                    setFormData({
+                        bdi_id: '',
+                        dm_name: '',
+                        door_code: '',
+                        market: '',
+                        store_addres: '',
+                        store_name: '',
+                        stroe_email: '',
+                        store_phone: '',
+                        market: '',
+                    })
                 }
             } catch (error) {
                 setLoading(true);
+                setLoading(false);
                 console.log("Error", error.message);
             }
             // finally {
@@ -52,7 +65,7 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
     return (
         <div>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
-            {tab === 0 && <Button variant="contained" onClick={handleSubmit}>Save</Button>}
+            {tab === 0 && <Button variant="contained" onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>}
             {/* {tab === 0 && <Button variant="contained" onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>} */}
         </div>
     )

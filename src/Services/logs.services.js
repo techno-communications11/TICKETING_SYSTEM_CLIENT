@@ -11,3 +11,11 @@ export const getAllLogsServices = async () => {
         throw error;
     }
 }
+export const deleteLogsServices = async (id) => {
+    try {
+        const resposne = await axios.post(`${API_URL}/logs/delete-logs`,{id});
+        return resposne
+    } catch (error) {
+        throw error;
+    }
+}

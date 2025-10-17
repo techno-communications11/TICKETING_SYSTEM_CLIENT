@@ -36,7 +36,7 @@ function SuperAdminManageUser() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [departments] = useState([
-        "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "HO", "BOPK", "BOIN", "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
@@ -155,7 +155,7 @@ function SuperAdminManageUser() {
                 const term = searchTerm.toLowerCase();
                 filtered = filtered.filter(user =>
                     user.name?.toLowerCase().includes(term) ||
-                    user.email?.toLowerCase().includes(term)||
+                    user.email?.toLowerCase().includes(term) ||
                     user.doorcode?.toLowerCase().includes(term)
                 );
             }

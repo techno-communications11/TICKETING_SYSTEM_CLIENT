@@ -14,16 +14,16 @@ function AddUserCompo({ fetchAllUserData }) {
 
     // "Finance",
     const [departments] = useState([
-        "COO", "DCO", "SuperAdmin", "Admin",  "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+       "HO", "BOPK", "BOIN",  "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
     const [department] = useState([
-        "Admin",  "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "MIS",
+        "HO", "BOPK", "BOIN", "Admin", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "MIS",
         "AR", "Managment", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
     ]);
     // "Admin / IT",
-// "Admin / IT",
+    // "Admin / IT",
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -163,7 +163,7 @@ function AddUserCompo({ fetchAllUserData }) {
         const finalData = {
             ...formData,
             selectedDepts: formData.department === "Senior Manager" ? selectedDepts : [],
-            selectedMarkets: (formData.department === "Market Manager" || formData.department === "District Manager"|| formData.department === "Store") ? selectedMarkets : [],
+            selectedMarkets: (formData.department === "Market Manager" || formData.department === "District Manager" || formData.department === "Store") ? selectedMarkets : [],
             selectedStores: (formData.department === "District Manager") ? selectedStores : []
         };
         const obj = {
@@ -251,7 +251,7 @@ function AddUserCompo({ fetchAllUserData }) {
                             </>
                         )}
 
-                        {formData.department === 'Market Manager'|| formData.department === 'Store' && (
+                        {formData.department === 'Market Manager' || formData.department === 'Store' && (
                             <>
                                 <Typography>Select Market:</Typography>
                                 <Grid container spacing={2}>

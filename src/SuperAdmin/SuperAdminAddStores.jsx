@@ -8,16 +8,6 @@ import SuperAdminAddStoreForm from './SuperAdminAddStoreForm';
 import SuperAdminAddStoreFormBtn from './SuperAdminAddStoreFormBtn';
 import UploadSheetComponent from '../SuperAdminComponent/UploadSheetComponent';
 
-// function UploadSheetComponent() {
-//     return (
-//         <Box p={2}>
-//             <h6>Upload your Excel or CSV Sheet here</h6>
-//             {/* Add your file upload logic here */}
-//             <input type="file" />
-//         </Box>
-//     );
-// }
-
 function SuperAdminAddStores({fetchAllStores}) {
     const [open, setOpen] = useState(false);
     const [tab, setTab] = useState(0);
