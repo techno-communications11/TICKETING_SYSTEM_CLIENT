@@ -953,6 +953,8 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { deleteLogsServices, getAllLogsServices } from "../Services/logs.services";
+import HistoryIcon from "@mui/icons-material/History";
+
 
 function SuperAdminSettingLogs() {
     const [logs, setLogs] = useState([]);
@@ -976,26 +978,58 @@ function SuperAdminSettingLogs() {
     };
 
     // Fetch all logs from backend
+    // const fetchAllLogs = useCallback(async () => {
+    //     setLoading(true);
+    //     try {
+    //         const response = await getAllLogsServices();
+    //         const logData = response?.data?.data || [];
+    //         const parsedLogs = logData.map((log) => {
+    //             let parsedInfo = {};
+    //             try {
+    //                 parsedInfo = log?.data?.[0]
+    //                     ? safeParse(log.data[0])
+    //                     : safeParse(log.data);
+    //             } catch (err) {
+    //                 console.error("Error parsing log data:", err);
+    //             }
+    //             return { ...log, parsedInfo };
+    //         });
+
+    //         setLogs(parsedLogs);
+    //         setFilteredLogs(parsedLogs);
+    //     } catch (error) {
+    //         console.error("Error fetching logs:", error.message);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }, []);
+
     const fetchAllLogs = useCallback(async () => {
         setLoading(true);
         try {
             const response = await getAllLogsServices();
             const logData = response?.data?.data || [];
 
+            // ✅ Parse and flatten
             const parsedLogs = logData.map((log) => {
-                let parsedInfo = {};
-                try {
-                    parsedInfo = log?.data?.[0]
-                        ? safeParse(log.data[0])
-                        : safeParse(log.data);
-                } catch (err) {
-                    console.error("Error parsing log data:", err);
-                }
-                return { ...log, parsedInfo };
+                const parsedInfo = safeParse(log.data);
+                return {
+                    ...log,
+                    name:
+                        parsedInfo?.name ||
+                        parsedInfo?.username ||
+                        parsedInfo?.user_name ||
+                        "-", // fallback
+                };
             });
 
-            setLogs(parsedLogs);
-            setFilteredLogs(parsedLogs);
+            // ✅ Sort by date (newest first)
+            const sortedLogs = parsedLogs.sort(
+                (a, b) => new Date(b.date) - new Date(a.date)
+            );
+
+            setLogs(sortedLogs);
+            setFilteredLogs(sortedLogs);
         } catch (error) {
             console.error("Error fetching logs:", error.message);
         } finally {
@@ -1007,18 +1041,25 @@ function SuperAdminSettingLogs() {
         fetchAllLogs();
     }, [fetchAllLogs]);
 
-    // Search by name
     const handleSearch = (value) => {
         setSearchTerm(value);
         setCurrentPage(1);
+
         if (value.trim() === "") {
             setFilteredLogs(logs);
-        } else {
-            const filtered = logs.filter((log) =>
-                log?.parsedInfo?.name?.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredLogs(filtered);
+            return;
         }
+
+        const lower = value.toLowerCase();
+
+        // ✅ Search through both name + description (optional)
+        const filtered = logs.filter((log) => {
+            const name = log?.name?.toLowerCase() || "";
+            const desc = log?.description?.toLowerCase() || "";
+            return name.includes(lower) || desc.includes(lower);
+        });
+
+        setFilteredLogs(filtered);
     };
 
     // Row select
@@ -1066,12 +1107,12 @@ function SuperAdminSettingLogs() {
     };
 
     return (
-        <div className="container my-5">
+        <div className="container-fluid my-5">
             <div className="row">
                 <div className="col-12">
                     {/* Header & Actions */}
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h3 className="mb-4">📝 Activity Logs</h3>
+                        <h3 className="mb-4"><HistoryIcon /> Activity Logs</h3>
                         <div>
                             {selectedRows.length > 0 && (
                                 <Button
@@ -1211,11 +1252,16 @@ function SuperAdminSettingLogs() {
                                                 <TableCell>{formattedTime}</TableCell>
                                                 <TableCell>{userData?.name || "-"}</TableCell>
                                                 <TableCell>{data?.status}</TableCell>
-                                                <TableCell>{data?.ip}</TableCell>
+                                                <TableCell>
+                                                    {["::1", "::ffff:127.0.0.1", "127.0.0.1"].includes(data?.ip) ? "-" : data?.ip}
+                                                </TableCell>
+
                                                 <TableCell>{data?.os}</TableCell>
                                                 <TableCell>{data?.device}</TableCell>
                                                 <TableCell>{data?.browser}</TableCell>
-                                                <TableCell>{data?.location}</TableCell>
+                                                <TableCell>
+                                                    {!data?.location || data?.location === "undefined, undefined" ? "-" : data?.location}
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })

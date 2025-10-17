@@ -5,6 +5,7 @@ import axios from "axios";
 
 export const getAllLogsServices = async () => {
     try {
+        // const resposne = await axios(`http://localhost:5000/logs/getAllLogs`);
         const resposne = await axios(`${API_URL}/logs/getAllLogs`);
         return resposne
     } catch (error) {
@@ -13,7 +14,7 @@ export const getAllLogsServices = async () => {
 }
 export const deleteLogsServices = async (id) => {
     try {
-        const resposne = await axios.post(`${API_URL}/logs/delete-logs`,{id});
+        const resposne = await axios.post(`${API_URL}/logs/delete-logs`, { id });
         return resposne
     } catch (error) {
         throw error;

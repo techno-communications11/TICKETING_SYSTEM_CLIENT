@@ -65,7 +65,7 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
     return (
         <div>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
-            {tab === 0 && <Button variant="contained" onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>}
+            {tab === 0 && <Button variant="contained" disabled={loading} onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>}
             {/* {tab === 0 && <Button variant="contained" onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>} */}
         </div>
     )

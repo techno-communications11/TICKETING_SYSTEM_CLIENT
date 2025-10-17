@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, IconButton, InputAdornment, Card, CardContent, Typography, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
@@ -15,6 +15,23 @@ function Login() {
         email: '',
         password: '',
     });
+    const [ip, setIp] = useState("");
+
+    useEffect(() => {
+        const fetchIP = async () => {
+            try {
+                const response = await fetch("https://api.ipify.org?format=json");
+                const data = await response.json();
+                setIp(data.ip);
+                console.log(data.ip);
+            } catch (error) {
+                console.error("Error fetching public IP:", error);
+            }
+        };
+
+        fetchIP();
+    }, []);
+
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
@@ -31,17 +48,16 @@ function Login() {
         setLoading(true);
         e.preventDefault();
         try {
-            const response = await loginServices(formData);
+            const payload = { ...formData, ip };
+            const response = await loginServices(payload);
             const { department, subDepartment } = jwtDecode(response.data.token);
             dispatch(login(response.data.data))
-            console.log(department, subDepartment )
-            // cookie.set('id', response.data.id, { expires: 0.0007, path: "/" });
-            // cookie.set('token', response.data.token, { expires: 0.0007, path: "/" });
+            // console.log(response.data.data)
+            localStorage.setItem("fgpts", response.data.data.forgotpassword)
             cookie.set('id', response.data.id, { expires: 0.375, path: "/" });
             cookie.set('token', response.data.token, { expires: 0.375, path: "/" });
             if (response.data.data.first === false) {
                 cookie.set("id", response.data.id, { expires: 0.375, path: "/" });
-                // toast.success("Login successful!");
                 return navigate('/reset-password')
             }
             const departmentRoutes = {
@@ -67,7 +83,7 @@ function Login() {
             setError(null);
         } catch (error) {
             setLoading(false);
-            console.log('Login error:', error.status);
+            console.log('Login error:', error.message);
             if (error.status === 401) {
                 toast.error("Invalid Password")
             } else if (error.status === 404) {
@@ -128,7 +144,11 @@ function Login() {
                                             ),
                                         }}
                                     />
-                                    <Link to={'/fogot-password'}>Forget Password</Link>
+                                    {
+                                        localStorage.getItem("fgpts") === true ?
+                                            <Link to={'/fogot-password'}>Forget Password</Link> : ""
+
+                                    }
                                     <Button type="submit" variant="contained" className='py-3 fs-6 fw-semibold' disabled={loading} fullWidth sx={{ mt: 2, background: "#6f2da8", color: "white" }}>
                                         {loading ? <CircularProgress size={20} /> : "Login"}
                                     </Button>
