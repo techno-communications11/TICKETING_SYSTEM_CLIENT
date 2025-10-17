@@ -211,46 +211,46 @@ export const NAVIGATION = [
         segment: 'superAdmin-manage-mm-dm',
         icon: <InfoOutlineIcon />,
       },
-      {
-        title: 'Cam Credentails',
-        segment: 'superAdmin-manage-cam-credentials',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Employee Contact',
-        segment: 'superAdmin-manage-employee-contact',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Training & Crop Stores',
-        segment: 'public-training-crop-stores',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Memphis Structure',
-        segment: 'superAdmin-manage-memphis-structure',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Removed Stores',
-        segment: 'manager-assigned-tickets',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'New Stores In pipline',
-        segment: 'manager-assigned-tickets',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Camera Structure',
-        segment: 'public-camera-structure',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Group Emails',
-        segment: 'public-group-email',
-        icon: <InfoOutlineIcon />, // Updated icon
-      },
+      // {
+      //   title: 'Cam Credentails',
+      //   segment: 'superAdmin-manage-cam-credentials',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Employee Contact',
+      //   segment: 'superAdmin-manage-employee-contact',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Training & Crop Stores',
+      //   segment: 'public-training-crop-stores',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Memphis Structure',
+      //   segment: 'superAdmin-manage-memphis-structure',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Removed Stores',
+      //   segment: 'manager-assigned-tickets',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'New Stores In pipline',
+      //   segment: 'manager-assigned-tickets',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Camera Structure',
+      //   segment: 'public-camera-structure',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Group Emails',
+      //   segment: 'public-group-email',
+      //   icon: <InfoOutlineIcon />, // Updated icon
+      // },
     ],
   },
   {
@@ -270,46 +270,46 @@ export const NAVIGATION = [
         segment: 'public-mmdm-info',
         icon: <InfoOutlineIcon />, // Updated icon
       },
-      {
-        title: 'Training & Crop Stores',
-        segment: 'public-training-crop-stores',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Cam Credentails',
-        segment: 'public-cam-credentails',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Employee Contact',
-        segment: 'public-employee-contact',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Memphis Structure',
-        segment: 'public-memphis-structure',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Removed Stores',
-        segment: 'public-not-found',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'New Stores In pipline',
-        segment: 'public-not-found',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Camera Structure',
-        segment: 'public-not-found',
-        icon: <InfoOutlineIcon />,
-      },
-      {
-        title: 'Group Emails',
-        segment: 'public-not-found',
-        icon: <InfoOutlineIcon />, // Updated icon
-      },
+      // {
+      //   title: 'Training & Crop Stores',
+      //   segment: 'public-training-crop-stores',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Cam Credentails',
+      //   segment: 'public-cam-credentails',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Employee Contact',
+      //   segment: 'public-employee-contact',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Memphis Structure',
+      //   segment: 'public-memphis-structure',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Removed Stores',
+      //   segment: 'public-not-found',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'New Stores In pipline',
+      //   segment: 'public-not-found',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Camera Structure',
+      //   segment: 'public-not-found',
+      //   icon: <InfoOutlineIcon />,
+      // },
+      // {
+      //   title: 'Group Emails',
+      //   segment: 'public-not-found',
+      //   icon: <InfoOutlineIcon />, // Updated icon
+      // },
     ],
   },
   // {

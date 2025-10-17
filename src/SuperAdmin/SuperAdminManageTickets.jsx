@@ -189,20 +189,6 @@ function SuperAdminManageTickets() {
     return () => clearTimeout(timeout);
   }, [tickets, activeFilter, priority, status, market, searchTerm, department, stores]);
 
-  // function getTicketAge(createdAt) {
-  //   const now = new Date();
-  //   const created = new Date(createdAt);
-  //   const diffMs = now - created; // difference in milliseconds
-
-  //   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  //   const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-  //   const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
-
-  //   if (diffDays > 0) return `${diffDays}d ${diffHours}h ago`;
-  //   if (diffHours > 0) return `${diffHours}h ${diffMinutes}m ago`;
-  //   return `${diffMinutes}m ago`;
-  // }
-
   function getTicketAge(createdAt) {
     if (!createdAt) return "pending"; // agar null, undefined, ya empty ho
 
