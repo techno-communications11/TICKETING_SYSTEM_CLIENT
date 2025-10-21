@@ -1389,7 +1389,7 @@ function SuperAdminCreateTicket({ fetchTickets }) {
     const id = Cookies.get('id')
     const [isBlockedBtn, setIsBlockBtn] = useState(false);
     const MARKETS = useMemo(() => ([
-        "BOPK", "ALL MARKETS", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
+        "HO","BOPK","BOIN", "ALL MARKETS", "ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO",
         "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE",
         "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DEIGO",
         "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"

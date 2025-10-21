@@ -172,6 +172,8 @@ function SuperAdminManageUser() {
                 filtered = filtered.filter(user =>
                     user.name?.toLowerCase().includes(term) ||
                     user.email?.toLowerCase().includes(term) ||
+                    user.department?.toLowerCase().includes(term) ||
+                    user.subDepartment?.toLowerCase().includes(term) ||
                     user.doorcode?.toLowerCase().includes(term)
                 );
             }
@@ -259,6 +261,7 @@ function SuperAdminManageUser() {
                                 onChange={(e) => setDepartmentFilter(e.target.value)}
                                 label="Department">
                                 <MenuItem value="">All</MenuItem>
+                                <MenuItem value="SuperAdmin">Super Admin</MenuItem>
                                 {allDepartments?.map((dept, index) => (
                                     <MenuItem key={index} value={dept.name}>{dept.name}</MenuItem>
                                 ))}

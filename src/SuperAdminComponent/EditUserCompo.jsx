@@ -7,6 +7,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import { getAllUser, userUpdatedServices } from '../Services/auth.services';
+import { getAllDepartmentsServices } from '../Services/departments.services';
 // import { updateUserService } from '../Services/auth.services'; // 👈 yeh service aapko banana hoga
 
 function EditUserCompo({ selectedRows, fetchAllUserData }) {
@@ -24,12 +25,32 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
     const [errors, setErrors] = useState({});
 
     // Departments (same as AddUserCompo)
-    const [departments] = useState([
+    const [allDepartments, setAllDepartments] = useState([
         "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
+    const fectAllDepartments = useCallback(async () => {
+        try {
+            // const response = await getAllDepartmentsServices();
+            const response = await getAllDepartmentsServices();
+            const departments = response?.data?.data || [];
 
+            // ✅ Sort departments alphabetically by name
+            const sortedDepartments = departments.sort((a, b) =>
+                a.name.localeCompare(b.name)
+            );
+
+            // ✅ Set sorted data
+            setAllDepartments(sortedDepartments);
+
+        } catch (error) {
+            console.log("ERROR", error.message);
+        }
+    }, [])
+    useEffect(() => {
+        fectAllDepartments();
+    }, [fectAllDepartments])
     // Load data when modal opens
     const fetchAllUsersdata = useCallback(async () => {
         if (open && selectedRows && selectedRows.length === 1) {
@@ -123,8 +144,8 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
                         <FormControl fullWidth error={!!errors.department}>
                             <InputLabel>Department</InputLabel>
                             <Select name="department" value={formData.department} onChange={handleChange}>
-                                {departments.map((dept, index) => (
-                                    <MenuItem key={index} value={dept}>{dept}</MenuItem>
+                                {allDepartments?.map((dept, index) => (
+                                    <MenuItem key={index} value={dept?.name}>{dept?.name}</MenuItem>
                                 ))}
                             </Select>
                             <FormHelperText>{errors.department}</FormHelperText>
@@ -133,6 +154,7 @@ function EditUserCompo({ selectedRows, fetchAllUserData }) {
                         <FormControl fullWidth>
                             <InputLabel>Role</InputLabel>
                             <Select name="role" value={formData.role} onChange={handleChange}>
+                                <MenuItem value="SuperAdmin">Super Admin</MenuItem>
                                 <MenuItem value="Manager">Manager</MenuItem>
                                 <MenuItem value="Agent">Agent</MenuItem>
                             </Select>

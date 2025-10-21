@@ -13,7 +13,7 @@ function App() {
       if (
         e.key === "F12" || // F12
         (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) || // Ctrl+Shift+I/J/C
-        (e.ctrlKey && e.key === "U") 
+        (e.ctrlKey && e.key === "U")
       ) {
         e.preventDefault();
         alert("Developer tools are disabled on this site.");
