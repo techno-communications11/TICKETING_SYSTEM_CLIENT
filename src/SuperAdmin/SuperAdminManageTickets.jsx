@@ -42,6 +42,7 @@ import cookies from "js-cookie";
 import EditTickets from '../SuperAdminComponent/EditTickets';
 import { getAllStores } from '../Services/stores.services';
 import { useGlobalState } from '../Context/context';
+import { getAllDepartmentsServices } from '../Services/departments.services';
 
 function SuperAdminManageTickets() {
   const currentUserId = cookies.get("id")
@@ -67,9 +68,7 @@ function SuperAdminManageTickets() {
     "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO",
     "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY"
   ];
-  const [departments] = useState([
-    "All", "HO", "BOPK", "BOIN", "Admin", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
-  ]);
+  const [allDepartments, setAllDepartments] = useState([]);
   const [store, setStore] = useState('');
   const [stores, setStores] = useState([]);
   const { ip } = useGlobalState();
@@ -86,6 +85,24 @@ function SuperAdminManageTickets() {
       console.error('Error fetching tickets:', error);
     }
   }, []);
+
+  const fetchAlLDepartmentsData = useCallback(async () => {
+    try {
+      const response = await getAllDepartmentsServices();
+      const departments = response?.data?.data || [];
+      const sortedDepartments = departments.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+      setAllDepartments(sortedDepartments);
+    } catch (error) {
+      console.log("ERROR", error.message);
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchAlLDepartmentsData();
+  }, [fetchAlLDepartmentsData])
 
   const fetchAllStores = useCallback(async () => {
     setLoader(true);
@@ -182,7 +199,6 @@ function SuperAdminManageTickets() {
           t.ticketDescription?.toLowerCase().includes(term)
         );
       }
-      // 👇 Add this to sort descending by createdAt (latest first)
       filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setFilteredTickets(filtered);
     }, 300);
@@ -286,8 +302,9 @@ function SuperAdminManageTickets() {
               }
             }}
           >
-            {departments.map((dept, index) => (
-              <MenuItem key={index} value={dept}>{dept}</MenuItem>
+            <MenuItem value={"All"}>All</MenuItem>
+            {allDepartments.map((dept, index) => (
+              <MenuItem key={index} value={dept?.name}>{dept?.name}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -350,7 +367,7 @@ function SuperAdminManageTickets() {
           </Tooltip>
 
           <Tooltip title="Deny">
-            <IconButton onClick={() => console.log('Denied', selectedRows)} sx={{
+            <IconButton disabled onClick={() => console.log('Denied', selectedRows)} sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
               }
@@ -360,7 +377,7 @@ function SuperAdminManageTickets() {
           </Tooltip>
 
           <Tooltip title="Approve">
-            <IconButton onClick={() => console.log('Approved', selectedRows)} sx={{
+            <IconButton disabled onClick={() => console.log('Approved', selectedRows)} sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
               }
@@ -370,7 +387,7 @@ function SuperAdminManageTickets() {
           </Tooltip>
 
           <Tooltip title="Reject">
-            <IconButton onClick={() => console.log('Rejected', selectedRows)} sx={{
+            <IconButton disabled onClick={() => console.log('Rejected', selectedRows)} sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
               }
@@ -380,7 +397,7 @@ function SuperAdminManageTickets() {
           </Tooltip>
 
           <Tooltip title="Re-Open">
-            <IconButton onClick={() => console.log('Re-Opened', selectedRows)} sx={{
+            <IconButton disabled onClick={() => console.log('Re-Opened', selectedRows)} sx={{
               '& .MuiSvgIcon-root': {
                 transition: 'color 0.3s ease',
               }

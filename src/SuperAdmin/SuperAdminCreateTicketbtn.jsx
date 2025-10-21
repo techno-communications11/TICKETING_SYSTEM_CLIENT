@@ -41,7 +41,6 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
         if (!ticketData.category) errors.category = 'Category is required';
         if (!ticketData.managerName) errors.managerName = 'Manager is required';
         setTicketErrors(errors);
-        console.log(errors);
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
@@ -49,17 +48,10 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
         if (!validateForm()) return setLoader(false);
         try {
             const ticketId = await generatedTicketId();
-            // console.log(
-            //     {
-            //         ticketId,
-            //         formData: ticketData,
-            //     }
-            // )
             const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
             })
-            // console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
                     ticketId: resposne.data.data.id,
