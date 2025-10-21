@@ -76,6 +76,12 @@ export const NAVIGATION = [
     roles: ['superadmin'],
   },
   {
+    title: 'Insights',
+    segment: 'superAdmin-manage-insights',
+    icon: <BarChartIcon />,
+    roles: ['superadmin'],
+  },
+  {
     title: 'Manage Ticket',
     segment: 'superAdmin-manage-tickets',
     icon: <ConfirmationNumberIcon />,
@@ -88,27 +94,21 @@ export const NAVIGATION = [
     roles: ['superadmin'],
   },
   {
-    title: 'Manager Users',
+    title: 'Manage Users',
     segment: 'superAdmin-manage-users',
     icon: <PeopleIcon />,
-    roles: ['superadmin'],
-  },
-  {
-    title: 'Insights',
-    segment: 'superAdmin-manage-insights',
-    icon: <BarChartIcon />,
-    roles: ['superadmin'],
-  },
-  {
-    title: 'Category of Problems',
-    segment: 'superAdmin-category-problems',
-    icon: <AccountTreeIcon />,
     roles: ['superadmin'],
   },
   {
     title: 'Manage Departments',
     segment: 'superAdmin-managements-departments',
     icon: <CorporateFareIcon />,
+    roles: ['superadmin'],
+  },
+  {
+    title: 'Category of Problems',
+    segment: 'superAdmin-category-problems',
+    icon: <AccountTreeIcon />,
     roles: ['superadmin'],
   },
   {

@@ -17,6 +17,7 @@ import AddUserCompo from './AddUserCompo';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import EditUserCompo from '../SuperAdminComponent/EditUserCompo';
 import ExportUsers from '../SuperAdminComponent/ExportUsers';
+import { getAllDepartmentsServices } from '../Services/departments.services';
 function SuperAdminManageUser() {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedData, setSelectedData] = useState(null);
@@ -35,11 +36,7 @@ function SuperAdminManageUser() {
     const [deleteLoader, setDeleteLoader] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [departments] = useState([
-        "HO", "BOPK", "BOIN", "COO", "DCO", "SuperAdmin", "Admin", "Admin / IT", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
-        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
-        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
-    ]);
+    const [allDepartments, setAllDepartments] = useState([]);
     const [markets] = useState(["ARIZONA", "BAY AREA", "COLORADO", "DALLAS", "EL PASO", "FLORIDA", "HOUSTON", "LOS ANGELES", "MEMPHIS", "NASHVILLE", "NORTH CAROLINA", "OXNARD", "PALMDALE", "SACRAMENTO", "SAN DIEGO", "SAN FRANCISCO", "SAN JOSE", "SOLANO COUNTY", "EAST BAY AREA", "ATLANTA", "NORTH BAY AREA", "OXNARD/PALMDALE", "NORTH CAROL", "CHARLOTTE", "TEXAS"]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [paginatedUsers, setPaginatedUsers] = useState([]);
@@ -47,10 +44,8 @@ function SuperAdminManageUser() {
     const fetchAllUserData = useCallback(async () => {
         setLoading(true)
         try {
-            const response = await getAllUsers();
             const response2 = await getAllUser();
             setUserData(response2.data.data);
-            // console.log(response2.data.data);
         } catch (error) {
             console.log(error);
         } finally {
@@ -58,6 +53,27 @@ function SuperAdminManageUser() {
         }
     }, []);
 
+    const fectAllDepartments = useCallback(async () => {
+        try {
+            // const response = await getAllDepartmentsServices();
+            const response = await getAllDepartmentsServices();
+            const departments = response?.data?.data || [];
+
+            // ✅ Sort departments alphabetically by name
+            const sortedDepartments = departments.sort((a, b) =>
+                a.name.localeCompare(b.name)
+            );
+
+            // ✅ Set sorted data
+            setAllDepartments(sortedDepartments);
+
+        } catch (error) {
+            console.log("ERROR", error.message);
+        }
+    }, [])
+    useEffect(() => {
+        fectAllDepartments();
+    }, [fectAllDepartments])
     useEffect(() => {
         fetchAllUserData();
     }, [fetchAllUserData]);
@@ -163,7 +179,8 @@ function SuperAdminManageUser() {
             // ✅ Department filter
             if (departmentFilter) {
                 filtered = filtered.filter(
-                    user => user.department?.toLowerCase() === departmentFilter.toLowerCase()
+                    user => user.department?.toLowerCase() === departmentFilter.toLowerCase() ||
+                        user.subDepartment?.toLowerCase() === departmentFilter.toLowerCase()
                 );
             }
 
@@ -242,8 +259,8 @@ function SuperAdminManageUser() {
                                 onChange={(e) => setDepartmentFilter(e.target.value)}
                                 label="Department">
                                 <MenuItem value="">All</MenuItem>
-                                {departments.map((dept, index) => (
-                                    <MenuItem key={index} value={dept}>{dept}</MenuItem>
+                                {allDepartments?.map((dept, index) => (
+                                    <MenuItem key={index} value={dept.name}>{dept.name}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>

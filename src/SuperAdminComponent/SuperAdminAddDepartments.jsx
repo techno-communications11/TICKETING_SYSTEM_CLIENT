@@ -84,7 +84,7 @@ function SuperAdminAddDepartments({ fetchAllDepartmentsData }) {
                         variant="contained"
                         color="primary"
                         onClick={handleSave}
-                        disabled={!department.name || !department.email || loader}
+                        disabled={!department.name || loader}
                     >
                         {loader ? <CircularProgress size={28} /> : "Save"}
                     </Button>

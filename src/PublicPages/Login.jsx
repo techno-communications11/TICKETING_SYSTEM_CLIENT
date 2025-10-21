@@ -52,7 +52,7 @@ function Login() {
             const response = await loginServices(payload);
             const { department, subDepartment } = jwtDecode(response.data.token);
             dispatch(login(response.data.data))
-            // console.log(response.data.data)
+            console.log(response.data.data)
             localStorage.setItem("fgpts", response.data.data.forgotpassword)
             cookie.set('id', response.data.id, { expires: 0.375, path: "/" });
             cookie.set('token', response.data.token, { expires: 0.375, path: "/" });
@@ -68,10 +68,13 @@ function Login() {
                 "District Manager": "/district-manager-dashboard",
                 "Market Manager": "/market-manager-dashboard",
                 SuperAdmin: "/superAdminHome",
-
             };
             if (departmentRoutes[department]) {
                 navigate(departmentRoutes[department]);
+                return;
+            }
+            if (departmentRoutes[subDepartment]) {
+                navigate(departmentRoutes[subDepartment]);
                 return;
             }
             if (subDepartment === "Manager") {

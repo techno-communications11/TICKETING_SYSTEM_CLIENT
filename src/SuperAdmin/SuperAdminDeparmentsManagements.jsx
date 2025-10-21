@@ -130,7 +130,6 @@ function SuperAdminDepartmentsManagement() {
         toast.error(response?.data?.message || "Failed to update department.");
         console.warn("Backend responded with failure:", response?.data);
       }
-
     } catch (error) {
       console.error("❌ Error while updating department:", error.message);
       if (error.response) {
@@ -159,9 +158,8 @@ function SuperAdminDepartmentsManagement() {
     a.name.localeCompare(b.name)
   );
   const paginatedDepartments = sortedDepartments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
   return (
-    <div className="container">
+    <div className="container-fluid">
       <BasicBreadcrumbs name="Manage Departments" />
       <div className="d-flex justify-content-between align-items-center">
         <h4>Manage Departments</h4>
@@ -169,7 +167,6 @@ function SuperAdminDepartmentsManagement() {
           <SuperAdminAddDepartments fetchAllDepartmentsData={fetchAllDepartmentsData} />
         </div>
       </div>
-
       {/* Search + Bulk Delete */}
       <div className="d-flex align-items-center my-3" style={{ gap: "10px" }}>
         <TextField
@@ -244,7 +241,7 @@ function SuperAdminDepartmentsManagement() {
                       />
                     </TableCell>
                     <TableCell>{dep.name}</TableCell>
-                    <TableCell>{dep.email}</TableCell>
+                    <TableCell>{dep.email || "-"}</TableCell>
                     <TableCell>
                       <IconButton
                         sx={{
@@ -312,7 +309,7 @@ function SuperAdminDepartmentsManagement() {
         <DialogActions>
           <Button onClick={() => setEditModal(false)}>Cancel</Button>
           <Button
-          disabled={editLoader}
+            disabled={editLoader}
             variant="contained"
             onClick={() => {
               handleEditBtn(selectedData)

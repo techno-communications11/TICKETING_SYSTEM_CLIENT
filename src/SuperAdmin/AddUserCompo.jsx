@@ -8,15 +8,16 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { getAllStores } from '../Services/stores.services';
 import { addUsersServices } from '../Services/auth.services';
+import { getAllDepartmentsServices } from '../Services/departments.services';
 
 function AddUserCompo({ fetchAllUserData }) {
     const [open, setOpen] = useState(false);
 
     // "Finance",
     const [departments] = useState([
-       "HO", "BOPK", "BOIN",  "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+        "HO", "BOPK", "BOIN", "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
-        "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
+        "AR", "Employee", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
     ]);
     const [department] = useState([
         "HO", "BOPK", "BOIN", "Admin", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "MIS",
@@ -43,6 +44,7 @@ function AddUserCompo({ fetchAllUserData }) {
     const [storeDetail, setStoreDetail] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [allDepartments, setAllDepartments] = useState([]);
     const fetchAllStores = useCallback(async () => {
         try {
             const response = await getAllStores();
@@ -52,7 +54,19 @@ function AddUserCompo({ fetchAllUserData }) {
             console.error("Error fetching stores:", error);
         }
     }, []);
+    const fetchAllDepartments = useCallback(async () => {
+        try {
+            const response = await getAllDepartmentsServices();
+            // console.log(response.data.data);
+            setAllDepartments(response.data.data);
 
+        } catch (error) {
+            console.log("ERROR", error.message);
+        }
+    }, []);
+    useEffect(() => {
+        fetchAllDepartments()
+    }, [fetchAllDepartments])
     useEffect(() => {
         fetchAllStores();
     }, [fetchAllStores]);
@@ -83,6 +97,15 @@ function AddUserCompo({ fetchAllUserData }) {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         setErrors(prev => ({ ...prev, [name]: '' }));
+    };
+    const handleDepartmentsChanges = async (e) => {
+        // // console.log(e.target.value)
+        // // const filterData = await allDepartments.filter((data) => data.id === e.target.value);
+        // // console.log(filterData[0]?.name)
+        // // const { name, value } = e.target;
+        // console.log(e.target.value)
+        setFormData(prev => ({ ...prev, department: e.target.value }));
+        setErrors(prev => ({ ...prev, department: '' }));
     };
 
     const handleOpen = () => {
@@ -158,7 +181,7 @@ function AddUserCompo({ fetchAllUserData }) {
 
     const handleSubmit = async () => {
 
-        setLoading(true);
+        // setLoading(true);
         if (!validate()) return setLoading(false);
         const finalData = {
             ...formData,
@@ -179,6 +202,7 @@ function AddUserCompo({ fetchAllUserData }) {
             store_detail: storeDetail,
             managedDepartments: finalData.selectedDepts
         }
+        console.log(obj)
         try {
             const resposne = await addUsersServices(obj);
             console.log(resposne)
@@ -211,18 +235,19 @@ function AddUserCompo({ fetchAllUserData }) {
 
                         <FormControl fullWidth error={!!errors.department}>
                             <InputLabel>Department</InputLabel>
-                            <Select name="department" value={formData.department} onChange={handleChange}>
-                                {departments.map((dept, index) => (
-                                    <MenuItem key={index} value={dept}>{dept}</MenuItem>
+                            <Select name="department" value={formData.department} onChange={handleDepartmentsChanges}>
+                                {allDepartments?.map((dept, index) => (
+                                    <MenuItem key={index} value={dept?.name}>{dept.name}</MenuItem>
                                 ))}
                             </Select>
                             <FormHelperText>{errors.department}</FormHelperText>
                         </FormControl>
 
-                        {department.includes(formData.department) && (
+                        {(formData.department !== "Store") && (
                             <FormControl fullWidth error={!!errors.role}>
                                 <InputLabel>Role</InputLabel>
                                 <Select name="role" value={formData.role} onChange={handleChange}>
+                                    <MenuItem value="SuperAdmin">Super Admin</MenuItem>
                                     <MenuItem value="Manager">Manager</MenuItem>
                                     <MenuItem value="Agent">Agent</MenuItem>
                                 </Select>
@@ -238,11 +263,11 @@ function AddUserCompo({ fetchAllUserData }) {
                             <>
                                 <Typography>Select Departments (for Senior Manager)</Typography>
                                 <Grid container spacing={1}>
-                                    {departments.map((dept, index) => (
+                                    {allDepartments?.map((dept, index) => (
                                         <Grid item xs={6} key={index}>
                                             <FormControlLabel
-                                                control={<Checkbox checked={selectedDepts.includes(dept)} onChange={() => handleCheckboxChange(dept)} />}
-                                                label={dept}
+                                                control={<Checkbox checked={selectedDepts.includes(dept.name)} onChange={() => handleCheckboxChange(dept.name)} />}
+                                                label={dept.name}
                                             />
                                         </Grid>
                                     ))}
@@ -251,7 +276,22 @@ function AddUserCompo({ fetchAllUserData }) {
                             </>
                         )}
 
-                        {formData.department === 'Market Manager' || formData.department === 'Store' && (
+                        {formData.department == 'Market Manager' && (
+                            <>
+                                <Typography>Select Market:</Typography>
+                                <Grid container spacing={2}>
+                                    {markets.map((market, index) => (
+                                        <Grid item xs={6} key={index}>
+                                            <FormControlLabel
+                                                control={<Radio checked={selectedMarkets.includes(market)} onChange={() => handleMarketSelection(market)} />}
+                                                label={market}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </>
+                        )}
+                        {formData.department === 'Store' && (
                             <>
                                 <Typography>Select Market:</Typography>
                                 <Grid container spacing={2}>
