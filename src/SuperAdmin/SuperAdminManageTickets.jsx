@@ -41,9 +41,10 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import cookies from "js-cookie";
 import EditTickets from '../SuperAdminComponent/EditTickets';
 import { getAllStores } from '../Services/stores.services';
+import { useGlobalState } from '../Context/context';
 
 function SuperAdminManageTickets() {
-  const role = cookies.get("it")
+  const currentUserId = cookies.get("id")
   const [selectedRows, setSelectedRows] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,13 +72,13 @@ function SuperAdminManageTickets() {
   ]);
   const [store, setStore] = useState('');
   const [stores, setStores] = useState([]);
-
+  const { ip } = useGlobalState();
 
   // "Internal", 
   const fetchAllTickets = useCallback(async () => {
     setLoader(true);
     try {
-      const response = await getalltickets();
+      const response = await getalltickets(ip, currentUserId);
       setTickets(response.data.data);
       setLoader(false);
     } catch (error) {
@@ -92,7 +93,7 @@ function SuperAdminManageTickets() {
       const response = await getAllStores();
       const filteredStores = market ? response.filter((s) => s.market === market) : [];
       setStores(filteredStores);
-      console.log(filteredStores);
+      // console.log(filteredStores);
       setLoader(false);
       setStore(''); // Reset store when market changes
     } catch (error) {
@@ -478,7 +479,20 @@ function SuperAdminManageTickets() {
                           whiteSpace: "nowrap", // prevent wrapping
                           padding: "10px 12px"   // tighter spacing
                         }}
-                      >{ticket.name}</TableCell>
+                      >
+                        <Tooltip title={ticket.name || ''} arrow>
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{
+                              fontSize: "0.85rem",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {ticket.name}
+                          </Typography>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell
                         sx={{
                           fontSize: "0.85rem",

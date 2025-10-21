@@ -15,6 +15,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import HistoryIcon from "@mui/icons-material/History";
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+
 // import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 export const NAVIGATION = [
@@ -101,6 +103,12 @@ export const NAVIGATION = [
     title: 'Category of Problems',
     segment: 'superAdmin-category-problems',
     icon: <AccountTreeIcon />,
+    roles: ['superadmin'],
+  },
+  {
+    title: 'Manage Departments',
+    segment: 'superAdmin-managements-departments',
+    icon: <CorporateFareIcon />,
     roles: ['superadmin'],
   },
   {
@@ -257,7 +265,7 @@ export const NAVIGATION = [
     title: 'Market Structure',
     segment: '',
     icon: <InfoOutlineIcon />,
-    roles: ['manager', 'agent', 'Sales', 'senior manager', 'district manager', 'market manager'],
+    roles: ['manager', 'senior manager', 'district manager', 'market manager'],
     type: 'dropdown',
     children: [
       {

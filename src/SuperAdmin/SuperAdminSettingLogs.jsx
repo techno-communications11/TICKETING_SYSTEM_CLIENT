@@ -1029,6 +1029,7 @@ function SuperAdminSettingLogs() {
             );
 
             setLogs(sortedLogs);
+            console.log(sortedLogs);
             setFilteredLogs(sortedLogs);
         } catch (error) {
             console.error("Error fetching logs:", error.message);
@@ -1219,12 +1220,13 @@ function SuperAdminSettingLogs() {
                                     <TableCell sx={{ color: "white" }}>Device</TableCell>
                                     <TableCell sx={{ color: "white" }}>Browser</TableCell>
                                     <TableCell sx={{ color: "white" }}>Location</TableCell>
+                                    <TableCell sx={{ color: "white" }}>Description</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={10}>
+                                        <TableCell colSpan={11}>
                                             <div
                                                 className="d-flex align-items-center justify-content-center w-100"
                                                 style={{ height: "300px" }}
@@ -1262,12 +1264,15 @@ function SuperAdminSettingLogs() {
                                                 <TableCell>
                                                     {!data?.location || data?.location === "undefined, undefined" ? "-" : data?.location}
                                                 </TableCell>
+                                                <TableCell>
+                                                    {data?.description || "-"}
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan="10" className="text-center">
+                                        <TableCell colSpan={11} className="text-center">
                                             No logs found.
                                         </TableCell>
                                     </TableRow>

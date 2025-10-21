@@ -87,6 +87,7 @@ import SuperAdminAllNotifications from '../SuperAdmin/SuperAdminAllNotifications
 import ForgetPassword from '../PublicPages/ForgetPassword';
 import StoreReviewTickets from '../Stores/StoreReviewTickets';
 import CreateUsersAccountFromExcel from '../PublicPages/CreateUsersAccountFromExcel';
+import SuperAdminDeparmentsManagements from '../SuperAdmin/SuperAdminDeparmentsManagements';
 // const ProtectedRoute = ({ children, allowedDepartments }) => {
 //     const id = cookies.get("id");
 //     const token = cookies.get("token");
@@ -185,6 +186,7 @@ function Routing() {
                             <Route path="/superAdmin-manage-setting" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminSetting /></ProtectedRoute>} />
                             <Route path="/superAdmin-logs-setting" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminSettingLogs /></ProtectedRoute>} />
                             <Route path="/superAdmin-category-problems" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminProblemsofCategory /></ProtectedRoute>} />
+                            <Route path="/superAdmin-managements-departments" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminDeparmentsManagements /></ProtectedRoute>} />
                             <Route path="/superAdmin-open-tickets" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminOpenTickts /></ProtectedRoute>} />
                             <Route path="/superAdmin-close-tickets" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminClosedTickts /></ProtectedRoute>} />
                             <Route path="/superAdmin-complete-tickets" element={<ProtectedRoute allowedDepartments={'SuperAdmin'}><SuperAdminCompleteTickts /></ProtectedRoute>} />

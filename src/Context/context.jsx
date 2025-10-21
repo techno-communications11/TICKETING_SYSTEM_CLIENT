@@ -38,7 +38,7 @@ const defaultTicketData = {
     districtManager_id: "",
     marketManager_id: "",
     categoryId: "",
-    currentOwnerId:""
+    currentOwnerId: ""
 };
 
 
@@ -95,6 +95,23 @@ const GlobalStates = ({ children }) => {
     const totalTickets = useRef(null);
     const [ticketErrors, setTicketErrors] = useState({});
     const reset = () => setTicketData(defaultTicketData)
+    const [ip, setIp] = useState("");
+
+    useEffect(() => {
+        const fetchIP = async () => {
+            try {
+                const response = await fetch("https://api.ipify.org?format=json");
+                const data = await response.json();
+                setIp(data.ip);
+                console.log(data.ip);
+            } catch (error) {
+                console.error("Error fetching public IP:", error);
+            }
+        };
+
+        fetchIP();
+    }, []);
+
     const contextValue = useMemo(() => ({
         token,
         id,
@@ -115,10 +132,11 @@ const GlobalStates = ({ children }) => {
         setMMDMFormData,
         ccformData,
         setccFormData,
-        filterationsData,  
+        filterationsData,
         setFilterationsData,
         reset,
-    }), [token, id, currentUserData, mmdmformData,filterationsData, ccformData, uploadFiles, ticketData, ticketErrors, formData, errors]);
+        ip
+    }), [token, id,ip, currentUserData, mmdmformData, filterationsData, ccformData, uploadFiles, ticketData, ticketErrors, formData, errors]);
 
     return (
         <GlobalContext.Provider value={contextValue}>

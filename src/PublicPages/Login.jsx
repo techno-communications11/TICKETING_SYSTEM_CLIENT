@@ -56,6 +56,7 @@ function Login() {
             localStorage.setItem("fgpts", response.data.data.forgotpassword)
             cookie.set('id', response.data.id, { expires: 0.375, path: "/" });
             cookie.set('token', response.data.token, { expires: 0.375, path: "/" });
+            cookie.set("ip", ip)
             if (response.data.data.first === false) {
                 cookie.set("id", response.data.id, { expires: 0.375, path: "/" });
                 return navigate('/reset-password')

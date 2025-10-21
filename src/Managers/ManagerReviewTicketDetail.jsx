@@ -16,11 +16,13 @@ import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import ManagerComments from './ManagerComments';
 import ManagerTransferedTickets from './ManagerTransferedTickets';
 import ShowAttachmentsFile from '../Components/ShowAttachmentsFile/ShowAttachmentsFile';
+import { useGlobalState } from '../Context/context';
 
 function ManagerReviewTicketDetail() {
     const [assignieName, setAssigneeName] = useState({ name: "", id: "", assign_email: "" });
     const [detailTicket, setDetailTicket] = useState([]);
     const { socket } = useSocket();
+    const { ip } = useGlobalState();
     const [loading, setLoading] = useState(false);
     const [assignUsers, setAssignUsers] = useState([]);
     const userId = cookie.get('id')
@@ -33,17 +35,10 @@ function ManagerReviewTicketDetail() {
     const filteredTickets = useCallback(async () => {
         settLoading(true)
         try {
-            const response = await getalltickets();
+            const response = await getalltickets(ip, userId, "review tickets");
             const fil = response.data.data.filter((data) => data.id === id);
-
-            // const fil = response.data.data.filter((data) => data.id == id);
-
-            // console.log(fil)
             settLoading(false)
-
-            // const filterartion = response.data.data.filter((data) => data.id === id);
             setDetailTicket(fil || []);
-            console.log(fil || []);
         } catch (error) {
             settLoading(false)
             console.log(error.message);
@@ -178,7 +173,6 @@ function ManagerReviewTicketDetail() {
         }
     }
     const showBrowserNotification = async (title, description) => {
-        // console.log("before sent notification", title, description)
         if ('Notification' in window && Notification.permission === "granted") {
             console.log("after sent notification", title, description)
             new Notification(title, {
@@ -219,9 +213,7 @@ function ManagerReviewTicketDetail() {
             const filteredUserEmail = ticketData.data.data.filter((data) => data.id == assignieName.id)
             const allTickets = await getalltickets();
             const filtered = allTickets.data.data.filter((data) => data.id == id);
-            // console.log(id, assignieName.id, assignieName.name, filtered, filtered[0], filteredUserEmail[0]?.email, filteredCurrentUser[0]?.name, assignieName.assign_email)
             const response = await assignedTicketServices(id, assignieName.id, assignieName.name, filtered[0]?.ticketId, filtered[0], filteredUserEmail[0]?.email, filteredCurrentUser[0]?.name, assignieName.assign_email);
-            // console.log(response)
             if (response.data.status === 200) {
                 const notificationObj = {
                     ticketId: filtered[0]?.id,

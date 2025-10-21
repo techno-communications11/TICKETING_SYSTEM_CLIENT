@@ -20,7 +20,7 @@ import { useGlobalState } from '../Context/context';
 import ManagerCreateTickets from './ManagerCreateTickets';
 
 function ManagerHome() {
-  const { filterationsData, setFilterationsData } = useGlobalState();
+  const { filterationsData, setFilterationsData, ip } = useGlobalState();
   const decodedTickets = decodeToken();
   const { department, subDepartment } = decodedTickets;
   const id = cookie.get('id');
@@ -43,16 +43,16 @@ function ManagerHome() {
 
   const fetchTickets = useCallback(async () => {
     try {
-      const response = await getalltickets();
+      const response = await getalltickets(ip, id);
       // let filtered = response.data.data.filter(
       //   (data) =>
       //     (data.department === department && data.subDepartment === subDepartment && data.senior_managers === 'Admin Manager') ||
       //     data.userId === id || data.managerID === id || data.assignerId === id || (data.managerID === id && data.assignerId === id && data.approved === true && data.senior_managers === 'Admin Manager')
       // );
       const filtered = response?.data?.data?.filter(ticket =>
-                (ticket.department == department && ticket.subDepartment == subDepartment) ||
-                ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
-            );
+        (ticket.department == department && ticket.subDepartment == subDepartment) ||
+        ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
+      );
       // console.log(response.data.data)
       // Apply filters
       if (market) filtered = filtered.filter((data) => data.market === market);

@@ -5,8 +5,8 @@ import axios from "axios";
 
 export const getAllLogsServices = async () => {
     try {
-        // const resposne = await axios(`http://localhost:5000/logs/getAllLogs`);
         const resposne = await axios(`${API_URL}/logs/getAllLogs`);
+        // const resposne = await axios(`${API_URL}/logs/getAllLogs`);
         return resposne
     } catch (error) {
         throw error;

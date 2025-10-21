@@ -15,116 +15,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import { getAllUser } from '../Services/auth.services';
+import { useGlobalState } from '../Context/context';
 
 function SuperAdminDashboard() {
-  // const id = cookie.get('id');
-  // const [allTickets, setAllTickets] = useState([]);
-  // const [filteredTickets, setFilteredTickets] = useState([]);
-  // const [market, setMarket] = useState('');
-  // const [store, setStore] = useState('');
-  // const [priority, setPriority] = useState('');
-  // const [stores, setStores] = useState([]);
-  // const [loader, setLoader] = useState(false);
-  // const navigate = useNavigate();
-  // const [tickets, setTickets] = useState({
-  //   total: 0,
-  //   open: 0,
-  //   closed: 0,
-  //   complete: 0,
-  //   Pending: 0,
-  //   reopen: 0
-  // });
-  // const [totalStores, setTotalStores] = useState(0)
-  // const [totalDistrictManagers, setTotalDistrictManagers] = useState(0)
-  // const [totalMarketManagers, setTotalMarketManagers] = useState(0)
-  // const [startDate, setStartDate] = useState(null);
-  // const [endDate, setEndDate] = useState(null);
-
-  // const applyFilters = useCallback((ticketList) => {
-  //   let filtered = [...ticketList];
-  //   if (market) {
-  //     filtered = filtered.filter(t => t.market === market);
-  //   }
-  //   if (store) {
-  //     filtered = filtered.filter(t => t.store_name === store);
-  //   }
-  //   if (priority) {
-  //     filtered = filtered.filter(t => t.priority === priority);
-  //   }
-  //   if (startDate && endDate) {
-  //     filtered = filtered.filter(t => {
-  //       const ticketDate = dayjs(t.createdAt);
-  //       return ticketDate.isAfter(dayjs(startDate).startOf('day')) &&
-  //         ticketDate.isBefore(dayjs(endDate).endOf('day'));
-  //     });
-  //   }
-
-  //   setFilteredTickets(filtered);
-  //   setTickets({
-  //     total: filtered.length,
-  //     open: filtered.filter((data) => data.status === "open").length,
-  //     closed: filtered.filter((data) => data.status === "close").length,
-  //     Pending: filtered.filter((data) => data.status === "pending").length,
-  //     complete: filtered.filter((data) => data.agentstatus === "complete").length,
-  //     reopen: filtered.filter((data) => data.status === "re-open").length,
-  //   });
-  // }, [market, store, priority]);
-
-  // const fetchTickets = useCallback(async () => {
-  //   try {
-  //     const response = await getalltickets();
-  //     const data = response.data.data;
-  //     setAllTickets(data);
-  //     applyFilters(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [applyFilters]);
-
-  // const fetchAllStores = useCallback(async () => {
-  //   setLoader(true);
-  //   try {
-  //     const response = await getAllStores();
-  //     const filteredStores = market ? response.filter((s) => s.market === market) : [];
-  //     setStores(filteredStores);
-  //     setStore('');
-  //     setTotalStores(response.length)
-  //   } catch (error) {
-  //     console.error('ERROR', error.message);
-  //   } finally {
-  //     setLoader(false);
-  //   }
-  // }, [market]);
-  // const fetchGetAllUsersData = useCallback(async () => {
-  //   try {
-  //     const response = await getAllUser();
-  //     const getAllDistrictManagersData = await response.data.data.filter((data) => data.department === "District Manager")
-  //     const getAllMarketManagersData = await response.data.data.filter((data) => data.department === "Market Manager")
-  //     // console.log(getAllDistrictManagersData.length);
-  //     setTotalDistrictManagers(getAllDistrictManagersData.length || 0)
-  //     setTotalMarketManagers(getAllMarketManagersData.length || 0)
-  //   } catch (error) {
-  //     console.log("ERROR", error.message);
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   fetchGetAllUsersData();
-  // }, [fetchGetAllUsersData])
-  // useEffect(() => {
-  //   fetchTickets();
-  // }, [id, fetchTickets]);
-
-  // useEffect(() => {
-  //   fetchAllStores();
-  // }, [fetchAllStores]);
-
-  // useEffect(() => {
-  //   applyFilters(allTickets);
-  // }, [market, store, priority, allTickets, applyFilters]);
-
   const id = cookie.get('id');
   const navigate = useNavigate();
+  const{ip}=useGlobalState();
 
   const [allTickets, setAllTickets] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
@@ -194,7 +90,7 @@ function SuperAdminDashboard() {
   // 🟢 FETCH ALL TICKETS
   const fetchTickets = useCallback(async () => {
     try {
-      const response = await getalltickets();
+      const response = await getalltickets(ip, id ,"get all ticket from dashboard");
       const data = response.data.data || [];
       setAllTickets(data);
       applyFilters(data);

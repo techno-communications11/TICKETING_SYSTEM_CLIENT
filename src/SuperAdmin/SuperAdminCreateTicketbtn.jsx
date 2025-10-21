@@ -7,13 +7,13 @@ import cookies from 'js-cookie';
 import { useSocket } from '../Context/socket.context';
 
 function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
-    const { ticketData, reset, setTicketErrors } = useGlobalState();
+    const { ticketData, reset, setTicketErrors, ip } = useGlobalState();
     const id = cookies.get('id');
     const { socket } = useSocket();
     const [loader, setLoader] = useState(false)
     const generatedTicketId = async () => {
         try {
-            const response = await getalltickets();
+            const response = await getalltickets(ip, id, "get all tickets");
             const allTickets = response.data.data;
             if (!allTickets || allTickets.length === 0) {
                 return 'Ticket#1001';
@@ -41,6 +41,7 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
         if (!ticketData.category) errors.category = 'Category is required';
         if (!ticketData.managerName) errors.managerName = 'Manager is required';
         setTicketErrors(errors);
+        console.log(errors);
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
@@ -48,6 +49,12 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
         if (!validateForm()) return setLoader(false);
         try {
             const ticketId = await generatedTicketId();
+            // console.log(
+            //     {
+            //         ticketId,
+            //         formData: ticketData,
+            //     }
+            // )
             const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
@@ -65,18 +72,17 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
                     store: resposne.data.data?.store_detail[0]?.id,
                     notification_type: "new Ticket open",
                 };
-                socket.emit('notify', notificationObj)
+                socket.emit('notify', notificationObj);
+                setLoader(false);
+                generatedTicketId();
+                reset();
+                handleClose();
+                fetchTickets()
                 // const r = await ticketProgressServices(resposne.data.data.id, "Created");
             }
         } catch (error) {
             setLoader(false)
             console.log("error", error.message)
-        } finally {
-            setLoader(false);
-            generatedTicketId();
-            reset();
-            handleClose();
-            fetchTickets()
         }
     };
     return (

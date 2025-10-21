@@ -30,7 +30,17 @@ export const deleteProblemCategory = async (id) => {
     try {
         // const response = await axios('http://localhost:8000/pcategory/getAlldata');
         // const response = await axios('https://ticketing-system-sever.vercel.app/pcategory/getAlldata');
-        const response = await axios.post(`${API_URL}/pcategory/delete-problem-category`,{id});
+        const response = await axios.post(`${API_URL}/pcategory/delete-problem-category`, { id });
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
+export const updateProblemCategory = async (id, data) => {
+    try {
+        // const response = await axios('http://localhost:8000/pcategory/getAlldata');
+        // const response = await axios('https://ticketing-system-sever.vercel.app/pcategory/getAlldata');
+        const response = await axios.post(`${API_URL}/pcategory/update-category-controller`, { id, data });
         return response
     } catch (error) {
         throw error;

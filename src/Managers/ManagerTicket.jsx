@@ -511,7 +511,7 @@ const marketsList = [
 ];
 
 function ManagerTicket() {
-    const { department, subDepartment } = decodeToken();
+    const { department, subDepartment, ip } = decodeToken();
     const id = cookie.get('id');
     // console.log(id)
     const navigate = useNavigate();
@@ -529,7 +529,7 @@ function ManagerTicket() {
     const fetchTickets = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await getalltickets();
+            const response = await getalltickets(ip, id, "get all tickets");
             // console.log(department)
             // console.log(subDepartment)
             const filtered = response?.data?.data?.filter(ticket =>
@@ -710,13 +710,13 @@ function ManagerTicket() {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} align="center" height={200}>
+                                    <TableCell colSpan={10} align="center" height={200}>
                                         <CircularProgress />
                                     </TableCell>
                                 </TableRow>
                             ) : filteredTickets.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} align="center" height={100}>
+                                    <TableCell colSpan={10} align="center" height={100}>
                                         No tickets found
                                     </TableCell>
                                 </TableRow>

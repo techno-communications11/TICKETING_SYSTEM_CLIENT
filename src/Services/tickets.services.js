@@ -1,17 +1,22 @@
 const API_URL = import.meta.env.VITE_API_URL;
 import axios from "axios";
-// http://localhost:8000
-
+// import { useGlobalState } from "../Context/context";
 export const getalltickets = async () => {
     try {
-        // const response = await axios('http://localhost:8000/tickets/getalltickets');
-        // const response = await axios('http://localhost:5000/tickets/getalltickets');
         const response = await axios(`${API_URL}/tickets/getalltickets`);
         return response;
     } catch (error) {
         throw error;
     }
 }
+// export const getalltickets = async (ip, currentUserId, description) => {
+//     try {
+//         const response = await axios(`${API_URL}/tickets/getalltickets`, { params: { ip, currentUserId, description }, });
+//         return response;
+//     } catch (error) {
+//         throw error;
+//     }
+// }
 
 export const generateTicketId = (allTickets) => {
     if (!allTickets || allTickets.length === 0) {
@@ -30,10 +35,7 @@ export const generateTicketId = (allTickets) => {
 
 export const assignedTicketServices = async (id, assignerId, assignerName, ticketId, formData, email, assignedmanagername, assign_email) => {
     try {
-        // const response = await axios.post('http://localhost:8000/tickets/assignedTicket', { id, assignerId, assignerName, ticketId, formData, email });
-        // const response = await axios.post('http://localhost:5000/tickets/assignedTicket', { id, assignerId, assignerName, ticketId, formData, email, assignedmanagername,assign_email });
         const response = await axios.post(`${API_URL}/tickets/assignedTicket`, { id, assignerId, assignerName, ticketId, formData, email, assignedmanagername, assign_email, approved: true });
-        // const response = await axios.post('http://localhost:5000/tickets/assignedTicket', { id, assignerId, assignerName, ticketId, formData, email, assignedmanagername,assign_email });
         return response;
     } catch (error) {
         throw error;
@@ -42,7 +44,6 @@ export const assignedTicketServices = async (id, assignerId, assignerName, ticke
 
 export const updateTicketStatus = async (id) => {
     try {
-        // const response = await axios.post('http://localhost:8000/tickets/updateTicektStatus', { id });
         const response = await axios.post(`${API_URL}/tickets/updateTicektStatus`, { id });
         return response.data;
     } catch (error) {
@@ -55,7 +56,6 @@ export const updateAgentStatus = async (id) => {
         if (!id) {
             throw new Error("❌ ID is required!");
         }
-        // const response = await axios.post('http://localhost:8000/tickets/updatingAgentStatus', { id });
         const response = await axios.post(`${API_URL}/tickets/updatingAgentStatus`, { id });
         return response.data;
     } catch (error) {
@@ -67,7 +67,6 @@ export const updateAgentStatus = async (id) => {
 // 
 export const completeTicketFromAgent = async (id) => {
     try {
-        // const response = await axios.post('http://localhost:8000/tickets/completeTicketFromAgent', { id })
         const response = await axios.post(`${API_URL}/tickets/completeTicketFromAgent`, { id })
         return response;
     } catch (error) {
@@ -77,8 +76,6 @@ export const completeTicketFromAgent = async (id) => {
 
 export const closeTicket = async (id) => {
     try {
-        // const response = await axios.post('http://localhost:8000/tickets/closeTicket', { id })
-        // const response = await axios.post('http://localhost:5000/tickets/closeTicket', { id })
         const response = await axios.post(`${API_URL}/tickets/closeTicket`, { id })
         return response;
     } catch (error) {
@@ -89,7 +86,7 @@ export const closeTicket = async (id) => {
 export const approvedTicketServices = async (userId, ticketId) => {
     try {
         const response = await axios.post(`${API_URL}/tickets/approvedTicket`, { userId, ticketId });
-        return response.data; // ✅ Sirf data return karein
+        return response.data;
     } catch (error) {
         console.error("Error in approvedTicketServices:", error.response?.data || error.message);
         throw new Error(error.response?.data?.message || "Failed to approve ticket"); // ✅ Better error message
@@ -98,8 +95,6 @@ export const approvedTicketServices = async (userId, ticketId) => {
 
 export const ticketProgressServices = async (ticketId, status) => {
     try {
-        // const response = await axios.post('http://localhost:8000/tickets/updateTicketProgress', { ticketId, status });
-        // const response = await axios.post('http://localhost:5000/tickets/updateTicketProgress', { ticketId, status });
         const response = await axios.post(`${API_URL}/tickets/updateTicketProgress`, { ticketId, status });
         return response;
     } catch (error) {
@@ -130,7 +125,6 @@ export const reopenTicketServices = async (id, reopenreason) => {
 export const deleteTicketServices = async (ids) => {
     try {
         const response = await axios.post(`${API_URL}/tickets/delete-tickets`, { ids });
-        // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
         return response;
     } catch (error) {
         throw error;
@@ -139,7 +133,6 @@ export const deleteTicketServices = async (ids) => {
 export const transferedTicketServices = async (ticketId, newOwnerId, transferReason, departmentName, managerName, managerName_email) => {
     try {
         const response = await axios.post(`${API_URL}/tickets/transfered-ticket`, { ticketId, newOwnerId, transferReason, departmentName, managerName, managerName_email });
-        // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
         return response;
     } catch (error) {
         throw error;
@@ -148,7 +141,6 @@ export const transferedTicketServices = async (ticketId, newOwnerId, transferRea
 export const editicketServices = async (id, data) => {
     try {
         const response = await axios.post(`${API_URL}/tickets/edit-ticket`, { id, data });
-        // const response = await axios.post(`http://localhost:5000/tickets/delete-tickets`, { ids });
         return response;
     } catch (error) {
         throw error;

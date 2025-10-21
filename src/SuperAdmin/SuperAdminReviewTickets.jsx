@@ -257,7 +257,7 @@ function SuperAdminReviewTickets() {
             Data NOt FOund Yet
         </div>
     }
-    console.log(detailTicket[0])
+    // console.log(detailTicket[0])
     const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
     return (
         <div className='container-fluid d-flex flex-column gap-3'>
@@ -371,8 +371,8 @@ function SuperAdminReviewTickets() {
                                     <Typography variant='h6' sx={{ fontSize: "18px" }} className='mb-2'>Agent  Detail:</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Assigned By:</span> {detailTicket[0]?.assignedmanagername}</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Assigned To:</span> {detailTicket[0]?.assignerName}</Typography>
-                                    <Typography variant='body1'><span className='fw-semibold'>Assignee Email:</span> {"N/A"}</Typography>
-                                    <Typography variant='body1'><span className='fw-semibold'>Assigned At:</span> {detailTicket[0]?.status}</Typography>
+                                    <Typography variant='body1'><span className='fw-semibold'>Assignee Email:</span> {detailTicket[0]?.assign_email || "N/A"}</Typography>
+                                    <Typography variant='body1'><span className='fw-semibold'>Assigned At:</span> {detailTicket[0]?.assign_At ? moment(detailTicket[0]?.assign_At).format("DD-MM-YYYY hh:mm A") : "N/A"}</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Agent Status:</span> {detailTicket[0]?.agentstatus}</Typography>
                                     <Typography variant='body1'><span className='fw-semibold'>Agent Complete At :</span> {detailTicket[0]?.completedAt ? moment(detailTicket[0]?.completedAt).format("DD-MM-YYYY hh:mm A") : "N/A"}</Typography>
                                 </div>

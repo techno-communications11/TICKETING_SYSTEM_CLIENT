@@ -6,9 +6,8 @@ import axios from 'axios';
 import cookies from 'js-cookie';
 import { useSocket } from '../../Context/socket.context';
 function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) {
-    const { ticketData, reset, setTicketErrors } = useGlobalState();
+    const { ticketData, reset, setTicketErrors, ip } = useGlobalState();
     const id = cookies.get('id');
-    // console.log("user Id",id)
     const { socket } = useSocket();
     const [loader, setLoader] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -17,7 +16,7 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) 
 
     const generatedTicketId = async () => {
         try {
-            const response = await getalltickets();
+            const response = await getalltickets(ip, id, "get all tickets");
             // console.log(response)
             const allTickets = response.data.data;
             if (!allTickets || allTickets.length === 0) {
@@ -49,27 +48,15 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) 
         return Object.keys(errors).length === 0;
     };
     const handleSubmit = async (e) => {
-        // const ticketId = await generatedTicketId();
-        // console.log(ticketId)
         setLoader(true);
         if (!validateForm()) return setLoader(false);
         try {
-            // const ticketId = 'Ticket#1001';
             const ticketId = await generatedTicketId();
-            // console.log(
-            //     {
-            //         ticketId,
-            //         formData: ticketData,
-            //     }
-            // )
-
-            // const resposne = await axios.post('https://ticketing-system-sever.vercel.app/tickets/creatTickets', {
-            // const resposne = await axios.post('http://localhost:5000/tickets/creatTickets', {
-                const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
+            const resposne = await axios.post('https://ticketingapi.techno-communications.com/tickets/creatTickets', {
                 ticketId,
                 formData: ticketData,
+                ip, id,
             })
-            // console.log(resposne, "ticketData")
             if (resposne.status === 200) {
                 const notificationObj = {
                     ticketId: resposne.data.data._id,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Button,
     IconButton,
@@ -12,62 +12,28 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import { addNewCategory } from '../../Services/categoryofproblem.services';
 import axios from 'axios';
+import { getAllDepartmentsServices } from '../../Services/departments.services';
 
 
-function AddProblemCategoryTicket({fetchCategory}) {
+function AddProblemCategoryTicket({ fetchCategory }) {
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [departmentEmail, setDepartmentEmail] = useState('');
     const [newCategory, setNewCategory] = useState('');
     const [newDepartment, setNewDepartment] = useState('');
     const [loader, setLoader] = useState(false);
 
-    const departments = [
-        { name: 'Admin', email: 'admin@example.com' },
-        { name: 'Admin / IT', email: 'admin@example.com' },
-        { name: 'Management', email: 'superadmin@example.com' },
-
-        { name: 'Compliance', email: 'compliance@techno-communications.com' },
-        { name: 'Supervisor', email: 'commission@example.com' },
-        { name: 'Vigilance', email: 'commission@example.com' },
-
-        { name: 'Finance (GL)', email: 'finance@example.com' },
-        { name: 'Finance AR', email: 'finance@example.com' },
-
-        { name: 'HR', email: 'HR@techno-communications.com' },
-        { name: 'IT', email: 'it@techno-communications.com' },
-        { name: 'Local IT', email: 'it@techno-communications.com' },
-        { name: 'MIS', email: 'it@techno-communications.com' },
-
-        { name: 'Inventory', email: 'reporting@techno-communications.com' },
-        { name: 'QA', email: 'reporting@techno-communications.com' },
-        { name: 'Reporting', email: 'reporting@example.com' }
-    ];
-    //  "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Market Manager", "District Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
-    //         "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance",
-    //         "AR", "Employee", "Store", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
-    // const departments = [
-    //   { name: 'Admin', email: 'admin@example.com' },
-    //   { name: 'Compliance', email: 'commission@example.com' },
-    //   { name: 'Finance - GL', email: 'finance@example.com' },
-    //   { name: 'Finance - AR', email: 'finance@example.com' },
-    //   { name: 'HR', email: 'hr@example.com' },
-    //   { name: 'Inventory', email: 'inventory@example.com' },
-    //   { name: 'Management', email: 'superadmin@example.com' },
-    //   { name: 'QA', email: 'qa@example.com' },
-    //   { name: 'Reporting', email: 'reporting@example.com' },
-    //   { name: 'Supervisor', email: 'commission@example.com' },
-    //   { name: 'Vigilance', email: 'commission@example.com' },
-    //   { name: 'IT', email: 'hr@example.com' },
-    // ];
-    // // { name: 'Market Manager', email: 'marketmanager@example.com' },
-    // // { name: 'District Manager', email: 'districtmanager@example.com' },
-    // // { name: 'Employee', email: 'employee@example.com' },
-    // { name: 'Software India', email: 'softwareindia@example.com' },
-    // { name: 'Finance (AR)', email: 'finance@example.com' },
-    // // { name: 'Internal', email: 'internal@example.com' },
-    // { name: 'Maintenance', email: 'maintenance@example.com' },
-    // // { name: 'Commission', email: 'commission@example.com' }
-
+    const [allDepartments, setAllDepartments] = useState([]);
+    const fetchAllDepartmentsData = useCallback(async () => {
+        try {
+            const response = await getAllDepartmentsServices();
+            setAllDepartments(response.data.data)
+        } catch (error) {
+            console.log("ERROR", error.message)
+        }
+    }, [])
+    useEffect(() => {
+        fetchAllDepartmentsData()
+    }, [fetchAllDepartmentsData])
 
     const handleCategoryProblems = (event) => {
         const selectedDepartment = JSON.parse(event.target.value);
@@ -85,29 +51,23 @@ function AddProblemCategoryTicket({fetchCategory}) {
     const handleAddCategory = async () => {
         setLoader(true);
         try {
-            // console.log({ name: newCategory, department: newDepartment.name, departmentEmail })
-
-            // const response = await addNewCategory({ name: newCategory, department:  newDepartment.name, departmentEmail });
-            // const response = await axios.post('https://ticketing-system-sever.vercel.app/pcategory/addproblemcateroy', {
             const response = await axios.post('https://ticketingapi.techno-communications.com/pcategory/addproblemcateroy', {
                 name: newCategory,
                 department: newDepartment.name,
                 department_email: departmentEmail
             });
-            // console.log('Category added successfully:', response.data);
-            fetchCategory()
-            handleCategoryClose(); // Close the modal after successful addition
-            setNewCategory('');
-            setNewDepartment('');
-            setDepartmentEmail('');
+            if (response.data.status === 200) {
+                fetchCategory()
+                handleCategoryClose(); 
+                setNewCategory('');
+                setNewDepartment('');
+                setDepartmentEmail('');
+                setLoader(false);
+            }
         } catch (error) {
             setLoader(false);
             console.error("Error adding category:", error.message);
-        } finally {
-            setLoader(false);
-            handleCategoryClose();
         }
-        // handleCategoryClose();
     };
 
     return (
@@ -150,7 +110,7 @@ function AddProblemCategoryTicket({fetchCategory}) {
                         value={JSON.stringify(newDepartment) || ''}
                         onChange={handleCategoryProblems}
                     >
-                        {departments.map((dept, index) => (
+                        {allDepartments?.map((dept, index) => (
                             <MenuItem key={index} value={JSON.stringify(dept)}>
                                 {dept.name}
                             </MenuItem>

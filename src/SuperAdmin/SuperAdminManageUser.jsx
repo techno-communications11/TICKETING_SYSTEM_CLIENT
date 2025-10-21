@@ -196,6 +196,7 @@ function SuperAdminManageUser() {
             );
 
             setFilteredUsers(filtered); // optional if you want to export
+            // console.log(filtered); // optional if you want to export
             setPaginatedUsers(paginated);
         }, 300);
 

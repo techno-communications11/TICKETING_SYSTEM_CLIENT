@@ -22,14 +22,14 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
 
     const handleSubmit = async () => {
         setLoading(true);
-        console.log(formData)
+        // console.log(formData)
         if (validate()) {
             try {
                 // const response = await addNewStoreServices(formData);
-                const response = await axios.post(`${"http://localhost:5000"}/stores/addstoresformat`, {
+                const response = await axios.post(`${"https://ticketingapi.techno-communications.com"}/stores/addstoresformat`, {
                     formData
                 })
-                console.log(response)
+                // console.log(response)
                 if (response.status === 200) {
                     setLoading(false);
                     setOpen(false);
@@ -52,11 +52,6 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
                 setLoading(false);
                 console.log("Error", error.message);
             }
-            // finally {
-            //     setLoading(true);
-            //     fetchAllStores();
-            //     setOpen(false);
-            // }
         } else {
             console.log("ERROR")
         }
