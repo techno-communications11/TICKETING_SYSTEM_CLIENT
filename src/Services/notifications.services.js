@@ -27,3 +27,11 @@ export const updateNotificationServices = async (userId, agent_notification, man
         throw error;
     }
 }
+export const deleteNotificationServices = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/notifications/delete-notifications-by-id`, { id });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
