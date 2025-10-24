@@ -9,15 +9,8 @@ import moment from 'moment/moment';
 import { useParams } from 'react-router-dom';
 import { addNotificationsServices } from '../Services/notifications.services';
 import AgentComments from './AgentComments';
+import { addNewTicketProgressServices } from '../Services/ticketprogress.services';
 function AgentReviewTickets() {
-    const [comments, setComments] = useState([
-        { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
-        { user: "Alice Smith", text: "Noted, will look into it.", time: "10:45 AM" },
-        { user: "Robert Johnson", text: "We need more details on this.", time: "11:00 AM" },
-        { user: "Emily Davis", text: "I'll handle this ticket.", time: "11:15 AM" },
-        { user: "Michael Brown", text: "Please update the status.", time: "11:30 AM" },
-        { user: "Sarah Connor", text: "Ticket is under review.", time: "11:45 AM" }
-    ]);
     const [detailTicket, setDetailTicket] = useState([]);
     const { socket } = useSocket();
     const [loading, setLoading] = useState(false);
@@ -44,22 +37,10 @@ function AgentReviewTickets() {
     }, [filteredTickets])
 
     const handleCompleteTicketBtn = async () => {
-        console.log(
-            {
-                ticketId: detailTicket[0]?.id,
-                ticket_Id: detailTicket[0]?.ticketId,
-                recipientId: detailTicket[0]?.managerID,
-                senderId: userID,
-                notification_type: "complete ticket",
-                marketmanager: detailTicket[0]?.marketManager_id,
-                distrcitmanager: detailTicket[0]?.districtManager_id,
-            }
-        )
         setLoading(true);
 
         try {
             const response = await completeTicketFromAgent(detailTicket[0]?.id);
-            console.log(response)
             if (response.data.status === 200) {
                 filteredTickets();
                 const notificationObj = {
@@ -71,8 +52,15 @@ function AgentReviewTickets() {
                     marketmanager: detailTicket[0]?.marketManager_id,
                     distrcitmanager: detailTicket[0]?.districtManager_id,
                 }
-                socket.emit('notify', notificationObj)
-                const responseNoti = await addNotificationsServices(notificationObj);
+                const obj = {
+                    ticketId: detailTicket[0]?.id,
+                    status: "Completed by Agent",
+                    updatedBy: detailTicket[0]?.id,
+                };
+                const responseNoti = await addNewTicketProgressServices(obj);
+                if (responseNoti.data.status === 200) {
+                    socket.emit('notify', notificationObj)
+                }
             }
         } catch (error) {
             setLoading(false);
@@ -88,7 +76,7 @@ function AgentReviewTickets() {
         </div>
     }
     return (
-        <div className='container d-flex flex-column gap-3'>
+        <div className='container-fluid d-flex flex-column gap-3'>
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center" style={{ marginTop: '20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -133,8 +121,7 @@ function AgentReviewTickets() {
                                     variant="outlined"
                                 />
                         }
-                        {/* disabled={detailTicket[0]?.agentstatus === "complete"} */}
-                        <Button variant='contained' disabled={detailTicket[0]?.agentstatus === "complete"} onClick={handleCompleteTicketBtn}>{loading ? <CircularProgress size={25} /> : "Ticket Complete"}</Button>
+                        <Button variant='contained' disabled={loading || detailTicket[0]?.agentstatus === "complete"} onClick={handleCompleteTicketBtn}>{loading ? <CircularProgress size={25} /> : "Ticket Complete"}</Button>
                     </div>
                 </div>
             </div>
@@ -195,8 +182,7 @@ function AgentReviewTickets() {
             <div className="row">
                 <div className="col-md-6">
                     <div className="mt-4">
-                        <Typography variant="h5" gutterBottom>Comments</Typography>
-                        <AgentComments ticketId={detailTicket[0]?.id}/>
+                        <AgentComments ticketId={detailTicket[0]?.id} />
                         {/* <List className="mb-3 py-3 px-3 border border-dark rounded-3 bg-white" style={{ height: "400px", overflow: "auto" }}>
                             {comments.map((comment, index) => (
                                 <ListItem key={index} alignItems="flex-start" style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }} className="d-flex">

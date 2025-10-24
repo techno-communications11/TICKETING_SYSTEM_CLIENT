@@ -5,6 +5,7 @@ import { getalltickets, ticketProgressServices } from '../../Services/tickets.se
 import axios from 'axios';
 import cookies from 'js-cookie';
 import { useSocket } from '../../Context/socket.context';
+import { addNewTicketProgressServices } from '../../Services/ticketprogress.services';
 function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) {
     const { ticketData, reset, setTicketErrors, ip } = useGlobalState();
     const id = cookies.get('id');
@@ -59,16 +60,21 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) 
             })
             if (resposne.status === 200) {
                 const notificationObj = {
-                    ticketId: resposne.data.data._id,
+                    ticketId: resposne.data.data.id,
                     ticket_Id: ticketId,
                     recipientId: ticketData?.marketManager_id,
                     manager: ticketData?.managerID,
                     marketmanager: ticketData?.marketManager_id,
                     distrcitmanager: ticketData?.districtManager_id,
                     senderId: id,
-                    store: resposne.data.data?.store_detail[0]?._id,
+                    store: resposne.data.data?.store_detail[0]?.id,
                     notification_type: "new Ticket open",
                 };
+                const obj = {
+                    ticketId: resposne.data.data.id,
+                    status: "Created",
+                    updatedBy: id
+                }
                 socket.emit('notify', notificationObj)
                 setLoader(false);
                 generatedTicketId();
@@ -80,7 +86,8 @@ function ManagerCreateTicketBttn({ handleClose, fetchTickets, getCurrentUser }) 
                 setSnackbarMessage('Student data added successfully!');
                 setSnackbarSeverity('success');
                 setSnackbarOpen(true);
-                // const r = await ticketProgressServices(resposne.data.data._id, "Created");
+                const r = await addNewTicketProgressServices(obj);
+                console.log(r.data)
             }
         } catch (error) {
             setLoader(false)

@@ -59,7 +59,7 @@ function ManagerOwnTickets() {
         }
     };
     return (
-        <div className="container">
+        <div className="container-fluid">
             <BasicBreadcrumbs name={"Own Tickets"} />
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center py-3 bg-white">

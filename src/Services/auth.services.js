@@ -6,7 +6,7 @@ export const addUsersServices = async (signupData) => {
     try {
         // const response = await axios.post('http://localhost:5000/auth/registered', { signupData });
         // const response = await axios.post('http://localhost:5000/auth/registered', { signupData });
-        const response = await axios.post(`${'http://localhost:5000'}/auth/registered`, { signupData });
+        const response = await axios.post(`${API_URL}/auth/registered`, { signupData });
         return response
     } catch (error) {
         throw error;

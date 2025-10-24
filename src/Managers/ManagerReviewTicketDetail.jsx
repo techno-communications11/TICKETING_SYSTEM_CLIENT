@@ -17,6 +17,7 @@ import ManagerComments from './ManagerComments';
 import ManagerTransferedTickets from './ManagerTransferedTickets';
 import ShowAttachmentsFile from '../Components/ShowAttachmentsFile/ShowAttachmentsFile';
 import { useGlobalState } from '../Context/context';
+import { addNewTicketProgressServices } from '../Services/ticketprogress.services';
 
 function ManagerReviewTicketDetail() {
     const [assignieName, setAssigneeName] = useState({ name: "", id: "", assign_email: "" });
@@ -77,14 +78,83 @@ function ManagerReviewTicketDetail() {
     useEffect(() => {
         filteredTickets();
     }, [])
+    useEffect(() => {
+        if (!socket) return; // wait until socket is available
+        if (!id) return; // ensure ticket id is loaded
+
+        // ✅ Function: Handle new ticket creation progress
+        const handleTicketCreation = async () => {
+            try {
+                const response = await getalltickets(ip, userId, "review tickets");
+                const ticket = response.data.data.find((t) => t.id === id);
+
+                if (ticket && ticket.status === "pending") {
+                    const obj = {
+                        ticketId: ticket.id,
+                        status: "Recieved to Manager",
+                        updatedBy: userId,
+                    };
+
+                    try {
+                        await updateTicketStatus(ticket.id);
+                        await addNewTicketProgressServices(obj);
+
+                        // emit notification
+                        const notificationObj = {
+                            ticketId: ticket._id,
+                            ticket_Id: ticket.ticketId,
+                            recipientId: "",
+                            manager: ticket.marketManager_id,
+                            marketmanager: ticket.marketManager_id,
+                            distrcitmanager: ticket.districtManager_id,
+                            senderId: userId,
+                            notification_type: "ticket review",
+                        };
+                        socket.emit("notify", notificationObj);
+
+                        // refresh UI
+                        filteredTickets();
+                    } catch (error) {
+                        console.log("❌ Error updating ticket progress:", error.message);
+                    }
+                }
+            } catch (err) {
+                console.log("❌ Error fetching tickets:", err.message);
+            }
+        };
+
+        // ✅ Listener: Ticket closed by manager
+        const handleCloseTicket = (ticket) => {
+            if (ticket.managerId && ticket.managerId === id) {
+                toast.success(`🎉 Ticket #${ticket.ticketId} has been closed!`);
+                filteredTickets();
+            }
+        };
+
+        // ✅ Run only once when component mounts
+        handleTicketCreation();
+
+        // Attach listener
+        socket.on("ticket closed by manager", handleCloseTicket);
+
+        // ✅ Cleanup on unmount
+        return () => {
+            socket.off("ticket closed by manager", handleCloseTicket);
+        };
+    }, [socket, id]); // only depend on socket & id
 
     // useEffect(() => {
     //     if (socket && detailTicket?.length > 0) {
     //         if (detailTicket[0].status === "pending") {
-    //             updateTicketStatus(detailTicket[0]._id)
+    //             const obj = {
+    //                 ticketId: detailTicket[0].id,
+    //                 status: "Created",
+    //                 updatedBy: id
+    //             }
+    //             updateTicketStatus(detailTicket[0].id)
     //                 .then(async (response) => {
     //                     try {
-    //                         const resposne = await ticketProgressServices(detailTicket[0]?._id, "Review Ticket");
+    //                         const resposne = await addNewTicketProgressServices(obj);
     //                     } catch (error) {
     //                         console.log("ERROR FROM UPDATING TICKET PROGRESS", error.message)
     //                     }
@@ -116,7 +186,7 @@ function ManagerReviewTicketDetail() {
     //             socket.off("ticket closed by manager", handleCloseTicket);
     //         };
     //     }
-    // }, [socket, filteredTickets, id]);
+    // }, [socket]);
     const handleAssignee = (e) => {
         const selectedAssignee = assignUsers.find(user => user.name === e.target.value);
         if (selectedAssignee) {
@@ -141,6 +211,11 @@ function ManagerReviewTicketDetail() {
                 senderId: id,
                 notification_type: "ticket closed",
             };
+            const obj = {
+                ticketId: detailTicket[0]?.id,
+                status: "Closed",
+                updatedBy: userId,
+            };
             socket.emit('notify', notificationObj)
             await addNotificationsServices(notificationObj);
             closeTicket(detailTicket[0].id)
@@ -148,7 +223,7 @@ function ManagerReviewTicketDetail() {
                     // console.log(response)
                     if (response.data.status == 200) {
                         try {
-                            // const resposne = await ticketProgressServices(detailTicket[0]?._id, "Closed");
+                            const resposne = await addNewTicketProgressServices(obj);
                             toast.success(`🎉 Ticket #${detailTicket[0].ticketId} has been closed!`);
                             filteredTickets()
                             setTimeout(() => {
@@ -172,37 +247,8 @@ function ManagerReviewTicketDetail() {
             setLoading(false)
         }
     }
-    const showBrowserNotification = async (title, description) => {
-        if ('Notification' in window && Notification.permission === "granted") {
-            console.log("after sent notification", title, description)
-            new Notification(title, {
-                body: description,
-                icon: "https://ticketing-systems-five.vercel.app/logo.webp"
-            });
-        } else {
-            console.log("Notification permission not granted.");
-        }
-    };
-
-    // const requestNotificationPermission = useCallback(() => {
-    //     if ('Notification' in window) {
-    //         Notification.requestPermission().then(function (permission) {
-    //             if (permission === 'granted') {
-    //                 console.log("Notification permission granted!");
-    //             }
-    //         });
-    //     }
-    // }, []);
-
-    // useEffect(() => {
-    //     if ('Notification' in window) {
-    //         requestNotificationPermission();
-    //     }
-    // }, [requestNotificationPermission])
-
     const handleAssign = async () => {
         setAssignLoader(true);
-        // showBrowserNotification("Hello Developer!", "Testing mode");
         if (!assignieName.id) {
             toast.error("Please select an assignee!", { position: "top-right" });
             return;
@@ -224,6 +270,12 @@ function ManagerReviewTicketDetail() {
                     marketmanager: filtered[0]?.marketManager_id,
                     distrcitmanager: filtered[0]?.districtManager_id,
                 }
+                const obj = {
+                    ticketId: filtered[0]?.id,
+                    status: "Assigned to Agent",
+                    updatedBy: userId,
+                };
+
                 if (socket) {
                     socket.emit('notify', notificationObj)
                     const responseNoti = await addNotificationsServices(notificationObj);
@@ -234,7 +286,7 @@ function ManagerReviewTicketDetail() {
                 }
                 filteredTickets()
                 try {
-                    const resposne = await ticketProgressServices(filtered[0]?.id, "Assigned to Agent");
+                    const resposne = await addNewTicketProgressServices(obj);
                     filteredTickets()
                 } catch (error) {
                     setAssignLoader(false)
@@ -275,15 +327,13 @@ function ManagerReviewTicketDetail() {
         </div>
     } else if (detailTicket.length < 0) {
         return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-            Data NOt FOund Yet
+            Data Not Found Yet
         </div>
     }
 
-    // console.log( JSON.parse(detailTicket[0]?.progress))
     const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
-
     return (
-        <div className='container d-flex flex-column gap-3'>
+        <div className='container-fluid d-flex flex-column gap-3'>
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center" style={{ marginTop: '20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -328,7 +378,6 @@ function ManagerReviewTicketDetail() {
                             }
                         </div>
                         <ManagerTransferedTickets loading={loading} ticketData={detailTicket[0]} filteredTickets={filteredTickets} />
-                        {/* <Button variant='contained' disabled={loading || detailTicket[0]?.status === 'close'} onClick={handleChangeStatus}>{loading ? <CircularProgress size={25} /> : "Transfer"}</Button> */}
                         <div className="d-flex gap-2">
                             {
                                 detailTicket[0]?.assignerId ?
@@ -355,27 +404,12 @@ function ManagerReviewTicketDetail() {
                                         </Select>
                                     </FormControl>
                             }
-                            {/* <FormControl size='small' sx={{ width: "150px" }}>
-                            <InputLabel>Assign To</InputLabel>
-                            <Select value={assignieName.name} onChange={handleAssignee}>
-                                {assignUsers.length > 0 ? (
-                                    assignUsers.map((user) => (
-                                        <MenuItem key={user._id} value={user.name}>
-                                            {user.name}
-                                        </MenuItem>
-                                    ))
-                                ) : (
-                                    <MenuItem disabled>No users available</MenuItem>
-                                )}
-                            </Select>
-                        </FormControl> */}
-                            {/*disabled={assignLoader || detailTicket[0]?.assignerId}   */}
                             <Button variant='contained' disabled={assignLoader || detailTicket[0]?.assignerId} onClick={handleAssign} >{assignLoader ? <CircularProgress size={25} /> : "Assign"}</Button>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* <TicketProgress status={latestStatus} /> */}
+            <TicketProgress id={detailTicket[0]?.id} status={detailTicket[0]?.status} />
             <div className="row">
                 <Typography variant='h6' className='mb-3'>Detail</Typography>
                 <div className="col-md-8">

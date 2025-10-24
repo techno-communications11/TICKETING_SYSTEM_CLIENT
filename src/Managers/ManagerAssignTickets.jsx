@@ -501,7 +501,7 @@ function ManagerAssignTickets() {
     });
 
     return (
-        <div className="container">
+        <div className="container-fluid">
             <BasicBreadcrumbs name={"Assigned Tickets"} />
 
             {/* Filters and Header Buttons */}

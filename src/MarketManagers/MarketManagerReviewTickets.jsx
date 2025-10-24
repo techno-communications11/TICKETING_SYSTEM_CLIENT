@@ -14,18 +14,10 @@ import { addNotificationsServices } from '../Services/notifications.services';
 import { getAllUsers } from '../Services/auth.services';
 import TicketProgress from '../Components/TicketProgress/TicketProgress';
 import ManagerComments from '../Managers/ManagerComments';
+import { addNewTicketProgressServices } from '../Services/ticketprogress.services';
 
 
 function MarketManagerReviewTickets() {
-  const [comments, setComments] = useState([
-    { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
-    { user: "Alice Smith", text: "Noted, will look into it.", time: "10:45 AM" },
-    { user: "Robert Johnson", text: "We need more details on this.", time: "11:00 AM" },
-    { user: "Emily Davis", text: "I'll handle this ticket.", time: "11:15 AM" },
-    { user: "Michael Brown", text: "Please update the status.", time: "11:30 AM" },
-    { user: "Sarah Connor", text: "Ticket is under review.", time: "11:45 AM" }
-  ]);
-  const [assignieName, setAssigneeName] = useState({ name: "", id: "", assign_email: "" });
   const [detailTicket, setDetailTicket] = useState([]);
   const { socket } = useSocket();
   const [loading, setLoading] = useState(false);
@@ -34,7 +26,6 @@ function MarketManagerReviewTickets() {
   const { id } = useParams()
   const decodedTickets = decodeToken();
   const { department, subDepartment } = decodedTickets;
-  const [assignLoader, setAssignLoader] = useState(false);
   const [tloading, settLoading] = useState(false);
   const filteredTickets = useCallback(async () => {
     settLoading(true)
@@ -120,6 +111,11 @@ function MarketManagerReviewTickets() {
         senderId: id,
         notification_type: "ticket closed",
       };
+      const obj = {
+        ticketId: detailTicket[0]?.id,
+        status: "Closed",
+        updatedBy: userId,
+      };
       socket.emit('notify', notificationObj)
       await addNotificationsServices(notificationObj);
       closeTicket(detailTicket[0].id)
@@ -127,7 +123,7 @@ function MarketManagerReviewTickets() {
           // console.log(response)
           if (response.data.status == 200) {
             try {
-              // const resposne = await ticketProgressServices(detailTicket[0]?._id, "Closed");
+              const resposne = await addNewTicketProgressServices(obj);
               toast.success(`🎉 Ticket #${detailTicket[0].ticketId} has been closed!`);
               filteredTickets()
               setTimeout(() => {
@@ -151,8 +147,6 @@ function MarketManagerReviewTickets() {
       setLoading(false)
     }
   }
-  // const latestStatus = detailTicket[0]?.progress[detailTicket[0]?.progress.length - 1].status;
-
   return (
     <div className='container d-flex flex-column gap-3'>
       <div className="row">
@@ -195,7 +189,7 @@ function MarketManagerReviewTickets() {
           </div>
         </div>
       </div>
-      {/* <TicketProgress status={latestStatus} /> */}
+      <TicketProgress id={detailTicket[0]?.id} status={detailTicket[0]?.status} />
       <div className="row">
         <Typography variant='h6' className='mb-3'>Detail</Typography>
         <div className="col-md-8">

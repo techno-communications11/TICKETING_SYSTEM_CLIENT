@@ -53,7 +53,7 @@ function ManagerHome() {
         (ticket.department == department && ticket.subDepartment == subDepartment) ||
         ticket.managerID == id || ticket.userId == id || ticket.previousOwnerId === id || ticket.currentOwnerId === id || (ticket.assignerId == id && ticket.approved == true)
       );
-      // console.log(response.data.data)
+      console.log(filtered)
       // Apply filters
       if (market) filtered = filtered.filter((data) => data.market === market);
       if (store) filtered = filtered.filter((data) => data.store_name === store);
@@ -115,7 +115,7 @@ function ManagerHome() {
     </div>
   }
   return (
-    <div className='container'>
+    <div className='container-fluid'>
       <div className='row'>
         <div
           className='col-md-12 d-flex align-items-center mb-3 bg-white py-3 px-2 rounded-3 shadow-sm'

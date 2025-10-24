@@ -70,7 +70,7 @@ function ManagerAgentsDetail() {
         );
     }
     return (
-        <div className='container mt-4'>
+        <div className='container-fluid mt-4'>
             <div className="d-flex align-items-center justify-content-between pb-3 mb-4">
                 <div className="d-flex align-items-center">
                     <IconButton  color="primary" onClick={() => window.history.back()}>

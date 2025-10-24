@@ -5,6 +5,7 @@ import { getalltickets, ticketProgressServices } from '../Services/tickets.servi
 import axios from 'axios';
 import cookies from 'js-cookie';
 import { useSocket } from '../Context/socket.context';
+import { addNewTicketProgressServices } from '../Services/ticketprogress.services';
 
 function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
     const { ticketData, reset, setTicketErrors, ip } = useGlobalState();
@@ -64,13 +65,18 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
                     store: resposne.data.data?.store_detail[0]?.id,
                     notification_type: "new Ticket open",
                 };
+                const obj = {
+                    ticketId: resposne.data.data.id,
+                    status: "Created",
+                    updatedBy: id
+                }
                 socket.emit('notify', notificationObj);
                 setLoader(false);
                 generatedTicketId();
                 reset();
                 handleClose();
                 fetchTickets()
-                // const r = await ticketProgressServices(resposne.data.data.id, "Created");
+                const r = await addNewTicketProgressServices(obj)
             }
         } catch (error) {
             setLoader(false)

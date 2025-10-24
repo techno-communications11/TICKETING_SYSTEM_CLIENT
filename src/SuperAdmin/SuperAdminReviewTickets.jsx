@@ -17,6 +17,7 @@ import axios from 'axios';
 import SuperAdminComments from './SuperAdminComments';
 import ManagerTransferedTickets from '../Managers/ManagerTransferedTickets';
 import ShowAttachmentsFile from '../Components/ShowAttachmentsFile/ShowAttachmentsFile';
+import { addNewTicketProgressServices } from '../Services/ticketprogress.services';
 function SuperAdminReviewTickets() {
     const [comments, setComments] = useState([
         { user: "John Doe", text: "This ticket needs urgent attention!", time: "10:30 AM" },
@@ -133,12 +134,17 @@ function SuperAdminReviewTickets() {
                 notification_type: "ticket closed",
             };
             socket.emit('notify', notificationObj)
+            const obj = {
+                ticketId: detailTicket[0]?.id,
+                status: "Closed",
+                updatedBy: userId,
+            };
             await addNotificationsServices(notificationObj);
             closeTicket(detailTicket[0].id)
                 .then(async (response) => {
                     if (response.data.status === 200) {
                         try {
-                            // const resposne = await ticketProgressServices(detailTicket[0]?.id, "Closed");
+                            const resposne = await addNewTicketProgressServices(obj)
                             toast.success(`🎉 Ticket #${detailTicket[0].ticketId} has been closed!`);
                             fetchTickets()
                             setTimeout(() => {
@@ -333,7 +339,7 @@ function SuperAdminReviewTickets() {
                     </div>
                 </div>
             </div>
-            {/* <TicketProgress status={latestStatus} /> */}
+            <TicketProgress id={detailTicket[0]?.id} status={detailTicket[0]?.status} />
             <div className="row">
                 <Typography variant='h6' className='mb-3'>Detail</Typography>
                 <div className="col-md-8">

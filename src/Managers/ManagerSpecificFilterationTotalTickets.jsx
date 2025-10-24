@@ -60,7 +60,7 @@ function ManagerSpecificFilterationTotalTickets() {
     );
 
     return (
-        <div className="container">
+        <div className="container-fluid">
             <BasicBreadcrumbs name={"Open Tickets"} />
             <div className="row my-4">
                 <div className="col-md-12 py-3 bg-white rounded-3 shadow-sm">
