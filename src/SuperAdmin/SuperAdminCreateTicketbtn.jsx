@@ -6,9 +6,11 @@ import axios from 'axios';
 import cookies from 'js-cookie';
 import { useSocket } from '../Context/socket.context';
 import { addNewTicketProgressServices } from '../Services/ticketprogress.services';
+import AlertCompo from '../Components/AlertCompo/AlertCompo';
 
 function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
-    const { ticketData, reset, setTicketErrors, ip } = useGlobalState();
+    const { ticketData, reset, setTicketErrors, ip, setSnackbarMessage, setSnackbarSeverity, setSnackbarOpen } = useGlobalState();
+
     const id = cookies.get('id');
     const { socket } = useSocket();
     const [loader, setLoader] = useState(false)
@@ -71,16 +73,22 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
                     updatedBy: id
                 }
                 socket.emit('notify', notificationObj);
-                setLoader(false);
                 generatedTicketId();
+                await addNewTicketProgressServices(obj)
                 reset();
+                setSnackbarMessage('Ticket has been created successfully!');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+                setLoader(false);
                 handleClose();
                 fetchTickets()
-                const r = await addNewTicketProgressServices(obj)
             }
         } catch (error) {
             setLoader(false)
-            console.log("error", error.message)
+            console.log("error", error)
+            setSnackbarMessage('Error occurred: ' + error.message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
     };
     return (
@@ -98,6 +106,8 @@ function SuperAdminCreateTicketbtn({ handleClose, fetchTickets }) {
             >
                 {loader ? <CircularProgress size={25} /> : "Submit Ticket"}
             </Button>
+            <AlertCompo />
+
         </div>
     )
 }

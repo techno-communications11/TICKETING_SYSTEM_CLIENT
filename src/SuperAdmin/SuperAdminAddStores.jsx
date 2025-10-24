@@ -44,7 +44,7 @@ function SuperAdminAddStores({fetchAllStores}) {
 
                 <Tabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
                     <Tab label="Manual Store" />
-                    <Tab label="Upload Sheet" />
+                    {/* <Tab label="Upload Sheet" /> */}
                 </Tabs>
 
                 <DialogContent dividers>
@@ -52,7 +52,7 @@ function SuperAdminAddStores({fetchAllStores}) {
                         <SuperAdminAddStoreForm />
                     )}
 
-                    {tab === 1 && <UploadSheetComponent />}
+                    {/* {tab === 1 && <UploadSheetComponent />} */}
                 </DialogContent>
 
                 <DialogActions>

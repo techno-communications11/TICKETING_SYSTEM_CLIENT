@@ -13,9 +13,13 @@ import AddIcon from '@mui/icons-material/Add';
 import { addNewCategory } from '../../Services/categoryofproblem.services';
 import axios from 'axios';
 import { getAllDepartmentsServices } from '../../Services/departments.services';
+import { useGlobalState } from '../../Context/context';
+import AlertCompo from '../AlertCompo/AlertCompo';
 
 
 function AddProblemCategoryTicket({ fetchCategory }) {
+    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarOpen } = useGlobalState()
+
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [departmentEmail, setDepartmentEmail] = useState('');
     const [newCategory, setNewCategory] = useState('');
@@ -58,15 +62,21 @@ function AddProblemCategoryTicket({ fetchCategory }) {
             });
             if (response.data.status === 200) {
                 fetchCategory()
-                handleCategoryClose(); 
+                handleCategoryClose();
                 setNewCategory('');
                 setNewDepartment('');
                 setDepartmentEmail('');
                 setLoader(false);
+                setSnackbarMessage('New problem category created successfully!');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
             }
         } catch (error) {
             setLoader(false);
             console.error("Error adding category:", error.message);
+            setSnackbarMessage('Error occurred: ' + error.message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
     };
 
@@ -136,6 +146,8 @@ function AddProblemCategoryTicket({ fetchCategory }) {
                     </Box>
                 </Box>
             </Modal>
+            <AlertCompo />
+
         </div>
     );
 }

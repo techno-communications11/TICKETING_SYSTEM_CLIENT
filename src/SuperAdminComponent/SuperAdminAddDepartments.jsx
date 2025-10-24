@@ -9,8 +9,12 @@ import {
     CircularProgress,
 } from "@mui/material";
 import { addDepartmentsServices } from "../Services/departments.services";
+import AlertCompo from "../Components/AlertCompo/AlertCompo";
+import { useGlobalState } from "../Context/context";
 
 function SuperAdminAddDepartments({ fetchAllDepartmentsData }) {
+    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarOpen } = useGlobalState()
+
     const [open, setOpen] = useState(false);
     const [loader, setLoader] = useState(false);
     const [department, setDepartment] = useState({
@@ -31,19 +35,24 @@ function SuperAdminAddDepartments({ fetchAllDepartmentsData }) {
 
     const handleSave = async () => {
         setLoader(true);
-        // console.log("New Department Added (Dummy):", department);
         try {
             const response = await addDepartmentsServices(department);
             // console.log("RESPONSE");
             if (response.data.status === 200) {
                 fetchAllDepartmentsData()
                 setLoader(false);
+                setSnackbarMessage('New department has been created successfully!');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
                 setDepartment({ name: "", email: "" });
                 setOpen(false);
             }
         } catch (error) {
             setLoader(false);
             console.log("ERROR", error.message)
+            setSnackbarMessage('Error occurred: ' + error.message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
 
     };
@@ -90,6 +99,8 @@ function SuperAdminAddDepartments({ fetchAllDepartmentsData }) {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <AlertCompo />
+
         </div>
     );
 }

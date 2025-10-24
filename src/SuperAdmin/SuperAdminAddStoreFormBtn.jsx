@@ -4,9 +4,11 @@ import { Button, CircularProgress } from '@mui/material';
 import { addNewStoreServices } from '../Services/stores.services';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import AlertCompo from '../Components/AlertCompo/AlertCompo';
 
 function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
-    const { formData, setErrors, setFormData } = useGlobalState();
+    const { formData, setErrors, setFormData, setSnackbarMessage, setSnackbarSeverity, setSnackbarOpen } = useGlobalState();
+
     const [loading, setLoading] = useState(false)
     const validate = () => {
         let newErrors = {};
@@ -33,7 +35,10 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
                 if (response.status === 200) {
                     setLoading(false);
                     setOpen(false);
-                    toast.success("New Store Active Successfully");
+                    setSnackbarMessage('Store created successfully!');
+                    setSnackbarSeverity('success');
+                    setSnackbarOpen(true);
+                    // toast.success("New Store Active Successfully");
                     fetchAllStores();
                     setFormData({
                         bdi_id: '',
@@ -51,14 +56,21 @@ function SuperAdminAddStoreFormBtn({ tab, setOpen, fetchAllStores }) {
                 setLoading(true);
                 setLoading(false);
                 console.log("Error", error.message);
+                setSnackbarMessage('Error occurred: ' + error.message);
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
             }
         } else {
             console.log("ERROR")
+            setSnackbarMessage('Some thing went wrong ');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
     };
 
     return (
         <div>
+            <AlertCompo />
             <Button onClick={() => setOpen(false)}>Cancel</Button>
             {tab === 0 && <Button variant="contained" disabled={loading} onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>}
             {/* {tab === 0 && <Button variant="contained" onClick={handleSubmit}>{loading ? <CircularProgress size={25} /> : "Save"}</Button>} */}
