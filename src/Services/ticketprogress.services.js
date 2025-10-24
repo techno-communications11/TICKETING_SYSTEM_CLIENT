@@ -8,6 +8,7 @@ export const addNewTicketProgressServices = async (data) => {
         throw error
     }
 }
+
 export const getNewTicketProgressServices = async () => {
     try {
         const response = await axios(`${API_URL}/ticket-progress/get-ticket-progress`);
