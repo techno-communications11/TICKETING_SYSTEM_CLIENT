@@ -96,7 +96,9 @@ const GlobalStates = ({ children }) => {
     const [ticketErrors, setTicketErrors] = useState({});
     const reset = () => setTicketData(defaultTicketData)
     const [ip, setIp] = useState("");
-
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' ya 'error'
+    const [snackbarMessage, setSnackbarMessage] = useState('');
     useEffect(() => {
         const fetchIP = async () => {
             try {
@@ -135,8 +137,9 @@ const GlobalStates = ({ children }) => {
         filterationsData,
         setFilterationsData,
         reset,
-        ip
-    }), [token, id,ip, currentUserData, mmdmformData, filterationsData, ccformData, uploadFiles, ticketData, ticketErrors, formData, errors]);
+        ip,
+        snackbarOpen, setSnackbarOpen, snackbarSeverity, setSnackbarSeverity, snackbarMessage, setSnackbarMessage
+    }), [token, id, ip, snackbarOpen, snackbarSeverity, snackbarMessage, currentUserData, mmdmformData, filterationsData, ccformData, uploadFiles, ticketData, ticketErrors, formData, errors]);
 
     return (
         <GlobalContext.Provider value={contextValue}>

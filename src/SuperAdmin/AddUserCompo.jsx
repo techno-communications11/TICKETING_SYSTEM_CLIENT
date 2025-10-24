@@ -9,20 +9,22 @@ import CloseIcon from '@mui/icons-material/Close';
 import { getAllStores } from '../Services/stores.services';
 import { addUsersServices } from '../Services/auth.services';
 import { getAllDepartmentsServices } from '../Services/departments.services';
+import { useGlobalState } from '../Context/context';
+import AlertCompo from '../Components/AlertCompo/AlertCompo';
 
 function AddUserCompo({ fetchAllUserData }) {
     const [open, setOpen] = useState(false);
-
-    // "Finance",
-    const [departments] = useState([
-        "HO", "BOPK", "BOIN", "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
-        "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
-        "AR", "Employee", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
-    ]);
-    const [department] = useState([
-        "HO", "BOPK", "BOIN", "Admin", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "MIS",
-        "AR", "Managment", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
-    ]);
+    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarOpen } = useGlobalState()
+    // // "Finance",
+    // const [departments] = useState([
+    //     "HO", "BOPK", "BOIN", "COO", "DCO", "SuperAdmin", "Admin", "Admin Manager", "Senior Manager", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal",
+    //     "Reporting", "Inventory", "Maintenance", "Sales", "Commission", "Compliance", "MIS",
+    //     "AR", "Employee", "Managment", "SCM", "QA", "Vigilence", "MIS", "CMG", "Data Analytics", "Supervisor", "Local IT"
+    // ]);
+    // const [department] = useState([
+    //     "HO", "BOPK", "BOIN", "Admin", "Finance (GL)", "Finance AR", "SUPERVISOR", "HR", "IT", "Software India", "Internal", "Reporting", "Inventory", "Maintenance", "Commission", "Compliance", "MIS",
+    //     "AR", "Managment", "SCM", "QA", "Vigilence", "MIS", "Data Analytics", "Supervisor", "Local IT"
+    // ]);
     // "Admin / IT",
     // "Admin / IT",
     const [formData, setFormData] = useState({
@@ -45,11 +47,11 @@ function AddUserCompo({ fetchAllUserData }) {
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [allDepartments, setAllDepartments] = useState([]);
+
     const fetchAllStores = useCallback(async () => {
         try {
             const response = await getAllStores();
             setStores(response);
-            // console.log(response);
         } catch (error) {
             console.error("Error fetching stores:", error);
         }
@@ -57,7 +59,6 @@ function AddUserCompo({ fetchAllUserData }) {
     const fetchAllDepartments = useCallback(async () => {
         try {
             const response = await getAllDepartmentsServices();
-            // console.log(response.data.data);
             setAllDepartments(response.data.data);
 
         } catch (error) {
@@ -99,11 +100,6 @@ function AddUserCompo({ fetchAllUserData }) {
         setErrors(prev => ({ ...prev, [name]: '' }));
     };
     const handleDepartmentsChanges = async (e) => {
-        // // console.log(e.target.value)
-        // // const filterData = await allDepartments.filter((data) => data.id === e.target.value);
-        // // console.log(filterData[0]?.name)
-        // // const { name, value } = e.target;
-        // console.log(e.target.value)
         setFormData(prev => ({ ...prev, department: e.target.value }));
         setErrors(prev => ({ ...prev, department: '' }));
     };
@@ -181,7 +177,7 @@ function AddUserCompo({ fetchAllUserData }) {
 
     const handleSubmit = async () => {
 
-        // setLoading(true);
+        setLoading(true);
         if (!validate()) return setLoading(false);
         const finalData = {
             ...formData,
@@ -202,16 +198,29 @@ function AddUserCompo({ fetchAllUserData }) {
             store_detail: storeDetail,
             managedDepartments: finalData.selectedDepts
         }
-        console.log(obj)
+        // console.log(obj)
         try {
             const resposne = await addUsersServices(obj);
-            console.log(resposne)
-            fetchAllUserData()
-            setLoading(false);
-            // handleClose();
+            if (resposne.data.success === true) {
+                fetchAllUserData()
+                setLoading(false);
+                setSnackbarMessage('New Users added successfully!');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+                handleClose();
+            }
         } catch (error) {
             setLoading(false);
-            console.log(error.message, 'error.message');
+            if (error.status === 409) {
+                setSnackbarMessage(error.response.data.message);
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
+            } else {
+                setSnackbarMessage('Error occurred: ' + error.message);
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
+            }
+
         } finally {
             setLoading(false);
         }
@@ -370,6 +379,7 @@ function AddUserCompo({ fetchAllUserData }) {
                     </div>
                 </DialogActions>
             </Dialog>
+            <AlertCompo />
         </div>
     );
 }
