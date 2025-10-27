@@ -1104,7 +1104,7 @@ const TicketProgress = ({ id, status }) => {
         if (status?.toLowerCase() === "pending") {
           setCurrentStep(steps.indexOf("Pending"));
         } else if (status?.toLowerCase() === "open") {
-          setCurrentStep(steps.indexOf("Pending"));
+          setCurrentStep(steps.indexOf("Recieved to Manager"));
         }else if (status?.toLowerCase() === "close") {
           setCurrentStep(steps.indexOf("Closed"));
         } else {
