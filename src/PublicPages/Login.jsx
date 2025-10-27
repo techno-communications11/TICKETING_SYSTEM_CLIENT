@@ -153,6 +153,7 @@ function Login() {
                                             <Link to={'/fogot-password'}>Forget Password</Link> : ""
 
                                     }
+                                    {/*<Link to={'/fogot-password'}>Forget Password</Link> */}
                                     <Button type="submit" variant="contained" className='py-3 fs-6 fw-semibold' disabled={loading} fullWidth sx={{ mt: 2, background: "#6f2da8", color: "white" }}>
                                         {loading ? <CircularProgress size={20} /> : "Login"}
                                     </Button>

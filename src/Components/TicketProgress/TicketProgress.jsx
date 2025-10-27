@@ -1075,6 +1075,7 @@ import { getNewTicketProgressServices } from "../../Services/ticketprogress.serv
 const steps = [
   "Created",
   "Pending",
+  // "Open",
   "Recieved to Manager",
   "Assigned to Agent",
   "Completed by Agent",
@@ -1102,7 +1103,9 @@ const TicketProgress = ({ id, status }) => {
         // fallback: use prop status
         if (status?.toLowerCase() === "pending") {
           setCurrentStep(steps.indexOf("Pending"));
-        } else if (status?.toLowerCase() === "close") {
+        } else if (status?.toLowerCase() === "open") {
+          setCurrentStep(steps.indexOf("Pending"));
+        }else if (status?.toLowerCase() === "close") {
           setCurrentStep(steps.indexOf("Closed"));
         } else {
           setCurrentStep(0);
